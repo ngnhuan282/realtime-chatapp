@@ -1,0 +1,34 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color white
+drawable bg_button_primary
+drawable bg_circle_social
+drawable bg_input_field
+drawable ic_chat_bubble
+drawable ic_eye_off
+drawable ic_facebook
+drawable ic_google
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+drawable ic_lock
+drawable ic_person
+id btnLogin
+id cardLogo
+id edtPassword
+id edtUsername
+id layoutDivider
+id main
+id tvAppName
+id tvForgot
+id tvSubtitle
+layout activity_login
+layout activity_login2
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Base.Theme.ChatApp
+style Theme.ChatApp
+xml backup_rules
+xml data_extraction_rules

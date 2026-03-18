@@ -1,0 +1,50 @@
+# =============================================
+# ANDROID & GRADLE
+# =============================================
+.gradle/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+/screenshots
+*.apk
+*.ap_
+*.dex
+*.class
+
+# =============================================
+# IDE - INTELIJ / ANDROID STUDIO
+# =============================================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.navigation/
+
+# =============================================
+# JAVA / SPRING BOOT (MAVEN)
+# =============================================
+target/
+*.log
+*.binary
+*/out/
+
+# =============================================
+# DOCKER & DATABASE
+# =============================================
+database/db_data/
+.env
+
+# =============================================
+# HỆ ĐIỀU HÀNH (OS)
+# =============================================
+# Windows
+Thumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride

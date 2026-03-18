@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: chatapp-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: chat_app
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+    volumes:
+      # Tự động chạy file db.sql khi khởi tạo container lần đầu
+      - ./database/db.sql:/docker-entrypoint-initdb.d/db.sql
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

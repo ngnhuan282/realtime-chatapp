@@ -1,5 +1,6 @@
 package com.example.ChatServer.dto;
 
+import com.example.ChatServer.entity.ChatGroup;
 import com.example.ChatServer.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;

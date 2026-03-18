@@ -7,5 +7,8 @@
         
         
     </style>
+    <style name="CircleImage">
+        <item name="cornerSize">50%</item>
+    </style>
     <style name="Theme.ChatApp" parent="Base.Theme.ChatApp"/>
 </resources>

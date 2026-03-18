@@ -28,6 +28,9 @@
         android:testOnly="true"
         android:theme="@style/Theme.ChatApp" >
         <activity
+            android:name="com.example.chatapp.MainChats"
+            android:exported="false" />
+        <activity
             android:name="com.example.chatapp.view.login.LoginActivity"
             android:exported="false" />
         <activity

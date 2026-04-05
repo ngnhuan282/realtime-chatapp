@@ -70,6 +70,7 @@ id rvMessages
 id toolbar
 id tvAppName
 id tvForgot
+id tvFriendName
 id tvLastMessage
 id tvName
 id tvSubtitle

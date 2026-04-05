@@ -49,6 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Emerald Fresh"
+                android:id="@+id/tvFriendName"
                 android:textColor="#1B5E4A"
                 android:textSize="16sp"
                 android:textStyle="bold" />

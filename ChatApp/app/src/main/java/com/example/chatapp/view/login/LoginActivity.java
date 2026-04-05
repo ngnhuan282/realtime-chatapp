@@ -14,12 +14,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.chatapp.view.chat.ChatListActivity;
 import com.example.chatapp.R;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.AuthApi;
 import com.example.chatapp.network.rest.LoginRequest;
 import com.example.chatapp.network.rest.LoginResponse;
+import com.example.chatapp.view.chat.ChatListActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,7 +72,10 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putInt("myUserId", loginData.getId()); // Giả sử LoginResponse có getId() trả về Integer
                     editor.apply();
 
-                    Toast.makeText(LoginActivity.this, "Chào " + loginData.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    String displayName = loginData.getDisplayName();
+                    Toast.makeText(LoginActivity.this,
+                            "Chào " + (displayName != null ? displayName : loginData.getUsername()),
+                            Toast.LENGTH_SHORT).show();
 
                     // Chuyển sang màn hình danh sách chat
                     Intent intent = new Intent(LoginActivity.this, ChatListActivity.class);

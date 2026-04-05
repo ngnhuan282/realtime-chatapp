@@ -7,15 +7,14 @@ import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
+
     private Socket socket;
     private MessageService messageService;
     private BufferedReader in;
     private PrintWriter out;
 
-    // SỬA LỖI TẠI ĐÂY: Đổi String thành Integer để khớp với model Message
     private Integer currentUserId;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ClientHandler(Socket socket, MessageService messageService) {
         this.socket = socket;
@@ -31,29 +30,47 @@ public class ClientHandler implements Runnable {
             String input;
             while ((input = in.readLine()) != null) {
                 try {
-                    // Chuyển JSON thành đối tượng Message (ID lúc này là Integer)
+                    // Parse tin nhắn từ client
                     Message msg = objectMapper.readValue(input, Message.class);
 
-                    // Bước 1: Handshake - Đăng ký định danh Socket
+                    // ==================== HANDSHAKE ====================
                     if (currentUserId == null) {
-                        currentUserId = msg.getSenderId(); // Integer gán cho Integer -> Hết lỗi!
-                        ConnectionManager.onlineUsers.put(currentUserId, this);
-                        System.out.println("User " + currentUserId + " đã kết nối Socket.");
+                        if (msg.getReceiverId() != null && msg.getReceiverId() == 0) {
+                            currentUserId = msg.getSenderId();
+                            ConnectionManager.onlineUsers.put(currentUserId, this);
+                            System.out.println("✅ User " + currentUserId + " đã kết nối Socket thành công.");
+                            continue;
+                        } else {
+                            System.out.println("Tin đầu tiên không phải handshake.");
+                            continue;
+                        }
+                    }
+
+                    // ==================== TIN NHẮN THẬT ====================
+                    if (msg.getReceiverId() == null || msg.getReceiverId() == 0) {
+                        System.out.println("Tin nhắn không có receiverId hợp lệ");
                         continue;
                     }
 
-                    // Bước 2: Lưu vào Database MySQL [cite: 7, 22]
-                    messageService.saveMessage(msg); // Đảm bảo MessageService nhận tham số là Message
+                    System.out.println("Nhận tin từ User " + msg.getSenderId()
+                            + " → " + msg.getReceiverId()
+                            + " | Nội dung: " + msg.getContent());
 
-                    // Bước 3: Chuyển tiếp Realtime cho người nhận [cite: 6, 24]
-                    // ConnectionManager.onlineUsers bây giờ dùng Key là Integer
-                    ClientHandler receiver = ConnectionManager.onlineUsers.get(msg.getReceiverId());
-                    if (receiver != null) {
-                        receiver.sendMessage(input);
-                        System.out.println("Đã chuyển tiếp tin nhắn tới User: " + msg.getReceiverId());
+                    // Lưu vào Database
+                    messageService.saveMessage(msg);
+
+                    // Forward realtime cho người nhận
+                    ClientHandler receiverHandler = ConnectionManager.onlineUsers.get(msg.getReceiverId());
+                    if (receiverHandler != null && receiverHandler != this) {
+                        // Gửi nguyên JSON nhận được (để giữ nguyên định dạng)
+                        receiverHandler.sendMessage(input);
+                        System.out.println("✅ Đã forward tin nhắn tới User: " + msg.getReceiverId());
+                    } else if (receiverHandler == null) {
+                        System.out.println("⚠️ Người nhận chưa online hoặc chưa handshake: " + msg.getReceiverId());
                     }
+
                 } catch (Exception e) {
-                    System.err.println("JSON Error: " + e.getMessage());
+                    System.err.println("Lỗi parse JSON: " + e.getMessage() + " | Input: " + input);
                 }
             }
         } catch (IOException e) {
@@ -64,12 +81,17 @@ public class ClientHandler implements Runnable {
     }
 
     public void sendMessage(String jsonMessage) {
-        if (out != null) out.println(jsonMessage);
+        if (out != null) {
+            out.println(jsonMessage);
+            out.flush();
+            System.out.println("Đã gửi dữ liệu qua socket tới client");
+        }
     }
 
     private void closeConnection() {
         if (currentUserId != null) {
             ConnectionManager.onlineUsers.remove(currentUserId);
+            System.out.println("User " + currentUserId + " đã ngắt kết nối.");
         }
         try {
             if (socket != null) socket.close();

@@ -4215,6 +4215,7 @@ int id transition_transform 0x7f08020d
 int id triangle 0x7f08020e
 int id tvAppName 0x7f08020f
 int id tvForgot 0x7f080210
+int id tvFriendName 0x7f080233
 int id tvLastMessage 0x7f080211
 int id tvName 0x7f080212
 int id tvSubtitle 0x7f080213

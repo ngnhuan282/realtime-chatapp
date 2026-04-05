@@ -3,19 +3,27 @@ package com.example.chatapp.view.chat;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatapp.R;
 import com.example.chatapp.model.Message;
+import com.example.chatapp.network.rest.ApiClient;
+import com.example.chatapp.network.rest.MessageApi;
 import com.example.chatapp.network.socket.SocketManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatDetailActivity extends AppCompatActivity {
+
     private ChatAdapter adapter;
     private List<Message> messages = new ArrayList<>();
     private SocketManager socketManager;
@@ -23,61 +31,117 @@ public class ChatDetailActivity extends AppCompatActivity {
     private RecyclerView rvMessages;
     private FloatingActionButton btnSend;
     private ImageView btnBack;
+    private TextView tvFriendName;
 
-    private Integer myUserId;    // ID của chính mình (Lấy từ SharedPreferences)
-    private Integer friendId;    // ID người đang chat cùng (Lấy từ Intent)
+    private Integer myUserId;
+    private Integer friendId;
+    private String friendName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_detail);
 
-        // 1. Lấy dữ liệu ID để định danh người gửi và người nhận
+        // Nhận dữ liệu từ SharedPreferences và Intent
         SharedPreferences sharedPref = getSharedPreferences("ChatAppPrefs", Context.MODE_PRIVATE);
         myUserId = sharedPref.getInt("myUserId", -1);
-        friendId = getIntent().getIntExtra("friendId", 2); // Mặc định là 2 (Alice) nếu test offline
+        friendId = getIntent().getIntExtra("friendId", -1);
+        friendName = getIntent().getStringExtra("friendName");
 
-        // 2. Ánh xạ các View
-        rvMessages = findViewById(R.id.rvMessages);
-        edtMessage = findViewById(R.id.edtMessage);
-        btnSend = findViewById(R.id.btnSend);
-        btnBack = findViewById(R.id.btnBack);
+        initViews();
+        setupRecyclerView();
 
-        // 3. Thiết lập RecyclerView hiển thị tin nhắn [cite: 36, 40]
-        adapter = new ChatAdapter(messages);
-        rvMessages.setLayoutManager(new LinearLayoutManager(this));
-        rvMessages.setAdapter(adapter);
+        // Cấu hình Socket
+        socketManager = SocketManager.getInstance();
+        socketManager.setMyUserId(myUserId);
 
-        // 4. Kết nối Socket Realtime
-        socketManager = new SocketManager();
-        socketManager.connect(msg -> {
+        // Gán listener để nhận tin
+        socketManager.setListener(msg -> {
             runOnUiThread(() -> {
-                // Kiểm tra nếu tin nhắn này dành cho cuộc hội thoại hiện tại
-                messages.add(msg);
-                adapter.notifyItemInserted(messages.size() - 1);
-                rvMessages.scrollToPosition(messages.size() - 1); // UX: Tự động cuộn [cite: 42, 51]
+                // Chỉ hiển thị nếu tin nhắn đó thuộc về cuộc hội thoại này
+                if (msg.getSenderId() != null &&
+                        (msg.getSenderId().equals(friendId) || msg.getSenderId().equals(myUserId))) {
+
+                    msg.setMe(msg.getSenderId().equals(myUserId));
+                    messages.add(msg);
+                    adapter.notifyItemInserted(messages.size() - 1);
+                    rvMessages.scrollToPosition(messages.size() - 1);
+                }
             });
         });
 
-        // 5. Xử lý sự kiện gửi tin nhắn [cite: 28, 40, 50]
+        // Luôn gọi connect để đảm bảo Socket đang sống và đã gửi Handshake
+        socketManager.connect();
+
+        loadHistory();
+
         btnSend.setOnClickListener(v -> {
             String text = edtMessage.getText().toString().trim();
-            if (!text.isEmpty() && myUserId != -1) {
-                // Tạo đối tượng tin nhắn với kiểu Integer [cite: 85-91]
+            if (!text.isEmpty() && myUserId != -1 && friendId != -1) {
                 Message newMsg = new Message(myUserId, friendId, text, System.currentTimeMillis(), true);
 
-                // Cập nhật UI ngay lập tức [cite: 40]
+                // Hiển thị local trước cho mượt UI
                 messages.add(newMsg);
                 adapter.notifyItemInserted(messages.size() - 1);
                 rvMessages.scrollToPosition(messages.size() - 1);
 
-                // Gửi JSON qua Socket lên Server [cite: 28, 46]
                 socketManager.sendMessage(newMsg);
-
-                edtMessage.setText(""); // Xóa khung nhập [cite: 40]
+                edtMessage.setText("");
             }
         });
 
         btnBack.setOnClickListener(v -> finish());
+    }
+
+    private void initViews() {
+        rvMessages = findViewById(R.id.rvMessages);
+        edtMessage = findViewById(R.id.edtMessage);
+        btnSend = findViewById(R.id.btnSend);
+        btnBack = findViewById(R.id.btnBack);
+        tvFriendName = findViewById(R.id.tvFriendName);
+        if (friendName != null) tvFriendName.setText(friendName);
+    }
+
+    private void setupRecyclerView() {
+        adapter = new ChatAdapter(messages);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        // Tự động cuộn xuống cuối khi load
+        layoutManager.setStackFromEnd(true);
+        rvMessages.setLayoutManager(layoutManager);
+        rvMessages.setAdapter(adapter);
+    }
+
+    private void loadHistory() {
+        if (myUserId == -1 || friendId == -1) return;
+        MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
+        messageApi.getHistory(myUserId, friendId).enqueue(new Callback<List<Message>>() {
+            @Override
+            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    messages.clear();
+                    for (Message m : response.body()) {
+                        m.setMe(m.getSenderId().equals(myUserId));
+                        messages.add(m);
+                    }
+                    adapter.notifyDataSetChanged();
+                    if (!messages.isEmpty()) {
+                        rvMessages.scrollToPosition(messages.size() - 1);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Message>> call, Throwable t) {
+                Log.e("ChatDetail", "Lỗi load history: " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Xóa listener khi Activity bị hủy để tránh rò rỉ bộ nhớ
+        if (socketManager != null) {
+            socketManager.setListener(null);
+        }
     }
 }

@@ -4216,6 +4216,7 @@ id transition_transform
 id triangle
 id tvAppName
 id tvForgot
+id tvFriendName
 id tvLastMessage
 id tvName
 id tvSubtitle

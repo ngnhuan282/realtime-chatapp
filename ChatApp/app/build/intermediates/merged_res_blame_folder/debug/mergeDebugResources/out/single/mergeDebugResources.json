@@ -4,16 +4,16 @@
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\xml\\data_extraction_rules.xml"
     },
     {
-        "merged": "com.example.chatapp-debug-36:/layout_item_chat_received.xml.flat",
-        "source": "com.example.chatapp-main-38:/layout/item_chat_received.xml"
-    },
-    {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\drawable_ic_location.png.flat",
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\drawable\\ic_location.png"
     },
     {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\drawable_bg_message_received.xml.flat",
+        "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\drawable\\bg_message_received.xml"
     },
     {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\layout_item_chat_image_received.xml.flat",
@@ -26,10 +26,6 @@
     {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\drawable_bg_circle_icon_emoji.xml.flat",
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\drawable\\bg_circle_icon_emoji.xml"
-    },
-    {
-        "merged": "com.example.chatapp-debug-36:/layout_item_chat_sent.xml.flat",
-        "source": "com.example.chatapp-main-38:/layout/item_chat_sent.xml"
     },
     {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\drawable_ic_search.png.flat",
@@ -164,10 +160,6 @@
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\drawable\\bg_circle_social.xml"
     },
     {
-        "merged": "com.example.chatapp-debug-36:/drawable_bg_message_received.xml.flat",
-        "source": "com.example.chatapp-main-38:/drawable/bg_message_received.xml"
-    },
-    {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\mipmap-hdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
@@ -180,8 +172,16 @@
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\drawable\\ic_video.png"
     },
     {
+        "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\layout_item_chat_received.xml.flat",
+        "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\layout\\item_chat_received.xml"
+    },
+    {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\layout_activity_main.xml.flat",
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\layout_item_chat_sent.xml.flat",
+        "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\layout\\item_chat_sent.xml"
     },
     {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\drawable_bg_circle_icon_video.xml.flat",
@@ -192,16 +192,16 @@
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\mipmap-xhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.chatapp-debug-36:/drawable_bg_message_sent.xml.flat",
-        "source": "com.example.chatapp-main-38:/drawable/bg_message_sent.xml"
-    },
-    {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\mipmap-xxhdpi\\ic_launcher_round.webp"
     },
     {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\mipmap-hdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\mipmap-hdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\drawable_bg_message_sent.xml.flat",
+        "source": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-main-38:\\drawable\\bg_message_sent.xml"
     },
     {
         "merged": "C:\\Users\\VAN NHUAN\\.gradle\\daemon\\8.13\\com.example.chatapp-debug-36:\\drawable_ic_person.png.flat",

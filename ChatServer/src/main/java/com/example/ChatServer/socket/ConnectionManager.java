@@ -5,5 +5,5 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
     // Map lưu trữ: Key = userId, Value = Luồng xử lý của người đó
-    public static Map<String, ClientHandler> onlineUsers = new ConcurrentHashMap<>();
+    public static Map<Integer, ClientHandler> onlineUsers = new ConcurrentHashMap<>();
 }

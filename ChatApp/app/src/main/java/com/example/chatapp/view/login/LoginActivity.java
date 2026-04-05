@@ -1,6 +1,8 @@
 package com.example.chatapp.view.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -62,6 +65,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginData = response.body();
+
+                    // LƯU Ý: Lưu userId vào SharedPreferences để dùng cho việc gửi tin nhắn sau này [cite: 32]
+                    SharedPreferences sharedPref = getSharedPreferences("ChatAppPrefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt("myUserId", loginData.getId()); // Giả sử LoginResponse có getId() trả về Integer
+                    editor.apply();
+
                     Toast.makeText(LoginActivity.this, "Chào " + loginData.getDisplayName(), Toast.LENGTH_SHORT).show();
 
                     // Chuyển sang màn hình danh sách chat
@@ -79,5 +89,4 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 }

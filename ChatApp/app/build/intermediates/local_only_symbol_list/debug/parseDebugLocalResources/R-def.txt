@@ -11,6 +11,8 @@ drawable bg_circle_icon_location
 drawable bg_circle_icon_video
 drawable bg_circle_social
 drawable bg_input_field
+drawable bg_message_received
+drawable bg_message_sent
 drawable bg_received_bubble
 drawable bg_search_bar
 drawable bg_unread_badge
@@ -53,6 +55,7 @@ id edtUsername
 id fabAdd
 id imgAvatar
 id imgProfile
+id img_avatar_received
 id layoutActions
 id layoutDivider
 id layoutHeader
@@ -71,6 +74,8 @@ id tvLastMessage
 id tvName
 id tvSubtitle
 id tvTime
+id txt_message_content
+id txt_message_time
 id unreadBadge
 layout activity_chat_detail
 layout activity_chat_list
@@ -78,6 +83,8 @@ layout activity_login
 layout activity_main
 layout item_chat
 layout item_chat_image_received
+layout item_chat_received
+layout item_chat_sent
 layout layout_attachment_sheet
 menu bottom_nav_menu
 mipmap ic_launcher

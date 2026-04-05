@@ -1,9 +1,7 @@
-import com.example.ChatServer.entity.ChatGroup;
-import com.example.ChatServer.entity.User;
+package com.example.ChatServer.entity;
+
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "messages")
@@ -11,24 +9,13 @@ import java.time.LocalDateTime;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "senderId")
-    private User sender;
+    private String senderId;
+    private String receiverId;
 
-    @ManyToOne
-    @JoinColumn(name = "receiverId")
-    private User receiver; // Null nếu là chat nhóm
-
-    @ManyToOne
-    @JoinColumn(name = "groupId")
-    private ChatGroup group; // Null nếu là chat 1-1
-
+    @Column(columnDefinition = "TEXT")
     private String content;
-    private String messageType; // TEXT, IMAGE, VIDEO, etc.
-    private String status;      // SENT, DELIVERED, READ
 
-    @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private long timestamp;
 }

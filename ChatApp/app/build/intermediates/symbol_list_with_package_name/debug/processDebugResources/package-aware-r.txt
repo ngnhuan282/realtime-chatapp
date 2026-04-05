@@ -3550,6 +3550,8 @@ drawable bg_circle_icon_location
 drawable bg_circle_icon_video
 drawable bg_circle_social
 drawable bg_input_field
+drawable bg_message_received
+drawable bg_message_sent
 drawable bg_received_bubble
 drawable bg_search_bar
 drawable bg_unread_badge
@@ -3933,6 +3935,7 @@ id ignoreRequest
 id image
 id imgAvatar
 id imgProfile
+id img_avatar_received
 id immediateStop
 id included
 id indeterminate
@@ -4217,6 +4220,8 @@ id tvLastMessage
 id tvName
 id tvSubtitle
 id tvTime
+id txt_message_content
+id txt_message_time
 id unchecked
 id uniform
 id unlabeled
@@ -4385,6 +4390,8 @@ layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout item_chat
 layout item_chat_image_received
+layout item_chat_received
+layout item_chat_sent
 layout layout_attachment_sheet
 layout m3_alert_dialog
 layout m3_alert_dialog_actions

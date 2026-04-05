@@ -3549,6 +3549,8 @@ int drawable bg_circle_icon_location 0x7f07007f
 int drawable bg_circle_icon_video 0x7f070080
 int drawable bg_circle_social 0x7f070081
 int drawable bg_input_field 0x7f070082
+int drawable bg_message_received 0x7f070109
+int drawable bg_message_sent 0x7f07010a
 int drawable bg_received_bubble 0x7f070083
 int drawable bg_search_bar 0x7f070084
 int drawable bg_unread_badge 0x7f070085
@@ -3932,6 +3934,7 @@ int id ignoreRequest 0x7f0800f5
 int id image 0x7f0800f6
 int id imgAvatar 0x7f0800f7
 int id imgProfile 0x7f0800f8
+int id img_avatar_received 0x7f080230
 int id immediateStop 0x7f0800f9
 int id included 0x7f0800fa
 int id indeterminate 0x7f0800fb
@@ -4216,6 +4219,8 @@ int id tvLastMessage 0x7f080211
 int id tvName 0x7f080212
 int id tvSubtitle 0x7f080213
 int id tvTime 0x7f080214
+int id txt_message_content 0x7f080231
+int id txt_message_time 0x7f080232
 int id unchecked 0x7f080215
 int id uniform 0x7f080216
 int id unlabeled 0x7f080217
@@ -4384,6 +4389,8 @@ int layout ime_base_split_test_activity 0x7f0b0030
 int layout ime_secondary_split_test_activity 0x7f0b0031
 int layout item_chat 0x7f0b0032
 int layout item_chat_image_received 0x7f0b0033
+int layout item_chat_received 0x7f0b0074
+int layout item_chat_sent 0x7f0b0075
 int layout layout_attachment_sheet 0x7f0b0034
 int layout m3_alert_dialog 0x7f0b0035
 int layout m3_alert_dialog_actions 0x7f0b0036

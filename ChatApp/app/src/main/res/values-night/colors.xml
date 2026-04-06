@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1B5E4A</color>
+    <color name="colorPrimaryVariant">#2E8B70</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="surfaceVariant">#2A2A2A</color>
+
+    <color name="textPrimary">#F0F4F2</color>
+    <color name="textSecondary">#A0A8A4</color>
+    <color name="textTertiary">#8A9490</color>
+    <color name="textOnPrimary">#FFFFFF</color>
+
+    <color name="messageSent">#1B5E4A</color>
+    <color name="messageReceived">#2C2C2E</color>
+    <color name="messageSentText">#FFFFFF</color>
+    <color name="messageReceivedText">#F0F4F2</color>
+
+    <color name="statusBarColor">#121212</color>
+    <color name="textHint">#8A9490</color>
+    <color name="divider">#333333</color>
+    <color name="inputBorder">#555555</color>
+</resources>

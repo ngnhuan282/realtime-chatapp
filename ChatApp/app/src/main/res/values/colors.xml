@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#1B5E4A</color>
+    <color name="colorPrimaryVariant">#2E8B70</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#F9F9F9</color>
+    <color name="surfaceVariant">#F0F4F2</color>
+
+    <color name="textPrimary">#1B5E4A</color>
+    <color name="textSecondary">#6B7C85</color>
+    <color name="textTertiary">#9AA5A9</color>
+    <color name="textOnPrimary">#FFFFFF</color>
+
+    <color name="messageSent">#1B5E4A</color>
+    <color name="messageReceived">#F0F4F2</color>
+    <color name="messageSentText">#FFFFFF</color>
+    <color name="messageReceivedText">#1F2A2A</color>
+
+    <color name="statusBarColor">#FFFFFF</color>
+    <color name="textHint">#AAB4B0</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="inputBorder">#E5E5E5</color>
 </resources>

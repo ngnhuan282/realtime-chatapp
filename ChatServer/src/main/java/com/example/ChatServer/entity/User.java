@@ -22,5 +22,5 @@ public class User {
     private String displayName;
 
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private long createdAt;
 }

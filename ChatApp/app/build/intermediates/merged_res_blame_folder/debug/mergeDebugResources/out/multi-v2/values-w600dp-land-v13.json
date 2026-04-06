@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.chatapp-mergeDebugResources-34:/values-w600dp-land-v13/values-w600dp-land-v13.xml",
+            "outputFile": "com.example.chatapp-mergeDebugResources-36:/values-w600dp-land-v13/values-w600dp-land-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\VAN NHUAN\\.gradle\\caches\\8.13\\transforms\\0507d2f90fe1cea4beecf23da95f6c11\\transformed\\material-1.13.0\\res\\values-w600dp-land-v13\\values-w600dp-land-v13.xml",
+                    "source": "C:\\Users\\VAN NHUAN\\.gradle\\caches\\8.13\\transforms\\bbbdf373d69d0925f16f46d6b65adad0\\transformed\\material-1.13.0\\res\\values-w600dp-land-v13\\values-w600dp-land-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

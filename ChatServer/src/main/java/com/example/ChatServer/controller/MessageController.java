@@ -1,12 +1,14 @@
 package com.example.ChatServer.controller;
 
+import com.example.ChatServer.dto.ConversationDTO;
 import com.example.ChatServer.entity.Message;
 import com.example.ChatServer.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-        import java.util.List;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/messages")
@@ -22,5 +24,16 @@ public class MessageController {
             @RequestParam Integer u2) {
         List<Message> history = messageService.getChatHistory(u1, u2);
         return ResponseEntity.ok(history);
+    }
+
+    @GetMapping("/conversations/{userId}")
+    public List<ConversationDTO> getConversations(@PathVariable Integer userId) {
+        return messageService.getConversationList(userId);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        // Logic lưu file vào thư mục và trả về tên file
+        return messageService.storeFile(file);
     }
 }

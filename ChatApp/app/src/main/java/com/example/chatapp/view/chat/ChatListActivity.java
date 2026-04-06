@@ -2,16 +2,16 @@ package com.example.chatapp.view.chat;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.List;
+import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatapp.R;
-import com.example.chatapp.model.User;
+import com.example.chatapp.model.Conversation;
 import com.example.chatapp.network.rest.ApiClient;
-import com.example.chatapp.network.rest.UserApi;
+import com.example.chatapp.network.rest.MessageApi;
+import java.util.ArrayList;
+import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,7 +19,7 @@ import retrofit2.Response;
 public class ChatListActivity extends AppCompatActivity {
     private RecyclerView rvChats;
     private ChatListAdapter adapter;
-    private List<User> users = new ArrayList<>();
+    private List<Conversation> conversations = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,34 +29,40 @@ public class ChatListActivity extends AppCompatActivity {
         rvChats = findViewById(R.id.rvChats);
         rvChats.setLayoutManager(new LinearLayoutManager(this));
 
-        // Khởi tạo adapter trước để tránh NullPointerException
-        adapter = new ChatListAdapter(users, user -> {
+        adapter = new ChatListAdapter(conversations, chat -> {
             Intent intent = new Intent(ChatListActivity.this, ChatDetailActivity.class);
-            // TRUYỀN DỮ LIỆU THẬT SANG CHI TIẾT
-            intent.putExtra("friendId", user.getId());
-            intent.putExtra("friendName", user.getDisplayName());
+            intent.putExtra("friendId", chat.getFriendId());
+            intent.putExtra("friendName", chat.getDisplayName());
             startActivity(intent);
         });
 
         rvChats.setAdapter(adapter);
-        fetchUsers();
     }
 
-    private void fetchUsers() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchConversations(); // Cập nhật lại danh sách khi quay lại màn hình
+    }
+
+    private void fetchConversations() {
         Integer myId = getSharedPreferences("ChatAppPrefs", MODE_PRIVATE).getInt("myUserId", -1);
-        UserApi userApi = ApiClient.getClient().create(UserApi.class);
-        userApi.getAllUsers(myId).enqueue(new Callback<List<User>>() {
+        if (myId == -1) return;
+
+        MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
+        messageApi.getConversations(myId).enqueue(new Callback<List<Conversation>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onResponse(Call<List<Conversation>> call, Response<List<Conversation>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    users.clear();
-                    users.addAll(response.body());
+                    conversations.clear();
+                    conversations.addAll(response.body());
                     adapter.notifyDataSetChanged();
                 }
             }
+
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                Toast.makeText(ChatListActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<Conversation>> call, Throwable t) {
+                Log.e("ChatList", "Lỗi tải hội thoại: " + t.getMessage());
             }
         });
     }

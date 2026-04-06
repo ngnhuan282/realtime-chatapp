@@ -25,5 +25,7 @@ public class Message {
 
     private String messageType = "TEXT";
     private String status = "SENT";
+
+    @Column(name = "createdAt")
     private long timestamp;
 }

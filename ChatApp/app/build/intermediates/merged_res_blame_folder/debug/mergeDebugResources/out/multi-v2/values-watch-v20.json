@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.chatapp-mergeDebugResources-34:/values-watch-v20/values-watch-v20.xml",
+            "outputFile": "com.example.chatapp-mergeDebugResources-36:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\VAN NHUAN\\.gradle\\caches\\8.13\\transforms\\6978c61660b365e3a1bd700b2ae912e9\\transformed\\appcompat-1.7.1\\res\\values-watch-v20\\values-watch-v20.xml",
+                    "source": "C:\\Users\\VAN NHUAN\\.gradle\\caches\\8.13\\transforms\\0c49a8b9d173a03ba9cacff549b1c920\\transformed\\appcompat-1.7.1\\res\\values-watch-v20\\values-watch-v20.xml",
                     "from": {
                         "startLines": "2,5,8",
                         "startColumns": "4,4,4",

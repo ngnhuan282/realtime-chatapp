@@ -15,6 +15,7 @@ drawable bg_message_received
 drawable bg_message_sent
 drawable bg_received_bubble
 drawable bg_search_bar
+drawable bg_sent_bubble
 drawable bg_unread_badge
 drawable ic_add
 drawable ic_attach
@@ -52,10 +53,12 @@ id edtMessage
 id edtPassword
 id edtSearch
 id edtUsername
+id emojiPicker
 id fabAdd
 id imgAvatar
 id imgProfile
 id img_avatar_received
+id img_message_content
 id layoutActions
 id layoutDivider
 id layoutHeader
@@ -77,6 +80,7 @@ id tvSubtitle
 id tvTime
 id txt_message_content
 id txt_message_time
+id txt_time
 id unreadBadge
 layout activity_chat_detail
 layout activity_chat_list
@@ -84,6 +88,7 @@ layout activity_login
 layout activity_main
 layout item_chat
 layout item_chat_image_received
+layout item_chat_image_sent
 layout item_chat_received
 layout item_chat_sent
 layout layout_attachment_sheet

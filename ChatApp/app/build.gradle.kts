@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.emoji2.emojipicker)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -47,4 +48,10 @@ dependencies {
 
     // Logging để debug API
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
+
+    // Thư viện gửi FILE
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+
+    // Thư viện gửi emoji
+//    implementation("androidx.emoji2:emojipicker:1.4.0")
 }

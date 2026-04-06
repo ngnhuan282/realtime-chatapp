@@ -4,24 +4,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import java.util.ArrayList;
-import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.chatapp.R;
-import com.example.chatapp.model.User;
+import com.example.chatapp.model.Conversation;
+import com.google.android.material.imageview.ShapeableImageView;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
-    private List<User> userList;
+    private List<Conversation> conversationList;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(User user);
+        void onItemClick(Conversation conversation);
     }
 
-    public ChatListAdapter(List<User> userList, OnItemClickListener listener) {
-        this.userList = userList;
+    public ChatListAdapter(List<Conversation> list, OnItemClickListener listener) {
+        this.conversationList = list;
         this.listener = listener;
     }
 
@@ -34,21 +36,43 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User user = userList.get(position);
-        holder.tvName.setText(user.getDisplayName());
-        holder.tvLastMessage.setText("Nhấn để bắt đầu trò chuyện..."); // Fake tin nhắn cuối
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(user));
+        Conversation chat = conversationList.get(position);
+
+        holder.tvName.setText(chat.getDisplayName());
+        holder.tvLastMessage.setText(chat.getLastMessage());
+
+        // Định dạng thời gian HH:mm (ví dụ 10:30 AM) [cite: 42]
+        // Dùng hh:mm a để hiện AM/PM [cite: 42]
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        // Đảm bảo chat.getLastTime() trả về giá trị Long tính bằng miliseconds
+        holder.tvTime.setText(sdf.format(new Date(chat.getLastTime())));
+
+        // Xử lý hiển thị số tin nhắn chưa đọc (Badge)
+        if (chat.getUnreadCount() > 0) {
+            holder.unreadBadge.setVisibility(View.VISIBLE);
+            holder.unreadBadge.setText(String.valueOf(chat.getUnreadCount()));
+        } else {
+            holder.unreadBadge.setVisibility(View.GONE);
+        }
+
+        // Sự kiện click chuyển sang màn hình chat chi tiết [cite: 36]
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(chat));
     }
 
     @Override
-    public int getItemCount() { return userList.size(); }
+    public int getItemCount() { return conversationList.size(); }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvLastMessage;
+        TextView tvName, tvLastMessage, tvTime, unreadBadge;
+        ShapeableImageView imgAvatar;
+
         ViewHolder(View v) {
             super(v);
+            imgAvatar = v.findViewById(R.id.imgAvatar); // Khớp ID imgAvatar
             tvName = v.findViewById(R.id.tvName);
             tvLastMessage = v.findViewById(R.id.tvLastMessage);
+            tvTime = v.findViewById(R.id.tvTime);
+            unreadBadge = v.findViewById(R.id.unreadBadge); // Khớp ID unreadBadge
         }
     }
 }

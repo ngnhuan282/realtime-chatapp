@@ -25,4 +25,8 @@ public interface MessageApi {
     @Multipart
     @POST("api/messages/upload")
     Call<ResponseBody> uploadFile(@Part MultipartBody.Part file);
+
+    @Multipart
+    @POST("api/messages/upload/video")
+    Call<ResponseBody> uploadVideo(@Part MultipartBody.Part file);
 }

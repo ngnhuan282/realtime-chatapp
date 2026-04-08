@@ -52,6 +52,9 @@ dependencies {
     // Thư viện gửi FILE
     implementation("com.github.bumptech.glide:glide:4.15.1")
 
+    // Location hiện tại (fresh) thay vì last known
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
     // Thư viện gửi emoji
 //    implementation("androidx.emoji2:emojipicker:1.4.0")
 }

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/background"
     android:padding="24dp">
 
     <androidx.cardview.widget.CardView
@@ -13,7 +13,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="60dp"
-        app:cardBackgroundColor="#1B5E4A"
+        app:cardBackgroundColor="@color/colorPrimary"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:padding="20dp"
             android:src="@drawable/ic_chat_bubble"
-            app:tint="#FFFFFF" />
+            app:tint="@color/colorOnPrimary" />
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Emerald Chat"
-        android:textColor="#1B5E4A"
+        android:textColor="@color/textPrimary"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Welcome back, let's connect."
-        android:textColor="#6B7C85"
+        android:textColor="@color/textSecondary"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,8 @@
         android:hint="Username"
         android:inputType="text"
         android:paddingStart="20dp"
-        android:textColorHint="#AAB4B0"
+        android:textColorHint="@color/textHint"
+        android:drawableTint="@color/textSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
@@ -82,7 +83,8 @@
         android:inputType="textPassword"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:textColorHint="#AAB4B0"
+        android:textColorHint="@color/textHint"
+        android:drawableTint="@color/textSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edtUsername" />
@@ -93,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Forgot Password?"
-        android:textColor="#1B5E4A"
+        android:textColor="@color/textPrimary"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@id/edtPassword"
         app:layout_constraintTop_toBottomOf="@id/edtPassword" />
@@ -106,7 +108,7 @@
         android:background="@drawable/bg_button_primary"
         android:text="Sign In  →"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/colorOnPrimary"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -128,14 +130,14 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
-            android:background="#E0E0E0" />
+            android:background="@color/divider" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:text="OR CONTINUE WITH"
-            android:textColor="#9AA5A9"
+            android:textColor="@color/textTertiary"
             android:textSize="12sp"
             android:textStyle="bold" />
 
@@ -143,7 +145,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
-            android:background="#E0E0E0" />
+            android:background="@color/divider" />
     </LinearLayout>
 
     <LinearLayout
@@ -186,13 +188,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Don't have an account? "
-            android:textColor="#6B7C85" />
+            android:textColor="@color/textSecondary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign up"
-            android:textColor="#1B5E4A"
+            android:textColor="@color/textPrimary"
             android:textStyle="bold" />
     </LinearLayout>
 

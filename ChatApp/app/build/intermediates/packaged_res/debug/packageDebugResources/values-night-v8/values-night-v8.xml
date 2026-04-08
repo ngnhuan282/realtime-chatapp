@@ -1,7 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Base.Theme.ChatApp" parent="Theme.Material3.DayNight.NoActionBar">
-        
-        
+    <color name="background">#121212</color>
+    <color name="colorLogout">#D32F2F</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorPrimary">#1B5E4A</color>
+    <color name="colorPrimaryVariant">#2E8B70</color>
+    <color name="dialogCancel">#757575</color>
+    <color name="divider">#333333</color>
+    <color name="input">#1E1E1E</color>
+    <color name="inputBorder">#555555</color>
+    <color name="messageReceived">#2C2C2E</color>
+    <color name="messageReceivedText">#F0F4F2</color>
+    <color name="messageSent">#1B5E4A</color>
+    <color name="messageSentText">#FFFFFF</color>
+    <color name="statusBarColor">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="surfaceVariant">#2A2A2A</color>
+    <color name="textHint">#8A9490</color>
+    <color name="textOnPrimary">#FFFFFF</color>
+    <color name="textPrimary">#F0F4F2</color>
+    <color name="textSecondary">#B5BCB8</color>
+    <color name="textTertiary">#8A9490</color>
+    <style name="AttachmentTextStyle">
+        <item name="android:textColor">@color/textPrimary</item>
     </style>
+    <style name="Base.Theme.ChatApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialogTheme</item>
+    </style>
+    <style name="CircleImage">
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.Material3.DayNight.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+    <style name="CustomBottomSheetStyle" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="RoundedImage">
+        <item name="cornerSize">16dp</item>
+    </style>
+    <style name="Theme.ChatApp" parent="Base.Theme.ChatApp"/>
 </resources>

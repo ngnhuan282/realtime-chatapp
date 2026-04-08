@@ -18,6 +18,7 @@ public class Message {
     private long timestamp;
 
     private transient boolean isMe;        // transient = không serialize
+    private transient boolean locationLocked;
 
     // Constructor rỗng (bắt buộc cho Gson)
     public Message() {}
@@ -60,4 +61,7 @@ public class Message {
 
     public boolean isMe() { return isMe; }
     public void setMe(boolean me) { this.isMe = me; }
+
+    public boolean isLocationLocked() { return locationLocked; }
+    public void setLocationLocked(boolean locationLocked) { this.locationLocked = locationLocked; }
 }

@@ -33,7 +33,11 @@ public class MessageController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        // Logic lưu file vào thư mục và trả về tên file
         return messageService.storeFile(file);
+    }
+
+    @PostMapping("/upload/video")
+    public ResponseEntity<String> uploadVideo(@RequestParam("file") MultipartFile file) {
+        return messageService.storeVideo(file);
     }
 }

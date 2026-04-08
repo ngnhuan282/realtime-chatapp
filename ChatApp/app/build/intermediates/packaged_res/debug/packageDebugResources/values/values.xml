@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="background">#FFFFFF</color>
+    <color name="colorLogout">#D32F2F</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorPrimary">#1B5E4A</color>
+    <color name="colorPrimaryVariant">#2E8B70</color>
+    <color name="dialogCancel">#757575</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="input">#E6F2ED</color>
+    <color name="inputBorder">#E5E5E5</color>
+    <color name="messageReceived">#F2F2F2</color>
+    <color name="messageReceivedText">#000000</color>
+    <color name="messageSent">#1B5E4A</color>
+    <color name="messageSentText">#FFFFFF</color>
+    <color name="statusBarColor">#FFFFFF</color>
+    <color name="surface">#F9F9F9</color>
+    <color name="surfaceVariant">#F0F4F2</color>
+    <color name="textHint">#AAB4B0</color>
+    <color name="textOnPrimary">#FFFFFF</color>
+    <color name="textPrimary">#1B5E4A</color>
+    <color name="textSecondary">#6B7C85</color>
+    <color name="textTertiary">#8E9E98</color>
     <string name="app_name">ChatApp</string>
+    <style name="AlertDialogTheme" parent="Theme.Material3.DayNight.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
     <style name="AttachmentItemStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -36,6 +59,12 @@
     </style>
     <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="NegativeButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/dialogCancel</item>
+    </style>
+    <style name="PositiveButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorLogout</item>
     </style>
     <style name="RoundedImage">
         <item name="cornerSize">16dp</item>

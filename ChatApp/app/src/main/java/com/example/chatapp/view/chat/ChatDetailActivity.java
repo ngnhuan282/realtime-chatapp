@@ -1,6 +1,8 @@
 package com.example.chatapp.view.chat;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +16,9 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.emoji2.emojipicker.EmojiPickerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +29,9 @@ import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.MessageApi;
 import com.example.chatapp.network.socket.SocketManager;
 import com.example.chatapp.view.darkmode.BaseActivity;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -32,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -63,7 +71,28 @@ public class ChatDetailActivity extends BaseActivity {
             uri -> {
                 if (uri != null) {
                     Log.d("Picker", "Đã chọn URI: " + uri);
-                    uploadFile(uri);
+                    uploadFile(uri, "IMAGE");
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<String> videoPickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    Log.d("Picker", "Đã chọn URI video: " + uri);
+                    uploadFile(uri, "VIDEO");
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<String> locationPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            isGranted -> {
+                if (isGranted) {
+                    shareCurrentLocationInternal();
+                } else {
+                    Toast.makeText(this, "Bạn cần cấp quyền vị trí để gửi location", Toast.LENGTH_SHORT).show();
                 }
             }
     );
@@ -111,8 +140,8 @@ public class ChatDetailActivity extends BaseActivity {
             }
         });
 
-        // Xử lý chọn ảnh đính kèm
-        btnAttach.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
+        // Xử lý chọn tệp đính kèm
+        btnAttach.setOnClickListener(v -> showAttachmentPicker());
 
         // Xử lý nhấn nút Emoji
         btnEmoji.setOnClickListener(v -> {
@@ -168,24 +197,83 @@ public class ChatDetailActivity extends BaseActivity {
         }
     }
 
-    private void uploadFile(Uri uri) {
-        File file = uriToFile(uri);
+    private void showAttachmentPicker() {
+        new AlertDialog.Builder(this)
+                .setTitle("Chọn loại tệp")
+                .setItems(new CharSequence[]{"Hình ảnh", "Video", "Vị trí"}, (dialog, which) -> {
+                    if (which == 0) {
+                        imagePickerLauncher.launch("image/*");
+                    } else if (which == 1) {
+                        videoPickerLauncher.launch("video/*");
+                    } else {
+                        shareCurrentLocation();
+                    }
+                })
+                .show();
+    }
+
+    private void shareCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            shareCurrentLocationInternal();
+            return;
+        }
+
+        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    private void shareCurrentLocationInternal() {
+        try {
+            Toast.makeText(this, "Đang lấy vị trí hiện tại...", Toast.LENGTH_SHORT).show();
+            CancellationTokenSource cts = new CancellationTokenSource();
+
+            LocationServices.getFusedLocationProviderClient(this)
+                    .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.getToken())
+                    .addOnSuccessListener(location -> {
+                        if (location == null) {
+                            Toast.makeText(this, "Không lấy được vị trí hiện tại, hãy bật GPS rồi thử lại", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        String mapUrl = String.format(
+                                Locale.US,
+                                "https://maps.google.com/?q=%f,%f",
+                                location.getLatitude(),
+                                location.getLongitude()
+                        );
+                        sendSocketMessage(mapUrl, "LOCATION");
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Lỗi lấy vị trí: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+        } catch (SecurityException e) {
+            Toast.makeText(this, "Thiếu quyền vị trí", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void uploadFile(Uri uri, String messageType) {
+        File file = uriToFile(uri, messageType);
         if (file == null) {
             Toast.makeText(this, "Lỗi truy cập tệp tin!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+        String mediaType = "VIDEO".equals(messageType) ? "video/*" : "image/*";
+        RequestBody requestFile = RequestBody.create(MediaType.parse(mediaType), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
-        messageApi.uploadFile(body).enqueue(new Callback<ResponseBody>() {
+        Call<ResponseBody> request = "VIDEO".equals(messageType)
+                ? messageApi.uploadVideo(body)
+                : messageApi.uploadFile(body);
+
+        request.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
                         String fileName = response.body().string();
-                        sendSocketMessage(fileName, "IMAGE");
+                        sendSocketMessage(fileName, messageType);
                     } catch (Exception e) { e.printStackTrace(); }
                 }
             }
@@ -196,10 +284,11 @@ public class ChatDetailActivity extends BaseActivity {
         });
     }
 
-    private File uriToFile(Uri uri) {
+    private File uriToFile(Uri uri, String messageType) {
         try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
             if (inputStream == null) return null;
-            File tempFile = new File(getCacheDir(), "upload_" + System.currentTimeMillis() + ".jpg");
+            String extension = getFileExtension(uri, messageType);
+            File tempFile = new File(getCacheDir(), "upload_" + System.currentTimeMillis() + extension);
             try (FileOutputStream out = new FileOutputStream(tempFile)) {
                 byte[] buffer = new byte[8192];
                 int length;
@@ -213,6 +302,17 @@ public class ChatDetailActivity extends BaseActivity {
             Log.e("uriToFile", "Error: " + e.getMessage());
             return null;
         }
+    }
+
+    private String getFileExtension(Uri uri, String messageType) {
+        String mimeType = getContentResolver().getType(uri);
+        if (mimeType != null && mimeType.contains("/")) {
+            String ext = mimeType.substring(mimeType.indexOf('/') + 1);
+            if (!ext.isBlank()) {
+                return "." + ext;
+            }
+        }
+        return "VIDEO".equals(messageType) ? ".mp4" : ".jpg";
     }
 
     private void sendSocketMessage(String content, String type) {

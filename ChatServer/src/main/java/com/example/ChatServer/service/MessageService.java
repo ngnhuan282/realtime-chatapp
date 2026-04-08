@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
@@ -91,21 +92,66 @@ public class MessageService {
     }
 
     public ResponseEntity<String> storeFile(MultipartFile file) {
+        return storeFileInternal(file, null);
+    }
+
+    public ResponseEntity<String> storeVideo(MultipartFile file) {
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("video/")) {
+            return ResponseEntity.badRequest().body("Chi nhan file video");
+        }
+        return storeFileInternal(file, "video");
+    }
+
+    private ResponseEntity<String> storeFileInternal(MultipartFile file, String subFolder) {
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File rong");
+        }
+
         try {
-            // 1. Tạo thư mục 'uploads' nếu chưa có
-            Path uploadPath = Paths.get("uploads");
+            // 1. Tạo thư mục uploads bên trong ChatServer
+            Path uploadPath = resolveChatServerUploadsPath();
+            if (subFolder != null && !subFolder.isBlank()) {
+                uploadPath = uploadPath.resolve(subFolder);
+            }
             if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
 
             // 2. Tạo tên file duy nhất tránh trùng lặp
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String originalFileName = file.getOriginalFilename() == null ? "file" : Paths.get(file.getOriginalFilename()).getFileName().toString();
+            String fileName = UUID.randomUUID() + "_" + originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
             Path filePath = uploadPath.resolve(fileName);
 
             // 3. Lưu file vật lý
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
+            if (subFolder != null && !subFolder.isBlank()) {
+                return ResponseEntity.ok(subFolder + "/" + fileName);
+            }
             return ResponseEntity.ok(fileName);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Lỗi lưu file");
         }
+    }
+
+    private Path resolveChatServerUploadsPath() {
+        Path currentDir = Paths.get(System.getProperty("user.dir")).toAbsolutePath().normalize();
+
+        Path cursor = currentDir;
+        while (cursor != null) {
+            Path name = cursor.getFileName();
+            if (name != null && "ChatServer".equalsIgnoreCase(name.toString())) {
+                return cursor.resolve("uploads");
+            }
+
+            Path chatServerDir = cursor.resolve("ChatServer");
+            if (Files.isDirectory(chatServerDir)) {
+                return chatServerDir.resolve("uploads");
+            }
+
+            cursor = cursor.getParent();
+        }
+
+        // Fallback only when ChatServer folder cannot be detected
+        return currentDir.resolve("uploads");
     }
 }

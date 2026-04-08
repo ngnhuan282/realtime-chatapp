@@ -6,10 +6,11 @@
 
     <color name="background">#121212</color>
     <color name="surface">#1E1E1E</color>
+    <color name="input">#1E1E1E</color>
     <color name="surfaceVariant">#2A2A2A</color>
 
     <color name="textPrimary">#F0F4F2</color>
-    <color name="textSecondary">#A0A8A4</color>
+    <color name="textSecondary">#B5BCB8</color>
     <color name="textTertiary">#8A9490</color>
     <color name="textOnPrimary">#FFFFFF</color>
 

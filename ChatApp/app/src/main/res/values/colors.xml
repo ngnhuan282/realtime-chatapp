@@ -6,6 +6,7 @@
 
     <color name="background">#FFFFFF</color>
     <color name="surface">#F9F9F9</color>
+    <color name="input">#E6F2ED</color>
     <color name="surfaceVariant">#F0F4F2</color>
 
     <color name="textPrimary">#1B5E4A</color>

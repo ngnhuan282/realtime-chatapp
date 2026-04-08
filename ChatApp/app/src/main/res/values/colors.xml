@@ -23,4 +23,7 @@
     <color name="textHint">#AAB4B0</color>
     <color name="divider">#E0E0E0</color>
     <color name="inputBorder">#E5E5E5</color>
+
+    <color name="colorLogout">#D32F2F</color>
+    <color name="dialogCancel">#757575</color>
 </resources>

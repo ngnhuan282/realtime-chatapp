@@ -10,6 +10,7 @@ import com.example.chatapp.R;
 import com.example.chatapp.model.Conversation;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.MessageApi;
+import com.example.chatapp.view.darkmode.BaseActivity;
 import com.example.chatapp.view.setting.SettingsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -19,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatListActivity extends AppCompatActivity {
+public class ChatListActivity extends BaseActivity {
     private RecyclerView rvChats;
     private ChatListAdapter adapter;
     private List<Conversation> conversations = new ArrayList<>();

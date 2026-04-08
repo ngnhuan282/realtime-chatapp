@@ -24,6 +24,7 @@ import com.example.chatapp.model.Message;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.MessageApi;
 import com.example.chatapp.network.socket.SocketManager;
+import com.example.chatapp.view.darkmode.BaseActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -40,7 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatDetailActivity extends AppCompatActivity {
+public class ChatDetailActivity extends BaseActivity {
 
     private ChatAdapter adapter;
     private List<Message> messages = new ArrayList<>();

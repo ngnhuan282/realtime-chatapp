@@ -21,18 +21,18 @@ import com.example.chatapp.network.rest.AuthApi;
 import com.example.chatapp.network.rest.LoginRequest;
 import com.example.chatapp.network.rest.LoginResponse;
 import com.example.chatapp.view.chat.ChatListActivity;
+import com.example.chatapp.view.darkmode.BaseActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     private EditText edtUsername, edtPassword;
     private Button btnSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);

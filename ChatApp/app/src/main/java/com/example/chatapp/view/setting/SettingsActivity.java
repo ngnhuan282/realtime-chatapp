@@ -10,8 +10,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.chatapp.R;
 import com.example.chatapp.view.chat.ChatListActivity;
+import com.example.chatapp.view.darkmode.BaseActivity;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
     private static final String PREF_NAME = "ChatAppPrefs";
     private static final String KEY_DARK_MODE = "isDarkMode";
 

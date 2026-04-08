@@ -10,6 +10,9 @@ import com.example.chatapp.R;
 import com.example.chatapp.model.Conversation;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.MessageApi;
+import com.example.chatapp.view.setting.SettingsActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -37,6 +40,31 @@ public class ChatListActivity extends AppCompatActivity {
         });
 
         rvChats.setAdapter(adapter);
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_chats) {
+                return true;
+            }
+            else if (id == R.id.nav_calls) {
+                return true;
+            }
+            else if (id == R.id.nav_people) {
+                return true;
+            }
+            else if (id == R.id.nav_settings) {
+                Intent intent = new Intent(ChatListActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            return false;
+        });
+
+        // Mặc định chọn Chats khi vào app
+        bottomNav.setSelectedItemId(R.id.nav_chats);
     }
 
     @Override

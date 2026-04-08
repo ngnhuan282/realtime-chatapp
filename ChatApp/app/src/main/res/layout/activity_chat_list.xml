@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main"
-    android:background="#FFFFFF">
+    android:background="@color/background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:background="@color/background"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -28,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Chats"
-            android:textColor="#1B5E4A"
+            android:textColor="@color/textPrimary"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +41,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_more_vert"
-            app:tint="#1B5E4A"
+            app:tint="@color/textPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +58,7 @@
         android:drawablePadding="12dp"
         android:hint="Search conversations..."
         android:paddingStart="16dp"
-        android:textColorHint="#8E9E98"
+        android:textColorHint="@color/textTertiary"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:background="@color/background"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintTop_toBottomOf="@id/edtSearch" />
 
@@ -77,8 +79,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
         android:src="@drawable/ic_add"
-        app:backgroundTint="#1B5E4A"
-        app:tint="#FFFFFF"
+        app:backgroundTint="@color/colorPrimary"
+        app:tint="@color/colorOnPrimary"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -86,9 +88,9 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="#FFFFFF"
-        app:itemIconTint="#1B5E4A"
-        app:itemTextColor="#1B5E4A"
+        android:background="@color/background"
+        app:itemIconTint="@color/textPrimary"
+        app:itemTextColor="@color/textPrimary"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent" />

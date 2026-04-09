@@ -72,6 +72,8 @@ public class LoginActivity extends BaseActivity {
                     SharedPreferences sharedPref = getSharedPreferences("ChatAppPrefs", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putInt("myUserId", loginData.getId()); // Giả sử LoginResponse có getId() trả về Integer
+                    editor.putString("myDisplayName", loginData.getDisplayName());
+                    editor.putString("myAvatar", loginData.getAvatar());
                     editor.apply();
 
                     String displayName = loginData.getDisplayName();

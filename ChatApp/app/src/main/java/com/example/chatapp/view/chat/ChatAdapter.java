@@ -131,7 +131,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (!videoPath.startsWith("video/")) {
                         videoPath = "video/" + videoPath;
                     }
-                    String videoUrl = "http://10.0.2.2:8080/uploads/" + videoPath;
+                        String videoUrl = "http://10.0.2.2:8080/uploads/" + videoPath;
                     Glide.with(itemView.getContext())
                             .load(videoUrl)
                             .placeholder(R.drawable.ic_video)

@@ -9,5 +9,6 @@ public class LoginResponse {
     private Integer id;
     private String username;
     private String displayName;
+    private String avatar;
     private String message;
 }

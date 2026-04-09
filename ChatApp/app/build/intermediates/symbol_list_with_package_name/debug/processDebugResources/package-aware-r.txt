@@ -3953,6 +3953,7 @@ id btnConnect
 id btnEmoji
 id btnLogin
 id btnLogout
+id btnMore
 id btnSend
 id btn_stop_location
 id buttonPanel
@@ -4260,7 +4261,6 @@ id progress_horizontal
 id radio
 id ratio
 id rectangles
-id recyclerViewUsers
 id report_drawn
 id retreat
 id reverseSawtooth
@@ -4272,6 +4272,7 @@ id rounded
 id row_index_key
 id rvChats
 id rvMessages
+id rvUsers
 id save_non_transition_alpha
 id save_overlay_view
 id sawtooth
@@ -4395,6 +4396,7 @@ id tvLastMessage
 id tvName
 id tvSubtitle
 id tvTime
+id tvTitle
 id txtUsername
 id txt_message_content
 id txt_message_time
@@ -4551,6 +4553,7 @@ layout activity_chat_detail
 layout activity_chat_list
 layout activity_login
 layout activity_main
+layout activity_people
 layout activity_settings
 layout activity_video_player
 layout category_text_view

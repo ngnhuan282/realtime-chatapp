@@ -18,6 +18,8 @@ import com.example.chatapp.model.User;
 import com.example.chatapp.network.rest.ApiService; // Đã sửa đường dẫn theo đúng thư mục của bạn
 
 import java.util.List;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -53,8 +55,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.txtUsername.setText(user.getDisplayName());
 
         // 1. HIỂN THỊ AVATAR (Sử dụng Glide)
+        String avatarUrl = user.getAvatar();
+        if (avatarUrl == null || avatarUrl.trim().isEmpty()) {
+            avatarUrl = "https://ui-avatars.com/api/?name=" +
+                URLEncoder.encode(user.getDisplayName(), StandardCharsets.UTF_8) +
+                "&size=128";
+        }
         Glide.with(context)
-                .load(user.getAvatar())
+            .load(avatarUrl)
                 .placeholder(R.mipmap.ic_launcher_round)
                 .error(R.drawable.ic_launcher_background)
                 .circleCrop()
@@ -67,16 +75,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     private void sendFriendRequest(User targetUser, Button btn) {
-        // GỌI API GỬI LỜI MỜI (Sửa lỗi Callback ở đây)
+        // KẾT BẠN NGAY (Server xử lý tạo bạn bè trực tiếp)
         apiService.sendFriendRequest(currentUserId, targetUser.getId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    btn.setText("Đã gửi");
+                    btn.setText("Đã kết bạn");
                     btn.setEnabled(false);
-                    Toast.makeText(context, "Đã gửi lời mời tới " + targetUser.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Đã kết bạn với " + targetUser.getDisplayName(), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "Gửi thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Kết bạn thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 

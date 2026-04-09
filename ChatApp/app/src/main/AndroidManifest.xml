@@ -24,6 +24,9 @@
             android:name=".view.chat.ChatListActivity"
             android:exported="false" />
         <activity
+            android:name=".view.people.PeopleActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.login.LoginActivity"
             android:exported="true">
             <intent-filter>

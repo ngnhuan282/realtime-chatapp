@@ -70,6 +70,7 @@ id btnConnect
 id btnEmoji
 id btnLogin
 id btnLogout
+id btnMore
 id btnSend
 id btn_stop_location
 id cardLogo
@@ -94,9 +95,9 @@ id nav_people
 id nav_settings
 id playerRoot
 id progressBar
-id recyclerViewUsers
 id rvChats
 id rvMessages
+id rvUsers
 id switchDarkMode
 id toolbar
 id tvAppName
@@ -106,6 +107,7 @@ id tvLastMessage
 id tvName
 id tvSubtitle
 id tvTime
+id tvTitle
 id txtUsername
 id txt_message_content
 id txt_message_time
@@ -116,6 +118,7 @@ layout activity_chat_detail
 layout activity_chat_list
 layout activity_login
 layout activity_main
+layout activity_people
 layout activity_settings
 layout activity_video_player
 layout item_chat

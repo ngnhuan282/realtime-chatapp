@@ -14,6 +14,9 @@ public class LoginResponse {
 
     private String message;
 
+    @SerializedName(value = "avatar")
+    private String avatar;
+
     public LoginResponse() {}
 
     // Getter an toàn - ưu tiên displayName, sau đó display_name, cuối cùng là username
@@ -39,9 +42,14 @@ public class LoginResponse {
         return message;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
     // Setters (nếu cần)
     public void setId(Integer id) { this.id = id; }
     public void setUsername(String username) { this.username = username; }
     public void setDisplayName(String displayName) { this.displayName = displayName; }
     public void setMessage(String message) { this.message = message; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 }

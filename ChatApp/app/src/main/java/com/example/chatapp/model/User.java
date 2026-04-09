@@ -12,7 +12,7 @@ public class User {
     private String avatar;
 
 
-    public User(Integer id, String username, String displayName) {
+    public User(Integer id, String username, String displayName, String avatar) {
         this.id = id;
         this.username = username;
         this.displayName = displayName;

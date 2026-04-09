@@ -3,6 +3,9 @@ package com.example.chatapp.view.chat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +14,7 @@ import com.example.chatapp.model.Conversation;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.MessageApi;
 import com.example.chatapp.view.darkmode.BaseActivity;
+import com.example.chatapp.view.people.PeopleActivity;
 import com.example.chatapp.view.setting.SettingsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,11 +28,15 @@ public class ChatListActivity extends BaseActivity {
     private RecyclerView rvChats;
     private ChatListAdapter adapter;
     private List<Conversation> conversations = new ArrayList<>();
+    private ImageView imgProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
+
+        imgProfile = findViewById(R.id.imgProfile);
+        bindMyAvatar();
 
         rvChats = findViewById(R.id.rvChats);
         rvChats.setLayoutManager(new LinearLayoutManager(this));
@@ -49,14 +57,13 @@ public class ChatListActivity extends BaseActivity {
 
             if (id == R.id.nav_chats) {
                 return true;
-            }
-            else if (id == R.id.nav_calls) {
+            } else if (id == R.id.nav_calls) {
                 return true;
-            }
-            else if (id == R.id.nav_people) {
+            } else if (id == R.id.nav_people) {
+                Intent intent = new Intent(ChatListActivity.this, PeopleActivity.class);
+                startActivity(intent);
                 return true;
-            }
-            else if (id == R.id.nav_settings) {
+            } else if (id == R.id.nav_settings) {
                 Intent intent = new Intent(ChatListActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
@@ -68,6 +75,22 @@ public class ChatListActivity extends BaseActivity {
         bottomNav.setSelectedItemId(R.id.nav_chats);
     }
 
+    private void bindMyAvatar() {
+        String myName = getSharedPreferences("ChatAppPrefs", MODE_PRIVATE).getString("myDisplayName", "Me");
+        String avatar = getSharedPreferences("ChatAppPrefs", MODE_PRIVATE).getString("myAvatar", null);
+        String url = avatar;
+        if (url == null || url.trim().isEmpty()) {
+            url = "https://ui-avatars.com/api/?name=" + myName + "&size=128";
+        }
+
+        Glide.with(this)
+                .load(url)
+                .placeholder(R.drawable.avatar_placeholder)
+                .error(R.drawable.avatar_placeholder)
+                .circleCrop()
+                .into(imgProfile);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -76,7 +99,8 @@ public class ChatListActivity extends BaseActivity {
 
     private void fetchConversations() {
         Integer myId = getSharedPreferences("ChatAppPrefs", MODE_PRIVATE).getInt("myUserId", -1);
-        if (myId == -1) return;
+        if (myId == -1)
+            return;
 
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
         messageApi.getConversations(myId).enqueue(new Callback<List<Conversation>>() {

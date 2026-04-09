@@ -21,6 +21,8 @@ public class User {
     
     private String displayName;
 
+    private String avatar;
+
     @Column(insertable = false, updatable = false)
     private long createdAt;
 }

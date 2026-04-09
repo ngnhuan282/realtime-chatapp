@@ -25,6 +25,7 @@ public class AuthService {
                         user.getId(),
                         user.getUsername(),
                         user.getDisplayName(),
+                    user.getAvatar(),
                         "Đăng nhập thành công!"
                 );
             }

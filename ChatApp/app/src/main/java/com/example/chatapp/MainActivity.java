@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        // Chú ý: Đảm bảo layout này có chứa RecyclerView với ID là recyclerViewUsers
-        setContentView(R.layout.activity_login);
+        // Màn hình demo danh sách user (avatar + kết bạn)
+        setContentView(R.layout.activity_people);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 1. Ánh xạ RecyclerView và thiết lập LayoutManager
-        recyclerView = findViewById(R.id.recyclerViewUsers);
+        recyclerView = findViewById(R.id.rvUsers);
         if (recyclerView != null) {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
@@ -54,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
         // 2. Khởi tạo ApiService
         apiService = ApiClient.getClient().create(ApiService.class);
 
-        // 3. Giả sử ID người dùng hiện tại (Lấy từ Login thành công hoặc SharedPreferences)
+        // 3. Giả sử ID người dùng hiện tại (Lấy từ Login thành công hoặc
+        // SharedPreferences)
         int myCurrentUserId = 1;
 
         // 4. Tải danh sách người dùng
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadUsers(int myId) {
-        apiService.getAllUsers().enqueue(new Callback<List<User>>() {
+        apiService.getAllUsers(myId).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -74,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
                         recyclerView.setAdapter(userAdapter);
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Không thể lấy dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Không thể lấy dữ liệu: " + response.code(), Toast.LENGTH_SHORT)
+                            .show();
                 }
             }
 

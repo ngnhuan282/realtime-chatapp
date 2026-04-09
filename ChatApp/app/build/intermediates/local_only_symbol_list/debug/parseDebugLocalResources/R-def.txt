@@ -66,6 +66,7 @@ id btnAttachLocation
 id btnAttachVideo
 id btnBack
 id btnBackSettings
+id btnConnect
 id btnEmoji
 id btnLogin
 id btnLogout
@@ -93,6 +94,7 @@ id nav_people
 id nav_settings
 id playerRoot
 id progressBar
+id recyclerViewUsers
 id rvChats
 id rvMessages
 id switchDarkMode
@@ -104,6 +106,7 @@ id tvLastMessage
 id tvName
 id tvSubtitle
 id tvTime
+id txtUsername
 id txt_message_content
 id txt_message_time
 id txt_time
@@ -122,6 +125,7 @@ layout item_chat_location_received
 layout item_chat_location_sent
 layout item_chat_received
 layout item_chat_sent
+layout item_user
 layout layout_attachment_sheet
 menu bottom_nav_menu
 mipmap ic_launcher

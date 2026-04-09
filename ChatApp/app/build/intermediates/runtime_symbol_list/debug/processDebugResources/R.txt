@@ -3948,6 +3948,7 @@ int id btnAttachLocation 0x7f09006f
 int id btnAttachVideo 0x7f090070
 int id btnBack 0x7f090071
 int id btnBackSettings 0x7f090072
+int id btnConnect 0x7f090250
 int id btnEmoji 0x7f090073
 int id btnLogin 0x7f090074
 int id btnLogout 0x7f090075
@@ -4258,6 +4259,7 @@ int id progress_horizontal 0x7f0901a5
 int id radio 0x7f0901a6
 int id ratio 0x7f0901a7
 int id rectangles 0x7f0901a8
+int id recyclerViewUsers 0x7f090252
 int id report_drawn 0x7f0901a9
 int id retreat 0x7f0901aa
 int id reverseSawtooth 0x7f0901ab
@@ -4392,6 +4394,7 @@ int id tvLastMessage 0x7f09022b
 int id tvName 0x7f09022c
 int id tvSubtitle 0x7f09022d
 int id tvTime 0x7f09022e
+int id txtUsername 0x7f090251
 int id txt_message_content 0x7f09022f
 int id txt_message_time 0x7f090230
 int id txt_time 0x7f090231
@@ -4581,6 +4584,7 @@ int layout item_chat_location_received 0x7f0c003e
 int layout item_chat_location_sent 0x7f0c003f
 int layout item_chat_received 0x7f0c0040
 int layout item_chat_sent 0x7f0c0041
+int layout item_user 0x7f0c0083
 int layout layout_attachment_sheet 0x7f0c0042
 int layout m3_alert_dialog 0x7f0c0043
 int layout m3_alert_dialog_actions 0x7f0c0044

@@ -3949,6 +3949,7 @@ id btnAttachLocation
 id btnAttachVideo
 id btnBack
 id btnBackSettings
+id btnConnect
 id btnEmoji
 id btnLogin
 id btnLogout
@@ -4259,6 +4260,7 @@ id progress_horizontal
 id radio
 id ratio
 id rectangles
+id recyclerViewUsers
 id report_drawn
 id retreat
 id reverseSawtooth
@@ -4393,6 +4395,7 @@ id tvLastMessage
 id tvName
 id tvSubtitle
 id tvTime
+id txtUsername
 id txt_message_content
 id txt_message_time
 id txt_time
@@ -4582,6 +4585,7 @@ layout item_chat_location_received
 layout item_chat_location_sent
 layout item_chat_received
 layout item_chat_sent
+layout item_user
 layout layout_attachment_sheet
 layout m3_alert_dialog
 layout m3_alert_dialog_actions

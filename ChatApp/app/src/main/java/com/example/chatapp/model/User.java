@@ -8,11 +8,15 @@ public class User {
 
     @SerializedName(value = "displayName")
     private String displayName;
+    @SerializedName(value = "avatar")
+    private String avatar;
+
 
     public User(Integer id, String username, String displayName) {
         this.id = id;
         this.username = username;
         this.displayName = displayName;
+        this.avatar = avatar;
     }
 
     public User() {
@@ -34,6 +38,12 @@ public class User {
         this.username = username;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
     // Thêm fallback để an toàn
     public String getDisplayName() {
         if (displayName != null && !displayName.isEmpty()) {

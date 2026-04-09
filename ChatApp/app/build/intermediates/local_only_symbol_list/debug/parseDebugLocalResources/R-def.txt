@@ -45,6 +45,7 @@ drawable ic_emoji
 drawable ic_eye_off
 drawable ic_facebook
 drawable ic_google
+drawable ic_group
 drawable ic_launcher_background
 drawable ic_launcher_foreground
 drawable ic_location
@@ -67,6 +68,7 @@ id btnAttachVideo
 id btnBack
 id btnBackSettings
 id btnConnect
+id btnCreate
 id btnEmoji
 id btnLogin
 id btnLogout
@@ -74,9 +76,12 @@ id btnMore
 id btnSend
 id btn_stop_location
 id cardLogo
+id checkbox
+id edtGroupName
 id edtMessage
 id edtPassword
 id edtSearch
+id edtSearchPhone
 id edtUsername
 id emojiPicker
 id fabAdd
@@ -85,6 +90,7 @@ id imgProfile
 id img_avatar_received
 id img_message_content
 id layoutActions
+id layoutContent
 id layoutDivider
 id layoutHeader
 id layoutInput
@@ -101,14 +107,17 @@ id rvUsers
 id switchDarkMode
 id toolbar
 id tvAppName
+id tvDisplayName
+id tvEmptyState
 id tvForgot
 id tvFriendName
 id tvLastMessage
 id tvName
+id tvPhoneNumber
 id tvSubtitle
 id tvTime
 id tvTitle
-id txtUsername
+id tvUsername
 id txt_message_content
 id txt_message_time
 id txt_time
@@ -116,6 +125,7 @@ id unreadBadge
 id videoView
 layout activity_chat_detail
 layout activity_chat_list
+layout activity_create_group
 layout activity_login
 layout activity_main
 layout activity_people
@@ -129,6 +139,7 @@ layout item_chat_location_sent
 layout item_chat_received
 layout item_chat_sent
 layout item_user
+layout item_user_select
 layout layout_attachment_sheet
 menu bottom_nav_menu
 mipmap ic_launcher

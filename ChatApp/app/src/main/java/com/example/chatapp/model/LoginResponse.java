@@ -1,4 +1,4 @@
-package com.example.chatapp.network.rest;
+package com.example.chatapp.model;
 
 import com.google.gson.annotations.SerializedName;
 

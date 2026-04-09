@@ -5,13 +5,17 @@ import com.google.gson.annotations.SerializedName;
 public class User {
     private Integer id;
     private String username;
+    private String phoneNumber;
 
     @SerializedName(value = "displayName")
     private String displayName;
+
     @SerializedName(value = "avatar")
     private String avatar;
 
+    private String friendshipStatus;
 
+    // Constructor cũ
     public User(Integer id, String username, String displayName, String avatar) {
         this.id = id;
         this.username = username;
@@ -19,43 +23,30 @@ public class User {
         this.avatar = avatar;
     }
 
-    public User() {
-    }
+    public User() {}
 
-    public Integer getId() {
-        return id;
-    }
+    // Getter & Setter mới
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    // Các getter/setter cũ giữ nguyên...
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 
-    public String getAvatar() {
-        return avatar;
-    }
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-    // Thêm fallback để an toàn
     public String getDisplayName() {
-        if (displayName != null && !displayName.isEmpty()) {
-            return displayName;
-        }
-        if (username != null && !username.isEmpty()) {
-            return username;
-        }
+        if (displayName != null && !displayName.isEmpty()) return displayName;
+        if (username != null && !username.isEmpty()) return username;
         return "User " + id;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
+    public void setDisplayName(String displayName) { this.displayName = displayName; }
+
+    public String getFriendshipStatus() { return friendshipStatus; }
+    public void setFriendshipStatus(String status) { this.friendshipStatus = status; }
 }

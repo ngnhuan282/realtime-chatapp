@@ -29,9 +29,11 @@ import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.MessageApi;
 import com.example.chatapp.network.socket.SocketManager;
 import com.example.chatapp.view.darkmode.BaseActivity;
+
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -54,9 +56,10 @@ public class ChatDetailActivity extends BaseActivity {
     private ChatAdapter adapter;
     private List<Message> messages = new ArrayList<>();
     private SocketManager socketManager;
+
     private EditText edtMessage;
     private RecyclerView rvMessages;
-    private EmojiPickerView emojiPicker; // Khai báo EmojiPickerView từ thư viện
+    private EmojiPickerView emojiPicker;
     private FloatingActionButton btnSend;
     private ImageView btnBack, btnAttach, imgAvatar, btnEmoji;
     private TextView tvFriendName;
@@ -65,7 +68,12 @@ public class ChatDetailActivity extends BaseActivity {
     private Integer friendId;
     private String friendName;
 
-    // Launcher để chọn ảnh từ thư viện
+    // Biến hỗ trợ Chat Nhóm
+    private Integer groupId = -1;
+    private boolean isGroupChat = false;
+    private String groupName;
+
+    // Launchers
     private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
@@ -102,11 +110,17 @@ public class ChatDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_detail);
 
-        // Nhận thông tin người dùng và bạn bè
+        // Lấy myUserId
         SharedPreferences sharedPref = getSharedPreferences("ChatAppPrefs", Context.MODE_PRIVATE);
         myUserId = sharedPref.getInt("myUserId", -1);
+
+        // Nhận dữ liệu từ Intent (hỗ trợ cả chat 1-1 và chat nhóm)
         friendId = getIntent().getIntExtra("friendId", -1);
         friendName = getIntent().getStringExtra("friendName");
+        groupId = getIntent().getIntExtra("groupId", -1);
+        groupName = getIntent().getStringExtra("groupName");
+
+        isGroupChat = groupId != -1;
 
         initViews();
         setupRecyclerView();
@@ -116,68 +130,30 @@ public class ChatDetailActivity extends BaseActivity {
         socketManager = SocketManager.getInstance();
         socketManager.setMyUserId(myUserId);
         socketManager.setListener(msg -> {
-            runOnUiThread(() -> {
-                if (msg.getSenderId() != null &&
-                        (msg.getSenderId().equals(friendId) || msg.getSenderId().equals(myUserId))) {
-                    msg.setMe(msg.getSenderId().equals(myUserId));
-                    messages.add(msg);
-                    adapter.notifyItemInserted(messages.size() - 1);
-                    rvMessages.scrollToPosition(messages.size() - 1);
-                }
-            });
+            runOnUiThread(() -> handleNewMessage(msg));
         });
         socketManager.connect();
 
-        loadHistory();
-
-        // Xử lý gửi tin nhắn văn bản
-        btnSend.setOnClickListener(v -> {
-            String text = edtMessage.getText().toString().trim();
-            if (!text.isEmpty()) {
-                sendSocketMessage(text, "TEXT");
-                edtMessage.setText("");
-                emojiPicker.setVisibility(View.GONE); // Ẩn bộ chọn sau khi gửi
-            }
-        });
-
-        // Xử lý chọn tệp đính kèm
-        btnAttach.setOnClickListener(v -> showAttachmentPicker());
-
-        // Xử lý nhấn nút Emoji
-        btnEmoji.setOnClickListener(v -> {
-            if (emojiPicker.getVisibility() == View.GONE) {
-                hideKeyboard(); // Ẩn bàn phím trước khi hiện Emoji
-                emojiPicker.setVisibility(View.VISIBLE);
-            } else {
-                emojiPicker.setVisibility(View.GONE);
-            }
-        });
-
-        // Ẩn bảng Emoji khi người dùng chạm vào ô nhập liệu để gõ chữ
-        edtMessage.setOnClickListener(v -> {
-            if (emojiPicker.getVisibility() == View.VISIBLE) {
-                emojiPicker.setVisibility(View.GONE);
-            }
-        });
-
-        btnBack.setOnClickListener(v -> finish());
-
-        // Nhận thông tin
-        friendId = getIntent().getIntExtra("friendId", -1);
-        groupId = getIntent().getIntExtra("groupId", -1);
-        isGroupChat = groupId != -1;
-
+        // Load dữ liệu phù hợp
         if (isGroupChat) {
-            tvFriendName.setText(getIntent().getStringExtra("groupName"));
+            tvFriendName.setText(groupName != null ? groupName : "Nhóm chat");
             loadGroupHistory();
         } else {
+            if (friendName != null) tvFriendName.setText(friendName);
             loadHistory();
         }
+
+        // Xử lý sự kiện
+        btnSend.setOnClickListener(v -> sendTextMessage());
+        btnAttach.setOnClickListener(v -> showAttachmentPicker());
+        btnEmoji.setOnClickListener(v -> toggleEmojiPicker());
+        edtMessage.setOnClickListener(v -> hideEmojiPickerIfVisible());
+        btnBack.setOnClickListener(v -> finish());
     }
 
     private void initViews() {
         rvMessages = findViewById(R.id.rvMessages);
-        emojiPicker = findViewById(R.id.emojiPicker); // Ánh xạ từ XML
+        emojiPicker = findViewById(R.id.emojiPicker);
         edtMessage = findViewById(R.id.edtMessage);
         btnSend = findViewById(R.id.btnSend);
         btnBack = findViewById(R.id.btnBack);
@@ -185,18 +161,88 @@ public class ChatDetailActivity extends BaseActivity {
         btnEmoji = findViewById(R.id.btnEmoji);
         imgAvatar = findViewById(R.id.imgAvatar);
         tvFriendName = findViewById(R.id.tvFriendName);
-        if (friendName != null) tvFriendName.setText(friendName);
+    }
+
+    private void setupRecyclerView() {
+        adapter = new ChatAdapter(messages);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        rvMessages.setLayoutManager(layoutManager);
+        rvMessages.setAdapter(adapter);
     }
 
     private void setupEmojiPicker() {
-        // Thiết lập sự kiện chọn Emoji từ thư viện androidx.emoji2
         emojiPicker.setOnEmojiPickedListener(emojiViewItem -> {
             String emoji = emojiViewItem.getEmoji();
             int start = Math.max(edtMessage.getSelectionStart(), 0);
             int end = Math.max(edtMessage.getSelectionEnd(), 0);
-            // Chèn Emoji vào đúng vị trí con trỏ trong EditText
             edtMessage.getText().replace(Math.min(start, end), Math.max(start, end), emoji);
         });
+    }
+
+    private void handleNewMessage(Message msg) {
+        boolean belongToThisChat = false;
+
+        if (isGroupChat) {
+            belongToThisChat = msg.getGroupId() != null && msg.getGroupId().equals(groupId);
+        } else {
+            belongToThisChat = (msg.getSenderId() != null && msg.getSenderId().equals(friendId)) ||
+                    (msg.getReceiverId() != null && msg.getReceiverId().equals(friendId));
+        }
+
+        if (belongToThisChat) {
+            msg.setMe(msg.getSenderId() != null && msg.getSenderId().equals(myUserId));
+            messages.add(msg);
+            adapter.notifyItemInserted(messages.size() - 1);
+            rvMessages.scrollToPosition(messages.size() - 1);
+        }
+    }
+
+    private void sendTextMessage() {
+        String text = edtMessage.getText().toString().trim();
+        if (!text.isEmpty()) {
+            sendSocketMessage(text, "TEXT");
+            edtMessage.setText("");
+            emojiPicker.setVisibility(View.GONE);
+        }
+    }
+
+    private void sendSocketMessage(String content, String type) {
+        Message newMsg = new Message();
+        newMsg.setSenderId(myUserId);
+        newMsg.setContent(content);
+        newMsg.setTimestamp(System.currentTimeMillis());
+        newMsg.setMessageType(type);
+        newMsg.setMe(true);
+
+        if (isGroupChat) {
+            newMsg.setGroupId(groupId);
+            newMsg.setReceiverId(null);
+        } else {
+            newMsg.setReceiverId(friendId);
+            newMsg.setGroupId(null);
+        }
+
+        messages.add(newMsg);
+        adapter.notifyItemInserted(messages.size() - 1);
+        rvMessages.scrollToPosition(messages.size() - 1);
+
+        socketManager.sendMessage(newMsg);
+    }
+
+    private void toggleEmojiPicker() {
+        if (emojiPicker.getVisibility() == View.GONE) {
+            hideKeyboard();
+            emojiPicker.setVisibility(View.VISIBLE);
+        } else {
+            emojiPicker.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideEmojiPickerIfVisible() {
+        if (emojiPicker.getVisibility() == View.VISIBLE) {
+            emojiPicker.setVisibility(View.GONE);
+        }
     }
 
     private void hideKeyboard() {
@@ -225,12 +271,10 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private void shareCurrentLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             shareCurrentLocationInternal();
             return;
         }
-
         locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
@@ -238,7 +282,6 @@ public class ChatDetailActivity extends BaseActivity {
         try {
             Toast.makeText(this, "Đang lấy vị trí hiện tại...", Toast.LENGTH_SHORT).show();
             CancellationTokenSource cts = new CancellationTokenSource();
-
             LocationServices.getFusedLocationProviderClient(this)
                     .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.getToken())
                     .addOnSuccessListener(location -> {
@@ -246,13 +289,8 @@ public class ChatDetailActivity extends BaseActivity {
                             Toast.makeText(this, "Không lấy được vị trí hiện tại, hãy bật GPS rồi thử lại", Toast.LENGTH_SHORT).show();
                             return;
                         }
-
-                        String mapUrl = String.format(
-                                Locale.US,
-                                "https://maps.google.com/?q=%f,%f",
-                                location.getLatitude(),
-                                location.getLongitude()
-                        );
+                        String mapUrl = String.format(Locale.US, "https://maps.google.com/?q=%f,%f",
+                                location.getLatitude(), location.getLongitude());
                         sendSocketMessage(mapUrl, "LOCATION");
                     })
                     .addOnFailureListener(e ->
@@ -275,9 +313,8 @@ public class ChatDetailActivity extends BaseActivity {
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
-        Call<ResponseBody> request = "VIDEO".equals(messageType)
-                ? messageApi.uploadVideo(body)
-                : messageApi.uploadFile(body);
+        Call<ResponseBody> request = "VIDEO".equals(messageType) ?
+                messageApi.uploadVideo(body) : messageApi.uploadFile(body);
 
         request.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -286,9 +323,12 @@ public class ChatDetailActivity extends BaseActivity {
                     try {
                         String fileName = response.body().string();
                         sendSocketMessage(fileName, messageType);
-                    } catch (Exception e) { e.printStackTrace(); }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(ChatDetailActivity.this, "Lỗi kết nối Server!", Toast.LENGTH_SHORT).show();
@@ -299,8 +339,10 @@ public class ChatDetailActivity extends BaseActivity {
     private File uriToFile(Uri uri, String messageType) {
         try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
             if (inputStream == null) return null;
+
             String extension = getFileExtension(uri, messageType);
             File tempFile = new File(getCacheDir(), "upload_" + System.currentTimeMillis() + extension);
+
             try (FileOutputStream out = new FileOutputStream(tempFile)) {
                 byte[] buffer = new byte[8192];
                 int length;
@@ -327,39 +369,9 @@ public class ChatDetailActivity extends BaseActivity {
         return "VIDEO".equals(messageType) ? ".mp4" : ".jpg";
     }
 
-    private void sendSocketMessage(String content, String type) {
-        Message newMsg = new Message();
-        newMsg.setSenderId(myUserId);
-        newMsg.setContent(content);
-        newMsg.setTimestamp(System.currentTimeMillis());
-        newMsg.setMessageType(type);
-        newMsg.setMe(true);
-
-        if (isGroupChat) {
-            newMsg.setGroupId(groupId);
-            newMsg.setReceiverId(null);
-        } else {
-            newMsg.setReceiverId(friendId);
-            newMsg.setGroupId(null);
-        }
-
-        messages.add(newMsg);
-        adapter.notifyItemInserted(messages.size() - 1);
-        rvMessages.scrollToPosition(messages.size() - 1);
-
-        socketManager.sendMessage(newMsg);
-    }
-
-    private void setupRecyclerView() {
-        adapter = new ChatAdapter(messages);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true);
-        rvMessages.setLayoutManager(layoutManager);
-        rvMessages.setAdapter(adapter);
-    }
-
     private void loadHistory() {
         if (myUserId == -1 || friendId == -1) return;
+
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
         messageApi.getHistory(myUserId, friendId).enqueue(new Callback<List<Message>>() {
             @Override
@@ -374,27 +386,36 @@ public class ChatDetailActivity extends BaseActivity {
                     if (!messages.isEmpty()) rvMessages.scrollToPosition(messages.size() - 1);
                 }
             }
-            @Override public void onFailure(Call<List<Message>> call, Throwable t) {}
+
+            @Override
+            public void onFailure(Call<List<Message>> call, Throwable t) {
+                Log.e("ChatDetail", "Load history failed: " + t.getMessage());
+            }
         });
     }
 
     private void loadGroupHistory() {
-    if (groupId == -1) return;
-    MessageApi api = ApiClient.getClient().create(MessageApi.class);
-    api.getGroupHistory(groupId).enqueue(new Callback<List<Message>>() {
-        @Override
-        public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-            if (response.isSuccessful() && response.body() != null) {
-                messages.clear();
-                for (Message m : response.body()) {
-                    m.setMe(m.getSenderId().equals(myUserId));
-                    messages.add(m);
+        if (groupId == -1) return;
+
+        MessageApi api = ApiClient.getClient().create(MessageApi.class);
+        api.getGroupHistory(groupId).enqueue(new Callback<List<Message>>() {
+            @Override
+            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    messages.clear();
+                    for (Message m : response.body()) {
+                        m.setMe(m.getSenderId().equals(myUserId));
+                        messages.add(m);
+                    }
+                    adapter.notifyDataSetChanged();
+                    if (!messages.isEmpty()) rvMessages.scrollToPosition(messages.size() - 1);
                 }
-                adapter.notifyDataSetChanged();
-                if (!messages.isEmpty()) rvMessages.scrollToPosition(messages.size() - 1);
             }
-        }
-        @Override public void onFailure(Call<List<Message>> call, Throwable t) {}
-    });
-}
+
+            @Override
+            public void onFailure(Call<List<Message>> call, Throwable t) {
+                Log.e("ChatDetail", "Load group history failed: " + t.getMessage());
+            }
+        });
+    }
 }

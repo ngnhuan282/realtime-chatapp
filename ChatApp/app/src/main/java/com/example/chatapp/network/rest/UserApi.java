@@ -7,7 +7,12 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface UserApi {
-    // Gọi API: GET /api/users?excludeId=...
+
+    // Lấy tất cả user trừ mình
     @GET("api/users")
     Call<List<User>> getAllUsers(@Query("excludeId") Integer excludeId);
+
+    // Tìm kiếm user theo số điện thoại
+    @GET("api/users/search")
+    Call<User> searchByPhone(@Query("phoneNumber") String phoneNumber);
 }

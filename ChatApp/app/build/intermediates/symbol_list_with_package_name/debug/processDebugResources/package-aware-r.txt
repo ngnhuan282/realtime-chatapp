@@ -3719,6 +3719,7 @@ drawable ic_expand_more_22px
 drawable ic_eye_off
 drawable ic_facebook
 drawable ic_google
+drawable ic_group
 drawable ic_keyboard_black_24dp
 drawable ic_launcher_background
 drawable ic_launcher_foreground
@@ -3950,6 +3951,7 @@ id btnAttachVideo
 id btnBack
 id btnBackSettings
 id btnConnect
+id btnCreate
 id btnEmoji
 id btnLogin
 id btnLogout
@@ -4034,9 +4036,11 @@ id east
 id edge
 id edit_query
 id edit_text_id
+id edtGroupName
 id edtMessage
 id edtPassword
 id edtSearch
+id edtSearchPhone
 id edtUsername
 id elastic
 id embed
@@ -4119,6 +4123,7 @@ id jumpToStart
 id labeled
 id layout
 id layoutActions
+id layoutContent
 id layoutDivider
 id layoutHeader
 id layoutInput
@@ -4390,14 +4395,17 @@ id transition_scene_layoutid_cache
 id transition_transform
 id triangle
 id tvAppName
+id tvDisplayName
+id tvEmptyState
 id tvForgot
 id tvFriendName
 id tvLastMessage
 id tvName
+id tvPhoneNumber
 id tvSubtitle
 id tvTime
 id tvTitle
-id txtUsername
+id tvUsername
 id txt_message_content
 id txt_message_time
 id txt_time
@@ -4551,6 +4559,7 @@ layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_chat_detail
 layout activity_chat_list
+layout activity_create_group
 layout activity_login
 layout activity_main
 layout activity_people
@@ -4589,6 +4598,7 @@ layout item_chat_location_sent
 layout item_chat_received
 layout item_chat_sent
 layout item_user
+layout item_user_select
 layout layout_attachment_sheet
 layout m3_alert_dialog
 layout m3_alert_dialog_actions

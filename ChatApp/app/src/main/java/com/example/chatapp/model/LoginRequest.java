@@ -1,4 +1,4 @@
-package com.example.chatapp.network.rest;
+package com.example.chatapp.model;
 
 public class LoginRequest {
     private String username;

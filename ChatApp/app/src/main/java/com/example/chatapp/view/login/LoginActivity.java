@@ -9,8 +9,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -18,8 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.chatapp.R;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.AuthApi;
-import com.example.chatapp.network.rest.LoginRequest;
-import com.example.chatapp.network.rest.LoginResponse;
+import com.example.chatapp.model.LoginRequest;
+import com.example.chatapp.model.LoginResponse;
 import com.example.chatapp.view.chat.ChatListActivity;
 import com.example.chatapp.view.darkmode.BaseActivity;
 

@@ -15,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatapp.adapter.UserAdapter;
 import com.example.chatapp.model.User;
 import com.example.chatapp.network.rest.ApiClient;
-import com.example.chatapp.network.rest.ApiService;
+import com.example.chatapp.network.rest.FriendApi;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,15 +31,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
     private List<User> userList = new ArrayList<>();
-    private ApiService apiService;
+    private FriendApi friendApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-
-        // Màn hình demo danh sách user (avatar + kết bạn)
-        setContentView(R.layout.activity_people);
+        setContentView(R.layout.activity_people);   // Bạn đang dùng layout này để test
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -45,38 +45,35 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 1. Ánh xạ RecyclerView và thiết lập LayoutManager
         recyclerView = findViewById(R.id.rvUsers);
         if (recyclerView != null) {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
 
-        // 2. Khởi tạo ApiService
-        apiService = ApiClient.getClient().create(ApiService.class);
+        friendApi = ApiClient.getClient().create(FriendApi.class);
+        int myCurrentUserId = 1;   // Thay bằng ID thật từ SharedPreferences sau
 
-        // 3. Giả sử ID người dùng hiện tại (Lấy từ Login thành công hoặc
-        // SharedPreferences)
-        int myCurrentUserId = 1;
+        // Set rỗng vì đây chỉ là test
+        Set<Integer> emptySentSet = new HashSet<>();
 
-        // 4. Tải danh sách người dùng
-        loadUsers(myCurrentUserId);
+        loadUsers(myCurrentUserId, emptySentSet);
     }
 
-    private void loadUsers(int myId) {
-        apiService.getAllUsers(myId).enqueue(new Callback<List<User>>() {
+    private void loadUsers(int myId, Set<Integer> sentSet) {
+        friendApi.getAllUsers(myId).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    userList = response.body();
+                    userList.clear();
+                    userList.addAll(response.body());
 
-                    // Khởi tạo và set Adapter
-                    userAdapter = new UserAdapter(MainActivity.this, userList, myId, apiService);
+                    // Sửa ở đây: truyền đủ 5 tham số
+                    userAdapter = new UserAdapter(MainActivity.this, userList, myId, friendApi, sentSet);
                     if (recyclerView != null) {
                         recyclerView.setAdapter(userAdapter);
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Không thể lấy dữ liệu: " + response.code(), Toast.LENGTH_SHORT)
-                            .show();
+                    Toast.makeText(MainActivity.this, "Không thể lấy dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 

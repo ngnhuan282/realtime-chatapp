@@ -1,10 +1,10 @@
-package com.example.ChatServer.dto.request;
+package com.example.chatapp.model;
 
 import java.util.List;
 
 public class CreateGroupRequest {
     private String groupName;
-    private Integer creatorId;        // ← Thêm trường này
+    private Integer creatorId;
     private List<Integer> memberIds;
 
     public CreateGroupRequest() {}

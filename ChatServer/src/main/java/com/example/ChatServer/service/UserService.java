@@ -14,14 +14,16 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Lấy danh sách tất cả người dùng trừ người đang đăng nhập
-     * @param excludeId ID của người dùng hiện tại
-     * @return Danh sách User
-     */
+    // Lấy tất cả trừ mình (dùng cho danh sách gợi ý)
     public List<User> getAllUsersExceptMe(Integer excludeId) {
         return userRepository.findAll().stream()
                 .filter(user -> !user.getId().equals(excludeId))
                 .collect(Collectors.toList());
+    }
+
+    // Tìm theo SĐT (mới)
+    public User findByPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với SĐT: " + phoneNumber));
     }
 }

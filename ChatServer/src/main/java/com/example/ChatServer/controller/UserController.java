@@ -18,4 +18,10 @@ public class UserController {
     public List<User> getAllUsers(@RequestParam Integer excludeId) {
         return userService.getAllUsersExceptMe(excludeId);
     }
+
+    // Endpoint mới: Tìm theo SĐT
+    @GetMapping("/search")
+    public User searchByPhone(@RequestParam String phoneNumber) {
+        return userService.findByPhoneNumber(phoneNumber);
+    }
 }

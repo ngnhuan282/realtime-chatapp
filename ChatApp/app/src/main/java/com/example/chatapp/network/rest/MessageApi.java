@@ -2,6 +2,8 @@ package com.example.chatapp.network.rest;
 
 import com.example.chatapp.model.ChatGroup;
 import com.example.chatapp.model.Conversation;
+import com.example.chatapp.model.CreateGroupRequest;
+import com.example.chatapp.model.GroupResponse;
 import com.example.chatapp.model.Message;
 
 import java.util.List;

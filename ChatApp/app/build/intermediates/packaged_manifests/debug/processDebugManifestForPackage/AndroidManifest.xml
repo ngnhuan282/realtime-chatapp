@@ -36,6 +36,9 @@
         android:theme="@style/Theme.ChatApp"
         android:usesCleartextTraffic="true" >
         <activity
+            android:name="com.example.chatapp.view.chat.CreateGroupActivity"
+            android:exported="false" />
+        <activity
             android:name="com.example.chatapp.view.chat.VideoPlayerActivity"
             android:exported="false" />
         <activity

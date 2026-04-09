@@ -19,16 +19,17 @@ import java.util.stream.Collectors;
 @Service
 public class GroupService {
 
-    @Autowired
-    private GroupRepository groupRepository;
-    @Autowired
-    private GroupMemberRepository groupMemberRepository;
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private GroupRepository groupRepository;
+    @Autowired private GroupMemberRepository groupMemberRepository;
+    @Autowired private UserRepository userRepository;
 
     public GroupResponse createGroup(CreateGroupRequest request) {
+        if (request.getCreatorId() == null) {
+            throw new RuntimeException("Creator ID is required");
+        }
+
         User creator = userRepository.findById(request.getCreatorId())
-                .orElseThrow(() -> new RuntimeException("Creator not found"));
+                .orElseThrow(() -> new RuntimeException("Creator not found with id: " + request.getCreatorId()));
 
         ChatGroup group = new ChatGroup();
         group.setGroupName(request.getGroupName());
@@ -39,32 +40,44 @@ public class GroupService {
         // Thêm creator
         addMember(group, creator.getId());
 
-        // Thêm thành viên khác
-        for (Integer memberId : request.getMemberIds()) {
-            if (!memberId.equals(request.getCreatorId())) {
-                addMember(group, memberId);
+        // Thêm thành viên khác - LỌC NULL
+        if (request.getMemberIds() != null) {
+            for (Integer memberId : request.getMemberIds()) {
+                if (memberId != null && !memberId.equals(creator.getId())) {
+                    addMember(group, memberId);
+                }
             }
         }
 
+        // Trả về response
         List<UserResponse> members = groupMemberRepository.findByGroupId(group.getId()).stream()
                 .map(gm -> new UserResponse(
                         gm.getUser().getId(),
                         gm.getUser().getUsername(),
-                        gm.getUser().getDisplayName(),
-                        gm.getUser().getAvatar()))
+                        gm.getUser().getDisplayName() != null ? gm.getUser().getDisplayName() : gm.getUser().getUsername(),
+                        gm.getUser().getPhoneNumber(),
+                        gm.getUser().getAvatar()
+                ))
                 .collect(Collectors.toList());
 
         return new GroupResponse(
                 group.getId(),
                 group.getGroupName(),
-                new UserResponse(creator.getId(), creator.getUsername(), creator.getDisplayName(), null),
+                new UserResponse(creator.getId(), creator.getUsername(), creator.getDisplayName(), creator.getAvatar()),
                 members,
-                LocalDateTime.now());
+                LocalDateTime.now()
+        );
     }
 
     private void addMember(ChatGroup group, Integer userId) {
+        if (userId == null) return;
         User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
+        if (user == null) return;
+
+        boolean exists = groupMemberRepository.findByGroupId(group.getId()).stream()
+                .anyMatch(gm -> gm.getUser().getId().equals(userId));
+
+        if (!exists) {
             GroupMember gm = new GroupMember();
             gm.setGroup(group);
             gm.setUser(user);

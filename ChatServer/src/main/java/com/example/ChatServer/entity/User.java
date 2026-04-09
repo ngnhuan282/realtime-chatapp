@@ -3,8 +3,6 @@ package com.example.ChatServer.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "users")
 @Data
@@ -18,10 +16,9 @@ public class User {
 
     private String username;
     private String password;
-    
     private String displayName;
-
     private String avatar;
+    private String phoneNumber;
 
     @Column(insertable = false, updatable = false)
     private long createdAt;

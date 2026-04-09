@@ -1,6 +1,7 @@
 package com.example.ChatServer.socket;
 
 import com.example.ChatServer.service.MessageService;
+import com.example.ChatServer.repository.GroupMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -14,6 +15,9 @@ public class SocketServer {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
+
     private static final int PORT = 8081; // Port riêng cho Socket
 
     @EventListener(ApplicationReadyEvent.class)
@@ -24,7 +28,7 @@ public class SocketServer {
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
                     // Mỗi khách kết nối sẽ có 1 thread riêng xử lý
-                    new Thread(new ClientHandler(clientSocket, messageService)).start();
+                    new Thread(new ClientHandler(clientSocket, messageService, groupMemberRepository)).start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();

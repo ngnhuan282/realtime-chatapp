@@ -29,4 +29,13 @@ public interface MessageApi {
     @Multipart
     @POST("api/messages/upload/video")
     Call<ResponseBody> uploadVideo(@Part MultipartBody.Part file);
+
+    @GET("api/groups/my-groups")
+    Call<List<ChatGroup>> getMyGroups(@Query("userId") Integer userId);
+
+    @POST("api/groups/create")
+    Call<GroupResponse> createGroup(@Body CreateGroupRequest request);
+
+    @GET("api/messages/group/{groupId}")
+    Call<List<Message>> getGroupHistory(@Path("groupId") Integer groupId);
 }

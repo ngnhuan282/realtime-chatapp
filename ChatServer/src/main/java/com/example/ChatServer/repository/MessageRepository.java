@@ -26,4 +26,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     @Query("SELECT COUNT(m) FROM Message m WHERE m.senderId = :friendId " +
             "AND m.receiverId = :myId AND m.status != 'READ'")
     long countUnreadMessages(@Param("friendId") Integer friendId, @Param("myId") Integer myId);
+    
+    List<Message> findByGroupIdOrderByTimestampAsc(Integer groupId);
 }

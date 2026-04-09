@@ -161,6 +161,18 @@ public class ChatDetailActivity extends BaseActivity {
         });
 
         btnBack.setOnClickListener(v -> finish());
+
+        // Nhận thông tin
+        friendId = getIntent().getIntExtra("friendId", -1);
+        groupId = getIntent().getIntExtra("groupId", -1);
+        isGroupChat = groupId != -1;
+
+        if (isGroupChat) {
+            tvFriendName.setText(getIntent().getStringExtra("groupName"));
+            loadGroupHistory();
+        } else {
+            loadHistory();
+        }
     }
 
     private void initViews() {
@@ -316,11 +328,25 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private void sendSocketMessage(String content, String type) {
-        Message newMsg = new Message(myUserId, friendId, content, System.currentTimeMillis(), true);
+        Message newMsg = new Message();
+        newMsg.setSenderId(myUserId);
+        newMsg.setContent(content);
+        newMsg.setTimestamp(System.currentTimeMillis());
         newMsg.setMessageType(type);
+        newMsg.setMe(true);
+
+        if (isGroupChat) {
+            newMsg.setGroupId(groupId);
+            newMsg.setReceiverId(null);
+        } else {
+            newMsg.setReceiverId(friendId);
+            newMsg.setGroupId(null);
+        }
+
         messages.add(newMsg);
         adapter.notifyItemInserted(messages.size() - 1);
         rvMessages.scrollToPosition(messages.size() - 1);
+
         socketManager.sendMessage(newMsg);
     }
 
@@ -351,4 +377,24 @@ public class ChatDetailActivity extends BaseActivity {
             @Override public void onFailure(Call<List<Message>> call, Throwable t) {}
         });
     }
+
+    private void loadGroupHistory() {
+    if (groupId == -1) return;
+    MessageApi api = ApiClient.getClient().create(MessageApi.class);
+    api.getGroupHistory(groupId).enqueue(new Callback<List<Message>>() {
+        @Override
+        public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+            if (response.isSuccessful() && response.body() != null) {
+                messages.clear();
+                for (Message m : response.body()) {
+                    m.setMe(m.getSenderId().equals(myUserId));
+                    messages.add(m);
+                }
+                adapter.notifyDataSetChanged();
+                if (!messages.isEmpty()) rvMessages.scrollToPosition(messages.size() - 1);
+            }
+        }
+        @Override public void onFailure(Call<List<Message>> call, Throwable t) {}
+    });
+}
 }

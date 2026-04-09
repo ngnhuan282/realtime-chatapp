@@ -1,24 +1,29 @@
 package com.example.ChatServer.socket;
 
+import com.example.ChatServer.entity.GroupMember;
 import com.example.ChatServer.entity.Message;
 import com.example.ChatServer.service.MessageService;
+import com.example.ChatServer.repository.GroupMemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientHandler implements Runnable {
 
     private Socket socket;
     private MessageService messageService;
+    private GroupMemberRepository groupMemberRepository;
     private BufferedReader in;
     private PrintWriter out;
 
     private Integer currentUserId;
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public ClientHandler(Socket socket, MessageService messageService) {
+    
+    public ClientHandler(Socket socket, MessageService messageService, GroupMemberRepository groupMemberRepository) {
         this.socket = socket;
         this.messageService = messageService;
+        this.groupMemberRepository = groupMemberRepository;
     }
 
     @Override
@@ -67,6 +72,25 @@ public class ClientHandler implements Runnable {
                         System.out.println("✅ Đã forward tin nhắn tới User: " + msg.getReceiverId());
                     } else if (receiverHandler == null) {
                         System.out.println("⚠️ Người nhận chưa online hoặc chưa handshake: " + msg.getReceiverId());
+                    }
+
+                    // Xử lý forward
+                    if (msg.getGroupId() != null && msg.getGroupId() > 0) {
+                        // Tin nhắn nhóm
+                        List<GroupMember> members = groupMemberRepository.findByGroupId(msg.getGroupId());
+                        for (GroupMember gm : members) {
+                        if (gm.getUser().getId().equals(msg.getSenderId())) continue;
+                            ClientHandler handler = ConnectionManager.onlineUsers.get(gm.getUser().getId());
+                            if (handler != null) {
+                                handler.sendMessage(input);
+                            }
+                        }
+                    } else {
+                        // Tin nhắn 1-1
+                        ClientHandler receiver = ConnectionManager.onlineUsers.get(msg.getReceiverId());
+                        if (receiver != null && receiver != this) {
+                            receiver.sendMessage(input);
+                        }
                     }
 
                 } catch (Exception e) {

@@ -1,5 +1,5 @@
 # =============================================
-# ANDROID & GRADLE
+# ANDROID & GRADLE (Cập nhật chi tiết)
 # =============================================
 .gradle/
 build/
@@ -7,14 +7,33 @@ captures/
 .externalNativeBuild/
 .cxx/
 local.properties
-/screenshots
+
+# Gradle cache & temporary files (rất quan trọng)
+*.bin
+*.lock
+fileHashes.bin
+file-system.probe
+buildOutputCleanup.lock
+executionHistory.bin
+executionHistory.lock
+resourceHashesCache.bin
+compile-file-map.properties
+merger.xml
+*.gradle
+*.properties
+*.xml
+
+# Android specific
 *.apk
 *.ap_
 *.dex
 *.class
+/screenshots
+/app/build/
+**/build/
 
 # =============================================
-# IDE - INTELIJ / ANDROID STUDIO
+# IDE - ANDROID STUDIO / INTELLIJ
 # =============================================
 .idea/
 *.iml
@@ -22,12 +41,13 @@ local.properties
 *.ipr
 out/
 .navigation/
+*.log
 
 # =============================================
-# JAVA / SPRING BOOT (MAVEN)
+# JAVA / SPRING BOOT (MAVEN + GRADLE)
 # =============================================
 target/
-*.log
+**/target/
 *.binary
 */out/
 
@@ -36,15 +56,51 @@ target/
 # =============================================
 database/db_data/
 .env
+*.db
 
 # =============================================
-# HỆ ĐIỀU HÀNH (OS)
+# OS GENERATED FILES
 # =============================================
 # Windows
 Thumbs.db
 desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
 
 # macOS
 .DS_Store
 .AppleDouble
 .LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+
+# =============================================
+# MISC / TEMP
+# =============================================
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# =============================================
+# ANDROID SPECIFIC EXTRA (thường bị bỏ sót)
+# =============================================
+**/gradle/wrapper/gradle-wrapper.jar
+**/androidTest/
+**/test/
+**/instrumentTest/
+**/proguard/
+**/proguard-rules.pro
+**/release/
+**/debug/
+
+# Firebase / Google services (nếu có)
+google-services.json

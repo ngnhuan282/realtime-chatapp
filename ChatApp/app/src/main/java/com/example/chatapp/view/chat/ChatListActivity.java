@@ -6,10 +6,11 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatapp.R;
+import com.example.chatapp.adapter.ChatListAdapter;
 import com.example.chatapp.model.Conversation;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.MessageApi;

@@ -1,4 +1,4 @@
-package com.example.chatapp.view.chat;
+package com.example.chatapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.chatapp.R;
 import com.example.chatapp.model.Message;
+import com.example.chatapp.view.chat.VideoPlayerActivity;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;

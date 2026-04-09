@@ -1,5 +1,6 @@
 package com.example.chatapp.network.rest;
 
+import com.example.chatapp.model.ChatGroup;
 import com.example.chatapp.model.Conversation;
 import com.example.chatapp.model.Message;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;

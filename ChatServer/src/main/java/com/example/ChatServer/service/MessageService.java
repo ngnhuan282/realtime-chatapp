@@ -71,7 +71,7 @@ public class MessageService {
         List<ConversationDTO> conversations = new ArrayList<>();
 
         for (Message msg : latestMessages) {
-            if (msg.getGroupId() != null) {
+            if (msg.getGroupId() == null) {
                 // 1. Xác định ID người bạn
                 Integer friendId = msg.getSenderId().equals(userId) ? msg.getReceiverId() : msg.getSenderId();
 
@@ -91,13 +91,13 @@ public class MessageService {
                     }
                 }
             } else {
-                // XỬ LÝ CHAT NHÓM (Cập nhật phần đang bị bỏ trống của bạn)
+                // XỬ LÝ CHAT NHÓM
                 ChatGroup group = groupRepository.findById(msg.getGroupId()).orElse(null);
                 if (group != null) {
                     // Tạm thời chưa đếm unread cho group, gán = 0
                     conversations.add(new ConversationDTO(
                             null, group.getId(), true, group.getGroupName(),
-                            msg.getContent(), msg.getTimestamp(), 0
+                            msg.getContent(), msg.getTimestamp(), 0L
                     ));
                 }
             }

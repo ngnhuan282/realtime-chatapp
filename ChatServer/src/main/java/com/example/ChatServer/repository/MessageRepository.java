@@ -24,18 +24,16 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
          * List<Message> findLatestMessagesByUser(@Param("userId") Integer userId);
          */
         // Thay thế phương thức findLatestMessagesByUser cũ bằng phương thức này
-        @Query(value = "SELECT m.* FROM messages m " +
-                        "INNER JOIN (" +
-                        "  SELECT MAX(id) as max_id FROM messages " +
-                        "  WHERE (senderId = :userId OR receiverId = :userId) AND groupId IS NULL " +
-                        "  GROUP BY CASE WHEN senderId = :userId THEN receiverId ELSE senderId END " +
-                        "  UNION " +
-                        "  SELECT MAX(m2.id) as max_id FROM messages m2 " +
-                        "  INNER JOIN groupMembers gm ON m2.groupId = gm.groupId " +
-                        "  WHERE gm.userId = :userId " +
-                        "  GROUP BY m2.groupId" +
-                        ") latest ON m.id = latest.max_id " +
-                        "ORDER BY m.createdAt DESC", nativeQuery = true)
+        @Query(value = "SELECT * FROM messages WHERE id IN (" +
+            "  SELECT MAX(id) FROM messages " +
+            "  WHERE (senderId = :userId OR receiverId = :userId) AND groupId IS NULL " +
+            "  GROUP BY CASE WHEN senderId = :userId THEN receiverId ELSE senderId END " +
+            "  UNION " +
+            "  SELECT MAX(m.id) FROM messages m " +
+            "  INNER JOIN groupMembers gm ON m.groupId = gm.groupId " +
+            "  WHERE gm.userId = :userId " +
+            "  GROUP BY m.groupId" +
+            ") ORDER BY createdAt DESC", nativeQuery = true)
         List<Message> findLatestMessagesByUser(@Param("userId") Integer userId);
 
         // Đếm số tin nhắn chưa đọc từ một người bạn gửi cho mình

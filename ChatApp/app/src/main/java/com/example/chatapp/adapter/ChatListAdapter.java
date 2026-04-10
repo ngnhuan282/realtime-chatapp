@@ -54,6 +54,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             holder.unreadBadge.setVisibility(View.GONE);
         }
 
+        if (chat.isGroup()) {
+            holder.imgAvatar.setImageResource(R.drawable.ic_group_chat); // Thêm 1 icon ic_group_chat vào drawable của bạn
+        } else {
+            // Logic load avatar user 1-1 (nếu có URL thì dùng Glide, hiện tại bạn đang fix cứng)
+            holder.imgAvatar.setImageResource(R.drawable.sample_avatar);
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(chat);

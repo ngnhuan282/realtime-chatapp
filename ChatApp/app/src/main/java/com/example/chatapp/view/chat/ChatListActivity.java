@@ -16,6 +16,7 @@ import com.example.chatapp.adapter.OnConversationClickListener;
 import com.example.chatapp.model.Conversation;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.MessageApi;
+import com.example.chatapp.network.socket.SocketManager;
 import com.example.chatapp.view.darkmode.BaseActivity;
 import com.example.chatapp.view.people.PeopleActivity;
 import com.example.chatapp.view.setting.SettingsActivity;
@@ -54,8 +55,13 @@ public class ChatListActivity extends BaseActivity {
             @Override
             public void onItemClick(Conversation conversation) {
                 Intent intent = new Intent(ChatListActivity.this, ChatDetailActivity.class);
-                intent.putExtra("friendId", conversation.getFriendId());
-                intent.putExtra("friendName", conversation.getDisplayName());
+                if (conversation.isGroup()) {
+                    intent.putExtra("groupId", conversation.getGroupId());
+                    intent.putExtra("groupName", conversation.getDisplayName());
+                } else {
+                    intent.putExtra("friendId", conversation.getFriendId());
+                    intent.putExtra("friendName", conversation.getDisplayName());
+                }
                 startActivity(intent);
             }
         });
@@ -116,7 +122,23 @@ public class ChatListActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    
+        // 1. Lấy API để load danh sách chat từ DB (load lần đầu)
         fetchConversations();
+
+        // 2. Đăng ký nhận tin nhắn Real-time qua Socket để tự động Refresh
+        Integer myId = getSharedPreferences("ChatAppPrefs", MODE_PRIVATE).getInt("myUserId", -1);
+        if (myId != -1) {
+            SocketManager socketManager = SocketManager.getInstance();
+            socketManager.setMyUserId(myId);
+            socketManager.connect(); // Nếu đã connect, nó sẽ chỉ gửi lại handshake
+        
+            socketManager.setListener(msg -> {
+                // Bất cứ khi nào có tin nhắn mới (kể cả SYSTEM tạo nhóm hay người khác nhắn tin tới)
+                // Ta chỉ cần gọi lại fetchConversations() để update danh sách mới nhất
+                runOnUiThread(() -> fetchConversations());
+            });
+        }
     }
 
     private void fetchConversations() {

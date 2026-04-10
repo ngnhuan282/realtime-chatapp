@@ -2,10 +2,12 @@ package com.example.ChatServer.service;
 
 import com.example.ChatServer.dto.ConversationDTO;
 import com.example.ChatServer.dto.MessageDTO;
+import com.example.ChatServer.entity.ChatGroup;
 import com.example.ChatServer.entity.Message;
 import com.example.ChatServer.entity.User;
 import com.example.ChatServer.repository.MessageRepository;
 import com.example.ChatServer.repository.UserRepository;
+import com.example.ChatServer.repository.GroupRepository;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,9 @@ public class MessageService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GroupRepository groupRepository;
 
     /**
      * 1. Lưu tin nhắn trực tiếp từ đối tượng Entity (Dùng cho Socket)
@@ -66,26 +71,35 @@ public class MessageService {
         List<ConversationDTO> conversations = new ArrayList<>();
 
         for (Message msg : latestMessages) {
-            // 1. Xác định ID người bạn
-            Integer friendId = msg.getSenderId().equals(userId) ? msg.getReceiverId() : msg.getSenderId();
+            if (msg.getGroupId() != null) {
+                // 1. Xác định ID người bạn
+                Integer friendId = msg.getSenderId().equals(userId) ? msg.getReceiverId() : msg.getSenderId();
 
-            // 2. KIỂM TRA QUAN TRỌNG: Chỉ xử lý nếu là chat 1-1 (friendId không null)
-            if (friendId != null) {
-                User friend = userRepository.findById(friendId).orElse(null);
-                if (friend != null) {
-                    long unread = messageRepository.countUnreadMessages(friendId, userId);
+                // 2. KIỂM TRA QUAN TRỌNG: Chỉ xử lý nếu là chat 1-1 (friendId không null)
+                if (friendId != null) {
+                    User friend = userRepository.findById(friendId).orElse(null);
+                    if (friend != null) {
+                        long unread = messageRepository.countUnreadMessages(friendId, userId);
 
-                    conversations.add(new ConversationDTO(
-                            friendId,
-                            friend.getDisplayName(),
-                            msg.getContent(),
-                            msg.getTimestamp(),
-                            unread
-                    ));
+                        conversations.add(new ConversationDTO(
+                                friendId, null, false,
+                                friend.getDisplayName(),
+                                msg.getContent(),
+                                msg.getTimestamp(),
+                                unread
+                        ));
+                    }
                 }
             } else {
-                // Đây là tin nhắn nhóm, tạm thời bỏ qua hoặc xử lý logic Chat Nhóm tại đây
-                System.out.println("Updating...");
+                // XỬ LÝ CHAT NHÓM (Cập nhật phần đang bị bỏ trống của bạn)
+                ChatGroup group = groupRepository.findById(msg.getGroupId()).orElse(null);
+                if (group != null) {
+                    // Tạm thời chưa đếm unread cho group, gán = 0
+                    conversations.add(new ConversationDTO(
+                            null, group.getId(), true, group.getGroupName(),
+                            msg.getContent(), msg.getTimestamp(), 0
+                    ));
+                }
             }
         }
         return conversations;
@@ -153,5 +167,23 @@ public class MessageService {
 
         // Fallback only when ChatServer folder cannot be detected
         return currentDir.resolve("uploads");
+    }
+
+    public List<Message> getGroupHistory(Integer groupId) {
+        List<Message> messages = messageRepository.findByGroupIdOrderByTimestampAsc(groupId);
+    
+        // Quét qua từng tin nhắn, tra ID người gửi để lấy Tên và Avatar
+        for (Message m : messages) {
+            userRepository.findById(m.getSenderId()).ifPresent(user -> {
+                m.setSenderName(user.getDisplayName() != null ? user.getDisplayName() : user.getUsername());
+                m.setSenderAvatar(user.getAvatar());
+            });
+        }
+        return messages;
+    }
+
+    public User getUserById(Integer userId) {
+        if (userId == null)  return null;
+        return userRepository.findById(userId).orElse(null);
     }
 }

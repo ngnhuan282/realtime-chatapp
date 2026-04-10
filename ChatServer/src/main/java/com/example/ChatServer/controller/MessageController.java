@@ -40,4 +40,10 @@ public class MessageController {
     public ResponseEntity<String> uploadVideo(@RequestParam("file") MultipartFile file) {
         return messageService.storeVideo(file);
     }
+
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<List<Message>> getGroupHistory(@PathVariable Integer groupId) {
+        List<Message> history = messageService.getGroupHistory(groupId);
+        return ResponseEntity.ok(history);
+    }
 }

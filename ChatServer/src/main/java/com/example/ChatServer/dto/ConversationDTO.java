@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConversationDTO {
-    private Integer friendId;
+    private Integer friendId; // Sẽ là null nếu đây là nhóm
+    private Integer groupId;  // Sẽ là null nếu đây là chat 1-1
+    private boolean isGroup;
     private String displayName;
     private String lastMessage;
-    private long lastTime; // Dùng timestamp để Android tự format
+    private long lastTime;
     private long unreadCount;
 }

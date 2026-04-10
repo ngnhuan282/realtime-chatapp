@@ -6,11 +6,16 @@ import com.example.ChatServer.dto.response.UserResponse;
 import com.example.ChatServer.entity.ChatGroup;
 import com.example.ChatServer.entity.GroupMember;
 import com.example.ChatServer.entity.User;
+import com.example.ChatServer.entity.Message;
 import com.example.ChatServer.repository.GroupMemberRepository;
 import com.example.ChatServer.repository.GroupRepository;
 import com.example.ChatServer.repository.UserRepository;
+import com.example.ChatServer.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.ChatServer.socket.ClientHandler;
+import com.example.ChatServer.socket.ConnectionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +27,8 @@ public class GroupService {
     @Autowired private GroupRepository groupRepository;
     @Autowired private GroupMemberRepository groupMemberRepository;
     @Autowired private UserRepository userRepository;
+    @Autowired private MessageRepository messageRepository;
+    @Autowired private ObjectMapper objectMapper; 
 
     public GroupResponse createGroup(CreateGroupRequest request) {
         if (request.getCreatorId() == null) {
@@ -47,6 +54,42 @@ public class GroupService {
                     addMember(group, memberId);
                 }
             }
+        }
+
+        // 1. Tạo tin nhắn hệ thống (SYSTEM)
+        Message sysMsg = new Message();
+        sysMsg.setSenderId(creator.getId());
+        sysMsg.setGroupId(group.getId());
+        sysMsg.setContent(creator.getDisplayName() + " đã tạo nhóm " + group.getGroupName());
+        sysMsg.setMessageType("SYSTEM");
+        sysMsg.setStatus("SENT");
+        sysMsg.setTimestamp(System.currentTimeMillis());
+        sysMsg = messageRepository.save(sysMsg); // Lưu vào DB để có ID
+
+        // 2. BẮN SOCKET REALTIME CHO CÁC THÀNH VIÊN ĐANG ONLINE
+        try {
+            // Chuyển Message thành JSON String giống luồng ClientHandler
+            String jsonMsg = objectMapper.writeValueAsString(sysMsg);
+
+            // Gửi cho người tạo (nếu họ đang online bằng thiết bị khác)
+            ClientHandler creatorHandler = ConnectionManager.onlineUsers.get(creator.getId());
+            if (creatorHandler != null) {
+                creatorHandler.sendMessage(jsonMsg);
+            }
+
+            // Gửi cho các thành viên trong nhóm
+            if (request.getMemberIds() != null) {
+                for (Integer memberId : request.getMemberIds()) {
+                    if (memberId != null && !memberId.equals(creator.getId())) {
+                        ClientHandler memberHandler = ConnectionManager.onlineUsers.get(memberId);
+                        if (memberHandler != null) {
+                            memberHandler.sendMessage(jsonMsg);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi gửi Socket khi tạo nhóm: " + e.getMessage());
         }
 
         // Trả về response

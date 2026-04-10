@@ -28,4 +28,16 @@ public class Message {
 
     @Column(name = "createdAt")
     private long timestamp;
+
+    @Transient
+    private String senderName;
+
+    @Transient
+    private String senderAvatar;
+
+    // Thêm Getters/Setters cho 2 trường này
+    public String getSenderName() { return senderName; }
+    public void setSenderName(String senderName) { this.senderName = senderName; }
+    public String getSenderAvatar() { return senderAvatar; }
+    public void setSenderAvatar(String senderAvatar) { this.senderAvatar = senderAvatar; }
 }

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.chatapp.R;
 import com.example.chatapp.model.Message;
 import com.example.chatapp.view.chat.VideoPlayerActivity;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -100,9 +101,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() { return messageList.size(); }
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView txtMessage, txtTime;
+        TextView txtMessage, txtTime, txtSenderName;
         ImageView imgContent;
         Button btnStopLocation;
+        ShapeableImageView imgAvatarReceived;
 
         MessageViewHolder(View itemView) {
             super(itemView);
@@ -113,9 +115,34 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             imgContent = itemView.findViewById(R.id.img_message_content);
             btnStopLocation = itemView.findViewById(R.id.btn_stop_location);
+            txtSenderName = itemView.findViewById(R.id.txt_sender_name);
+            imgAvatarReceived = itemView.findViewById(R.id.img_avatar_received);
         }
 
         void bind(Message message) {
+            if (message.getGroupId() != null && !message.isMe()) {
+                if (txtSenderName != null) {
+                    txtSenderName.setVisibility(View.VISIBLE);
+                    txtSenderName.setText(message.getSenderName() != null ? message.getSenderName() : "Unknown");
+                }
+                
+                if (imgAvatarReceived != null) {
+                    String avatarUrl = message.getSenderAvatar();
+                    if (avatarUrl == null || avatarUrl.trim().isEmpty()) {
+                        avatarUrl = "https://ui-avatars.com/api/?name=" + 
+                            (message.getSenderName() != null ? message.getSenderName() : "U") + "&size=128";
+                    }
+                    Glide.with(itemView.getContext())
+                            .load(avatarUrl)
+                            .placeholder(R.drawable.sample_avatar) // Cập nhật hình mặc định nếu cần
+                            .circleCrop()
+                            .into(imgAvatarReceived);
+                }
+            } else {
+                if (txtSenderName != null) {
+                    txtSenderName.setVisibility(View.GONE);
+                }
+            }
             if ("IMAGE".equals(message.getMessageType())) {
                 if (txtMessage != null) txtMessage.setVisibility(View.GONE);
                 if (imgContent != null) {

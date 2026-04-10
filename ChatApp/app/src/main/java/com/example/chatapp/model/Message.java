@@ -20,6 +20,9 @@ public class Message {
     private transient boolean isMe;        // transient = không serialize
     private transient boolean locationLocked;
 
+    private String senderName;
+    private String senderAvatar;
+
     // Constructor rỗng (bắt buộc cho Gson)
     public Message() {}
 
@@ -64,4 +67,10 @@ public class Message {
 
     public boolean isLocationLocked() { return locationLocked; }
     public void setLocationLocked(boolean locationLocked) { this.locationLocked = locationLocked; }
+
+    public String getSenderName() { return senderName; }
+    public void setSenderName(String senderName) { this.senderName = senderName; }
+
+    public String getSenderAvatar() { return senderAvatar; }
+    public void setSenderAvatar(String senderAvatar) { this.senderAvatar = senderAvatar; }
 }

@@ -74,6 +74,16 @@ public class ClientHandler implements Runnable {
                         System.out.println("⚠️ Người nhận chưa online hoặc chưa handshake: " + msg.getReceiverId());
                     }
 
+                    // Đính kèm tên người gửi trước khi forward đi cho người khác
+                    com.example.ChatServer.entity.User sender = messageService.getUserById(msg.getSenderId());
+                    if (sender != null) {
+                        msg.setSenderName(sender.getDisplayName() != null ? sender.getDisplayName() : sender.getUsername());
+                        msg.setSenderAvatar(sender.getAvatar());
+                    }
+
+                    // Chuyển lại thành chuỗi JSON đã có kèm senderName
+                    String jsonToForward = objectMapper.writeValueAsString(msg);
+
                     // Xử lý forward
                     if (msg.getGroupId() != null && msg.getGroupId() > 0) {
                         // Tin nhắn nhóm
@@ -82,14 +92,14 @@ public class ClientHandler implements Runnable {
                         if (gm.getUser().getId().equals(msg.getSenderId())) continue;
                             ClientHandler handler = ConnectionManager.onlineUsers.get(gm.getUser().getId());
                             if (handler != null) {
-                                handler.sendMessage(input);
+                                handler.sendMessage(jsonToForward);
                             }
                         }
                     } else {
                         // Tin nhắn 1-1
                         ClientHandler receiver = ConnectionManager.onlineUsers.get(msg.getReceiverId());
                         if (receiver != null && receiver != this) {
-                            receiver.sendMessage(input);
+                            receiver.sendMessage(jsonToForward);
                         }
                     }
 

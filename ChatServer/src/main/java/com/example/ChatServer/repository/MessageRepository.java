@@ -8,24 +8,40 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Integer> {
-    // Lấy lịch sử tin nhắn giữa 2 người dùng kiểu Integer
-    List<Message> findBySenderIdAndReceiverIdOrSenderIdAndReceiverIdOrderByTimestampAsc(
-            Integer s1, Integer r1, Integer s2, Integer r2);
+        // Lấy lịch sử tin nhắn giữa 2 người dùng kiểu Integer
+        List<Message> findBySenderIdAndReceiverIdOrSenderIdAndReceiverIdOrderByTimestampAsc(
+                        Integer s1, Integer r1, Integer s2, Integer r2);
 
-    // Truy vấn lấy danh sách tin nhắn mới nhất của mỗi cuộc hội thoại 1-1
-    @Query(value = "SELECT * FROM messages WHERE id IN (" +
-            "  SELECT MAX(id) FROM messages " +
-            "  WHERE senderId = :userId OR receiverId = :userId " +
-            "  GROUP BY CASE " +
-            "    WHEN senderId = :userId THEN receiverId " +
-            "    ELSE senderId END" +
-            ") ORDER BY createdAt DESC", nativeQuery = true)
-    List<Message> findLatestMessagesByUser(@Param("userId") Integer userId);
+        // Truy vấn lấy danh sách tin nhắn mới nhất của mỗi cuộc hội thoại 1-1
+        /*
+         * @Query(value = "SELECT * FROM messages WHERE id IN (" +
+         * "  SELECT MAX(id) FROM messages " +
+         * "  WHERE senderId = :userId OR receiverId = :userId " +
+         * "  GROUP BY CASE " +
+         * "    WHEN senderId = :userId THEN receiverId " +
+         * "    ELSE senderId END" +
+         * ") ORDER BY createdAt DESC", nativeQuery = true)
+         * List<Message> findLatestMessagesByUser(@Param("userId") Integer userId);
+         */
+        // Thay thế phương thức findLatestMessagesByUser cũ bằng phương thức này
+        @Query(value = "SELECT m.* FROM messages m " +
+                        "INNER JOIN (" +
+                        "  SELECT MAX(id) as max_id FROM messages " +
+                        "  WHERE (senderId = :userId OR receiverId = :userId) AND groupId IS NULL " +
+                        "  GROUP BY CASE WHEN senderId = :userId THEN receiverId ELSE senderId END " +
+                        "  UNION " +
+                        "  SELECT MAX(m2.id) as max_id FROM messages m2 " +
+                        "  INNER JOIN groupMembers gm ON m2.groupId = gm.groupId " +
+                        "  WHERE gm.userId = :userId " +
+                        "  GROUP BY m2.groupId" +
+                        ") latest ON m.id = latest.max_id " +
+                        "ORDER BY m.createdAt DESC", nativeQuery = true)
+        List<Message> findLatestMessagesByUser(@Param("userId") Integer userId);
 
-    // Đếm số tin nhắn chưa đọc từ một người bạn gửi cho mình
-    @Query("SELECT COUNT(m) FROM Message m WHERE m.senderId = :friendId " +
-            "AND m.receiverId = :myId AND m.status != 'READ'")
-    long countUnreadMessages(@Param("friendId") Integer friendId, @Param("myId") Integer myId);
-    
-    List<Message> findByGroupIdOrderByTimestampAsc(Integer groupId);
+        // Đếm số tin nhắn chưa đọc từ một người bạn gửi cho mình
+        @Query("SELECT COUNT(m) FROM Message m WHERE m.senderId = :friendId " +
+                        "AND m.receiverId = :myId AND m.status != 'READ'")
+        long countUnreadMessages(@Param("friendId") Integer friendId, @Param("myId") Integer myId);
+
+        List<Message> findByGroupIdOrderByTimestampAsc(Integer groupId);
 }

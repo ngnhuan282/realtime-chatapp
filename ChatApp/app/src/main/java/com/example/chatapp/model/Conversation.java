@@ -1,22 +1,22 @@
 package com.example.chatapp.model;
 
+import com.google.gson.annotations.SerializedName;
 public class Conversation {
     private Integer friendId;
+    private Integer groupId;
+    
+    @SerializedName("group")
+    private boolean isGroup;
+    
     private String displayName;
     private String lastMessage;
-    private long lastTime; // Server trả về timestamp
+    private long lastTime; 
     private int unreadCount;
 
-    // Constructor, Getters và Setters
-    public Conversation(Integer friendId, String displayName, String lastMessage, long lastTime, int unreadCount) {
-        this.friendId = friendId;
-        this.displayName = displayName;
-        this.lastMessage = lastMessage;
-        this.lastTime = lastTime;
-        this.unreadCount = unreadCount;
-    }
-
+    // Các Getters / Setters
     public Integer getFriendId() { return friendId; }
+    public Integer getGroupId() { return groupId; }
+    public boolean isGroup() { return isGroup; }
     public String getDisplayName() { return displayName; }
     public String getLastMessage() { return lastMessage; }
     public long getLastTime() { return lastTime; }

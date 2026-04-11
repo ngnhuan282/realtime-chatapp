@@ -67,43 +67,43 @@ public class MessageService {
     }
 
     public List<ConversationDTO> getConversationList(Integer userId) {
-        List<Message> latestMessages = messageRepository.findLatestMessagesByUser(userId);
+        // 1. Lấy riêng lẻ 2 loại tin nhắn
+        List<Message> latest1To1 = messageRepository.findLatest1To1Messages(userId);
+        List<Message> latestGroup = messageRepository.findLatestGroupMessages(userId);
+
+        // 2. Gộp lại và sắp xếp theo thời gian mới nhất (DESC)
+        List<Message> allLatest = new ArrayList<>();
+        allLatest.addAll(latest1To1);
+        allLatest.addAll(latestGroup);
+        allLatest.sort((m1, m2) -> Long.compare(m2.getTimestamp(), m1.getTimestamp()));
+
         List<ConversationDTO> conversations = new ArrayList<>();
 
-        for (Message msg : latestMessages) {
-            if (msg.getGroupId() == null) {
-                // 1. Xác định ID người bạn
-                Integer friendId = msg.getSenderId().equals(userId) ? msg.getReceiverId() : msg.getSenderId();
-
-                // 2. KIỂM TRA QUAN TRỌNG: Chỉ xử lý nếu là chat 1-1 (friendId không null)
-                if (friendId != null) {
-                    User friend = userRepository.findById(friendId).orElse(null);
-                    if (friend != null) {
-                        long unread = messageRepository.countUnreadMessages(friendId, userId);
-
-                        conversations.add(new ConversationDTO(
-                                friendId, null, false,
-                                friend.getDisplayName(),
-                                msg.getContent(),
-                                msg.getTimestamp(),
-                                unread
-                        ));
-                    }
-                }
-            } else {
-                // XỬ LÝ CHAT NHÓM
-                ChatGroup group = groupRepository.findById(msg.getGroupId()).orElse(null);
-                if (group != null) {
-                    // Tạm thời chưa đếm unread cho group, gán = 0
+        for (Message msg : allLatest) {
+        if (msg.getGroupId() == null) {
+            Integer friendId = msg.getSenderId().equals(userId) ? msg.getReceiverId() : msg.getSenderId();
+            if (friendId != null) {
+                User friend = userRepository.findById(friendId).orElse(null);
+                if (friend != null) {
+                    long unread = messageRepository.countUnreadMessages(friendId, userId);
                     conversations.add(new ConversationDTO(
-                            null, group.getId(), true, group.getGroupName(),
-                            msg.getContent(), msg.getTimestamp(), 0L
+                            friendId, null, false, friend.getDisplayName(),
+                            msg.getContent(), msg.getTimestamp(), unread
                     ));
                 }
             }
+        } else {
+            ChatGroup group = groupRepository.findById(msg.getGroupId()).orElse(null);
+            if (group != null) {
+                conversations.add(new ConversationDTO(
+                        null, group.getId(), true, group.getGroupName(),
+                        msg.getContent(), msg.getTimestamp(), 0L
+                ));
+            }
         }
-        return conversations;
     }
+    return conversations;
+}
 
     public ResponseEntity<String> storeFile(MultipartFile file) {
         return storeFileInternal(file, null);

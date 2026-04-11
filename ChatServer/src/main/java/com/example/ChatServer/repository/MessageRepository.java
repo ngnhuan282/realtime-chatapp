@@ -12,29 +12,22 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
         List<Message> findBySenderIdAndReceiverIdOrSenderIdAndReceiverIdOrderByTimestampAsc(
                         Integer s1, Integer r1, Integer s2, Integer r2);
 
-        // Truy vấn lấy danh sách tin nhắn mới nhất của mỗi cuộc hội thoại 1-1
-        /*
-         * @Query(value = "SELECT * FROM messages WHERE id IN (" +
-         * "  SELECT MAX(id) FROM messages " +
-         * "  WHERE senderId = :userId OR receiverId = :userId " +
-         * "  GROUP BY CASE " +
-         * "    WHEN senderId = :userId THEN receiverId " +
-         * "    ELSE senderId END" +
-         * ") ORDER BY createdAt DESC", nativeQuery = true)
-         * List<Message> findLatestMessagesByUser(@Param("userId") Integer userId);
-         */
-        // Thay thế phương thức findLatestMessagesByUser cũ bằng phương thức này
+         // Truy vấn lấy tin nhắn 1-1 mới nhất
         @Query(value = "SELECT * FROM messages WHERE id IN (" +
             "  SELECT MAX(id) FROM messages " +
             "  WHERE (senderId = :userId OR receiverId = :userId) AND groupId IS NULL " +
             "  GROUP BY CASE WHEN senderId = :userId THEN receiverId ELSE senderId END " +
-            "  UNION " +
+            ") ORDER BY createdAt DESC", nativeQuery = true)
+        List<Message> findLatest1To1Messages(@Param("userId") Integer userId);
+
+        // Truy vấn lấy tin nhắn Nhóm mới nhất
+        @Query(value = "SELECT * FROM messages WHERE id IN (" +
             "  SELECT MAX(m.id) FROM messages m " +
             "  INNER JOIN groupMembers gm ON m.groupId = gm.groupId " +
             "  WHERE gm.userId = :userId " +
             "  GROUP BY m.groupId" +
             ") ORDER BY createdAt DESC", nativeQuery = true)
-        List<Message> findLatestMessagesByUser(@Param("userId") Integer userId);
+        List<Message> findLatestGroupMessages(@Param("userId") Integer userId);
 
         // Đếm số tin nhắn chưa đọc từ một người bạn gửi cho mình
         @Query("SELECT COUNT(m) FROM Message m WHERE m.senderId = :friendId " +

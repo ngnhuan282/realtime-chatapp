@@ -82,20 +82,18 @@ public class UserSelectAdapter extends RecyclerView.Adapter<UserSelectAdapter.Us
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(selectedUserIds.contains(user.getId()));
 
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                if (!selectedUserIds.contains(user.getId())) {
-                    selectedUserIds.add(user.getId());
-                }
-            } else {
-                selectedUserIds.remove(Integer.valueOf(user.getId()));
-            }
-        });
-
-        // Click cả item để chọn
         holder.itemView.setOnClickListener(v -> {
-            boolean isCurrentlyChecked = holder.checkBox.isChecked();
-            holder.checkBox.setChecked(!isCurrentlyChecked);
+            boolean isCurrentlySelected = selectedUserIds.contains(user.getId());
+
+            if (isCurrentlySelected) {
+                // Đang chọn -> Hủy chọn
+                selectedUserIds.remove(Integer.valueOf(user.getId()));
+                holder.checkBox.setChecked(false);
+            } else {
+                // Đang không chọn -> Chọn
+                selectedUserIds.add(user.getId());
+                holder.checkBox.setChecked(true);
+            }
         });
     }
 

@@ -55,9 +55,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         }
 
         if (chat.isGroup()) {
-            holder.imgAvatar.setImageResource(R.drawable.ic_group_chat); // Thêm 1 icon ic_group_chat vào drawable của bạn
+            holder.imgAvatar.setImageResource(R.drawable.ic_chat_bubble); 
         } else {
-            // Logic load avatar user 1-1 (nếu có URL thì dùng Glide, hiện tại bạn đang fix cứng)
             holder.imgAvatar.setImageResource(R.drawable.sample_avatar);
         }
 

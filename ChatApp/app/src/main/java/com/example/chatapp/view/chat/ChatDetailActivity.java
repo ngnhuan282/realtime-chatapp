@@ -184,10 +184,14 @@ public class ChatDetailActivity extends BaseActivity {
         boolean belongToThisChat = false;
 
         if (isGroupChat) {
+            // Nếu đang mở chat Nhóm -> Chỉ nhận tin nhắn có groupId trùng khớp
             belongToThisChat = msg.getGroupId() != null && msg.getGroupId().equals(groupId);
         } else {
-            belongToThisChat = (msg.getSenderId() != null && msg.getSenderId().equals(friendId)) ||
-                    (msg.getReceiverId() != null && msg.getReceiverId().equals(friendId));
+            // Nếu đang mở chat 1-1 -> Bắt buộc groupId phải bằng NULL
+            // Và người gửi/nhận phải trùng khớp với người đang chat
+            belongToThisChat = msg.getGroupId() == null && 
+                    ((msg.getSenderId() != null && msg.getSenderId().equals(friendId)) ||
+                     (msg.getReceiverId() != null && msg.getReceiverId().equals(friendId)));
         }
 
         if (belongToThisChat) {

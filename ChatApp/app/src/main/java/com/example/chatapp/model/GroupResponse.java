@@ -1,7 +1,11 @@
 package com.example.chatapp.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class GroupResponse {
+    @SerializedName("id")
     private Integer groupId;
+    
     private String groupName;
     private String message; // thông báo từ server
 

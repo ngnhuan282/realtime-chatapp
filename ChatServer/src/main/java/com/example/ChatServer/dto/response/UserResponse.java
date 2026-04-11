@@ -22,5 +22,9 @@ public class UserResponse {
     }
 
     public UserResponse(Integer id, String username, String displayName, String phoneNumber, String avatar) {
+        this.id = id;
+        this.username = username;
+        this.displayName = displayName;
+        this.avatar = avatar;
     }
 }

@@ -28,7 +28,7 @@ public class GroupService {
     @Autowired private GroupMemberRepository groupMemberRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private MessageRepository messageRepository;
-    @Autowired private ObjectMapper objectMapper; 
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public GroupResponse createGroup(CreateGroupRequest request) {
         if (request.getCreatorId() == null) {

@@ -19,6 +19,6 @@ public class ChatGroup {
     @JoinColumn(name = "createdBy")
     private User creator;
 
-    @Column(insertable = false, updatable = false)
+    @Column(name = "createdAt")
     private long createdAt;
 }

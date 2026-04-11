@@ -20,5 +20,5 @@ public class ChatGroup {
     private User creator;
 
     @Column(name = "createdAt")
-    private long createdAt;
+    private Long createdAt;
 }

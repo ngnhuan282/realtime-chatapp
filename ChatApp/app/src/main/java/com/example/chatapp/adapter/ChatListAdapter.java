@@ -55,7 +55,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         }
 
         if (chat.isGroup()) {
-            holder.imgAvatar.setImageResource(R.drawable.ic_chat_bubble); 
+            holder.imgAvatar.setImageResource(R.drawable.ic_chatgroup);
         } else {
             holder.imgAvatar.setImageResource(R.drawable.sample_avatar);
         }

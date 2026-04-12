@@ -94,6 +94,7 @@ id img_message_content
 id img_status_pending
 id img_status_sending
 id layoutActions
+id layoutContent
 id layoutDivider
 id layoutHeader
 id layoutInput

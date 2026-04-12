@@ -47,6 +47,7 @@ public class PeopleActivity extends BaseActivity {
 
     private UserAdapter userAdapter;
     private final List<User> userList = new ArrayList<>();
+    private final List<User> incomingRequests = new ArrayList<>();
     private Integer myUserId;
 
     private UserApi userApi;
@@ -56,6 +57,8 @@ public class PeopleActivity extends BaseActivity {
     private final Set<Integer> friendUserIds = new HashSet<>();
     private final Set<Integer> incomingRequestUserIds = new HashSet<>();
     private static final String PREF_SENT_REQUESTS = "sent_friend_requests";
+
+    private boolean isSearching = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +77,18 @@ public class PeopleActivity extends BaseActivity {
 
         loadSentRequestsFromPrefs();
 
-        fetchMyFriends();
-        fetchIncomingRequests();
-        fetchSentRequests();
-
         initViews();
         setupRecyclerView();
         bindMyAvatar();
         setupSearch();
         setupBottomNavigation();
 
-        showEmptyState("Nhập số điện thoại để tìm kiếm bạn bè");
+        // Mặc định: nếu có lời mời kết bạn đến thì hiển thị luôn.
+        showIncomingOrEmpty();
+
+        fetchMyFriends();
+        fetchIncomingRequests();
+        fetchSentRequests();
     }
 
     private void loadSentRequestsFromPrefs() {
@@ -95,7 +99,8 @@ public class PeopleActivity extends BaseActivity {
             for (String idStr : ids) {
                 try {
                     sentRequestUserIds.add(Integer.parseInt(idStr.trim()));
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
         }
     }
@@ -104,7 +109,8 @@ public class PeopleActivity extends BaseActivity {
         SharedPreferences prefs = getSharedPreferences(PREF_SENT_REQUESTS, MODE_PRIVATE);
         StringBuilder sb = new StringBuilder();
         for (Integer id : sentRequestUserIds) {
-            if (sb.length() > 0) sb.append(",");
+            if (sb.length() > 0)
+                sb.append(",");
             sb.append(id);
         }
         prefs.edit().putString("sent_ids", sb.toString()).apply();
@@ -118,7 +124,8 @@ public class PeopleActivity extends BaseActivity {
     }
 
     private void setupRecyclerView() {
-        userAdapter = new UserAdapter(this, userList, myUserId, friendApi, sentRequestUserIds, friendUserIds, incomingRequestUserIds);
+        userAdapter = new UserAdapter(this, userList, myUserId, friendApi, sentRequestUserIds, friendUserIds,
+                incomingRequestUserIds);
         rvUsers.setLayoutManager(new LinearLayoutManager(this));
         rvUsers.setAdapter(userAdapter);
     }
@@ -129,17 +136,35 @@ public class PeopleActivity extends BaseActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String phone = s.toString().trim();
                 if (phone.length() >= 9) {
+                    isSearching = true;
                     searchUserByPhone(phone);
                 } else {
-                    showEmptyState("Nhập số điện thoại để tìm kiếm bạn bè");
+                    isSearching = false;
+                    showIncomingOrEmpty();
                 }
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
+    }
+
+    private void showIncomingOrEmpty() {
+        if (incomingRequests.isEmpty()) {
+            showEmptyState("Nhập số điện thoại để tìm kiếm bạn bè");
+            return;
+        }
+
+        userList.clear();
+        userList.addAll(incomingRequests);
+        if (userAdapter != null)
+            userAdapter.notifyDataSetChanged();
+        showResults();
     }
 
     private void searchUserByPhone(String phoneNumber) {
@@ -149,7 +174,8 @@ public class PeopleActivity extends BaseActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     User found = response.body();
 
-                    // Local override để UI đúng ngay cả khi backend chưa trả friendshipStatus trong user.
+                    // Local override để UI đúng ngay cả khi backend chưa trả friendshipStatus trong
+                    // user.
                     if (found.getId() != null) {
                         int foundId = found.getId();
                         if (friendUserIds.contains(foundId)) {
@@ -189,7 +215,8 @@ public class PeopleActivity extends BaseActivity {
     public void markAsSentRequest(int userId) {
         sentRequestUserIds.add(userId);
         incomingRequestUserIds.remove(userId);
-        saveSentRequestsToPrefs();           // Lưu bền vững
+        incomingRequests.removeIf(u -> u != null && u.getId() != null && u.getId() == userId);
+        saveSentRequestsToPrefs(); // Lưu bền vững
         if (userAdapter != null) {
             userAdapter.notifyDataSetChanged();
         }
@@ -199,6 +226,7 @@ public class PeopleActivity extends BaseActivity {
         friendUserIds.add(userId);
         sentRequestUserIds.remove(userId);
         incomingRequestUserIds.remove(userId);
+        incomingRequests.removeIf(u -> u != null && u.getId() != null && u.getId() == userId);
         saveSentRequestsToPrefs();
 
         for (User u : userList) {
@@ -209,6 +237,11 @@ public class PeopleActivity extends BaseActivity {
 
         if (userAdapter != null) {
             userAdapter.notifyDataSetChanged();
+        }
+
+        // Nếu đang ở chế độ mặc định (không search) thì refresh list lời mời.
+        if (!isSearching && edtSearchPhone != null && edtSearchPhone.getText().toString().trim().length() < 9) {
+            showIncomingOrEmpty();
         }
     }
 
@@ -223,7 +256,8 @@ public class PeopleActivity extends BaseActivity {
                             friendUserIds.add(u.getId());
                         }
                     }
-                    if (userAdapter != null) userAdapter.notifyDataSetChanged();
+                    if (userAdapter != null)
+                        userAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -240,12 +274,21 @@ public class PeopleActivity extends BaseActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     incomingRequestUserIds.clear();
+                    incomingRequests.clear();
                     for (User u : response.body()) {
                         if (u != null && u.getId() != null) {
                             incomingRequestUserIds.add(u.getId());
+                            incomingRequests.add(u);
                         }
                     }
-                    if (userAdapter != null) userAdapter.notifyDataSetChanged();
+
+                    // Nếu chưa search thì hiển thị danh sách lời mời đến ngay.
+                    if (!isSearching && edtSearchPhone != null
+                            && edtSearchPhone.getText().toString().trim().length() < 9) {
+                        showIncomingOrEmpty();
+                    } else if (userAdapter != null) {
+                        userAdapter.notifyDataSetChanged();
+                    }
                 }
             }
 
@@ -269,7 +312,8 @@ public class PeopleActivity extends BaseActivity {
                         }
                     }
                     saveSentRequestsToPrefs();
-                    if (userAdapter != null) userAdapter.notifyDataSetChanged();
+                    if (userAdapter != null)
+                        userAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -284,9 +328,9 @@ public class PeopleActivity extends BaseActivity {
         String myName = getSharedPreferences("ChatAppPrefs", MODE_PRIVATE).getString("myDisplayName", "Me");
         String avatar = getSharedPreferences("ChatAppPrefs", MODE_PRIVATE).getString("myAvatar", null);
 
-        String url = (avatar == null || avatar.trim().isEmpty()) ?
-                "https://ui-avatars.com/api/?name=" + URLEncoder.encode(myName, StandardCharsets.UTF_8) + "&size=128" :
-                avatar;
+        String url = (avatar == null || avatar.trim().isEmpty())
+                ? "https://ui-avatars.com/api/?name=" + URLEncoder.encode(myName, StandardCharsets.UTF_8) + "&size=128"
+                : avatar;
 
         Glide.with(this)
                 .load(url)
@@ -300,7 +344,8 @@ public class PeopleActivity extends BaseActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_people) return true;
+            if (id == R.id.nav_people)
+                return true;
             else if (id == R.id.nav_chats) {
                 startActivity(new Intent(this, ChatListActivity.class));
                 finish();
@@ -323,7 +368,8 @@ public class PeopleActivity extends BaseActivity {
         socketManager.setMyUserId(myUserId);
         socketManager.connect();
         socketManager.setFriendshipListener((userIdA, userIdB) -> {
-            if (myUserId == null || myUserId == -1) return;
+            if (myUserId == null || myUserId == -1)
+                return;
             if (myUserId == userIdA) {
                 runOnUiThread(() -> markAsFriend(userIdB));
             } else if (myUserId == userIdB) {

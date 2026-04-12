@@ -19,8 +19,8 @@ public class FriendService {
     private final FriendshipSocketNotifier friendshipSocketNotifier;
 
     public FriendService(FriendshipRepository friendshipRepository,
-                         UserRepository userRepository,
-                         FriendshipSocketNotifier friendshipSocketNotifier) {
+            UserRepository userRepository,
+            FriendshipSocketNotifier friendshipSocketNotifier) {
         this.friendshipRepository = friendshipRepository;
         this.userRepository = userRepository;
         this.friendshipSocketNotifier = friendshipSocketNotifier;
@@ -77,10 +77,10 @@ public class FriendService {
 
         for (Friendship f : pending) {
             Integer senderId = f.getUser1Id();
-            if (senderId == null) continue;
-            userRepository.findById(senderId).ifPresent(u ->
-                    senders.add(new UserResponse(u.getId(), u.getUsername(), u.getDisplayName(), u.getPhoneNumber(), u.getAvatar()))
-            );
+            if (senderId == null)
+                continue;
+            userRepository.findById(senderId).ifPresent(u -> senders.add(new UserResponse(u.getId(), u.getUsername(),
+                    u.getDisplayName(), u.getPhoneNumber(), u.getAvatar())));
         }
         return senders;
     }
@@ -92,24 +92,23 @@ public class FriendService {
 
         for (Friendship f : pending) {
             Integer receiverId = f.getUser2Id();
-            if (receiverId == null) continue;
-            userRepository.findById(receiverId).ifPresent(u ->
-                    receivers.add(new UserResponse(u.getId(), u.getUsername(), u.getDisplayName(), u.getPhoneNumber(), u.getAvatar()))
-            );
+            if (receiverId == null)
+                continue;
+            userRepository.findById(receiverId).ifPresent(u -> receivers.add(new UserResponse(u.getId(),
+                    u.getUsername(), u.getDisplayName(), u.getPhoneNumber(), u.getAvatar())));
         }
         return receivers;
     }
 
     public List<UserResponse> getMyFriends(int userId) {
         // Chỉ lấy những người có status là ACCEPTED
-        List<Friendship> friendships = friendshipRepository.findByStatusAndUser1IdOrUser2Id("ACCEPTED", userId, userId);
+        List<Friendship> friendships = friendshipRepository.findFriendshipsByStatusForUser("ACCEPTED", userId);
         List<UserResponse> friends = new ArrayList<>();
 
         for (Friendship f : friendships) {
             int friendId = (f.getUser1Id() == userId) ? f.getUser2Id() : f.getUser1Id();
-            userRepository.findById(friendId).ifPresent(u ->
-                    friends.add(new UserResponse(u.getId(), u.getUsername(), u.getDisplayName(), u.getPhoneNumber(), u.getAvatar()))
-            );
+            userRepository.findById(friendId).ifPresent(u -> friends.add(new UserResponse(u.getId(), u.getUsername(),
+                    u.getDisplayName(), u.getPhoneNumber(), u.getAvatar())));
         }
         return friends;
     }

@@ -260,7 +260,7 @@ public class ChatDetailActivity extends BaseActivity {
 
         if (isGroupChat) {
             newMsg.setGroupId(groupId);
-            newMsg.setReceiverId(null);
+            newMsg.setReceiverId(0);
         } else {
             newMsg.setReceiverId(friendId);
             newMsg.setGroupId(null);

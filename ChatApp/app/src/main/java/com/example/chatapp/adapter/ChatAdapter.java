@@ -126,10 +126,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(Message message) {
-            if (message.getGroupId() != null && !message.isMe()) {
+            if (message.getGroupId() != null && message.getGroupId() > 0 && !message.isMe()) {
                 if (txtSenderName != null) {
                     txtSenderName.setVisibility(View.VISIBLE);
-                    txtSenderName.setText(message.getSenderName() != null ? message.getSenderName() : "Unknown");
+                    txtSenderName.setText(message.getSenderName() != null ? message.getSenderName() : "Người dùng");
                 }
                 
                 if (imgAvatarReceived != null) {

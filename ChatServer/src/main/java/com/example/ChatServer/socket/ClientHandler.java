@@ -1,13 +1,17 @@
 package com.example.ChatServer.socket;
 
-import com.example.ChatServer.entity.GroupMember;
-import com.example.ChatServer.entity.Message;
-import com.example.ChatServer.service.MessageService;
-import com.example.ChatServer.repository.GroupMemberRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+
+import com.example.ChatServer.entity.GroupMember;
+import com.example.ChatServer.entity.Message;
+import com.example.ChatServer.repository.GroupMemberRepository;
+import com.example.ChatServer.service.MessageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ClientHandler implements Runnable {
 
@@ -57,7 +61,10 @@ public class ClientHandler implements Runnable {
                     }
 
                     // ==================== TIN NHẮN THẬT ====================
-                    if (msg.getReceiverId() == null || msg.getReceiverId() == 0) {
+                    boolean isPrivate = (msg.getReceiverId() != null && msg.getReceiverId() > 0);
+                    boolean isGroup = (msg.getGroupId() != null && msg.getGroupId() > 0);
+
+                    if (!isPrivate && !isGroup) {
                         System.out.println("Tin nhắn không có receiverId hợp lệ");
                         continue;
                     }
@@ -65,6 +72,14 @@ public class ClientHandler implements Runnable {
                     System.out.println("Nhận tin từ User " + msg.getSenderId()
                             + " → " + msg.getReceiverId()
                             + " | Nội dung: " + msg.getContent());
+
+                          
+                    // Đính kèm tên người gửi trước khi forward đi cho người khác
+                    com.example.ChatServer.entity.User sender = messageService.getUserById(msg.getSenderId());
+                    if (sender != null) {
+                        msg.setSenderName(sender.getDisplayName() != null ? sender.getDisplayName() : sender.getUsername());
+                        msg.setSenderAvatar(sender.getAvatar());
+                    }
 
                     // Lưu vào Database
                     messageService.saveMessage(msg);
@@ -79,34 +94,33 @@ public class ClientHandler implements Runnable {
                         System.out.println("⚠️ Người nhận chưa online hoặc chưa handshake: " + msg.getReceiverId());
                     }
 
-                    // Đính kèm tên người gửi trước khi forward đi cho người khác
-                    com.example.ChatServer.entity.User sender = messageService.getUserById(msg.getSenderId());
-                    if (sender != null) {
-                        msg.setSenderName(sender.getDisplayName() != null ? sender.getDisplayName() : sender.getUsername());
-                        msg.setSenderAvatar(sender.getAvatar());
-                    }
+                    
 
                     // Chuyển lại thành chuỗi JSON đã có kèm senderName
                     String jsonToForward = objectMapper.writeValueAsString(msg);
 
-                    // Xử lý forward
-                    if (msg.getGroupId() != null && msg.getGroupId() > 0) {
-                        // Tin nhắn nhóm
+                    // FORWARD REALTIME
+                    if (isGroup) {
+                        // TIN NHẮN NHÓM
                         List<GroupMember> members = groupMemberRepository.findByGroupId(msg.getGroupId());
                         for (GroupMember gm : members) {
-                        if (gm.getUser().getId().equals(msg.getSenderId())) continue;
+                            // Không gửi lại cho chính mình (vì client đã hiển thị rồi)
+                            if (gm.getUser().getId().equals(currentUserId)) continue;
+
                             ClientHandler handler = ConnectionManager.onlineUsers.get(gm.getUser().getId());
                             if (handler != null) {
                                 handler.sendMessage(jsonToForward);
                             }
                         }
+                        System.out.println("✅ Đã forward tin nhóm " + msg.getGroupId());
                     } else {
-                        // Tin nhắn 1-1
+                        // TIN NHẮN 1-1
                         ClientHandler receiver = ConnectionManager.onlineUsers.get(msg.getReceiverId());
-                        if (receiver != null && receiver != this) {
+                        if (receiver != null) {
                             receiver.sendMessage(jsonToForward);
+                            System.out.println("✅ Đã forward tin 1-1 tới User: " + msg.getReceiverId());
                         }
-                    }
+                }
 
                 } catch (Exception e) {
                     System.err.println("Lỗi parse JSON: " + e.getMessage() + " | Input: " + input);

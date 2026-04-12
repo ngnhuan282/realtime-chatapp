@@ -38,8 +38,8 @@ import com.example.chatapp.view.darkmode.BaseActivity;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -65,7 +65,6 @@ public class ChatDetailActivity extends BaseActivity {
     private ChatAdapter adapter;
     private List<Message> messages = new ArrayList<>();
     private SocketManager socketManager;
-
     private EditText edtMessage;
     private RecyclerView rvMessages;
     private EmojiPickerView emojiPicker;
@@ -81,61 +80,54 @@ public class ChatDetailActivity extends BaseActivity {
     private Integer groupId = -1;
     private boolean isGroupChat = false;
     private String groupName;
+
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;
     private boolean isInternetAvailable = true;
 
     private final Gson gson = new Gson();
     private final Runnable hideBannerRunnable = this::hideConnectionBanner;
+
     private SharedPreferences cachePrefs;
 
     // Launchers
     private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
+            new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
                     Log.d("Picker", "Đã chọn URI: " + uri);
                     uploadFile(uri, "IMAGE");
                 }
-            }
-    );
+            });
 
     private final ActivityResultLauncher<String> videoPickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
+            new ActivityResultContracts.GetContent(), uri -> {
                 if (uri != null) {
                     Log.d("Picker", "Đã chọn URI video: " + uri);
                     uploadFile(uri, "VIDEO");
                 }
-            }
-    );
+            });
 
     private final ActivityResultLauncher<String> locationPermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),
-            isGranted -> {
+            new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     shareCurrentLocationInternal();
                 } else {
                     Toast.makeText(this, "Bạn cần cấp quyền vị trí để gửi location", Toast.LENGTH_SHORT).show();
                 }
-            }
-    );
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_detail);
 
-        // Lấy myUserId
         SharedPreferences sharedPref = getSharedPreferences("ChatAppPrefs", Context.MODE_PRIVATE);
         myUserId = sharedPref.getInt("myUserId", -1);
 
-        // Nhận dữ liệu từ Intent (hỗ trợ cả chat 1-1 và chat nhóm)
         friendId = getIntent().getIntExtra("friendId", -1);
         friendName = getIntent().getStringExtra("friendName");
         groupId = getIntent().getIntExtra("groupId", -1);
         groupName = getIntent().getStringExtra("groupName");
-
         isGroupChat = groupId != -1;
 
         initViews();
@@ -144,12 +136,9 @@ public class ChatDetailActivity extends BaseActivity {
         cachePrefs = getSharedPreferences("ChatCachePrefs", MODE_PRIVATE);
         setupNetworkMonitoring();
 
-        // Kết nối Socket
         socketManager = SocketManager.getInstance();
         socketManager.setMyUserId(myUserId);
-        socketManager.setListener(msg -> {
-            runOnUiThread(() -> handleNewMessage(msg));
-        });
+        socketManager.setListener(msg -> runOnUiThread(() -> handleNewMessage(msg)));
         socketManager.setConnectionListener(connected -> runOnUiThread(() -> {
             if (connected) {
                 showConnectionBanner("Đang kết nối...", false, true);
@@ -157,13 +146,11 @@ public class ChatDetailActivity extends BaseActivity {
                 showConnectionBanner("Mất kết nối Internet", true, false);
             }
         }));
-        socketManager.setMessageStatusListener((localId, status) ->
-                runOnUiThread(() -> updateLocalMessageStatus(localId, status)));
+        socketManager.setMessageStatusListener((localId, status) -> runOnUiThread(() -> updateLocalMessageStatus(localId, status)));
         socketManager.connect();
 
         loadCachedMessages();
 
-        // Load dữ liệu phù hợp
         if (!isInternetAvailable) {
             showConnectionBanner("Mất kết nối Internet", true, false);
         } else {
@@ -177,7 +164,6 @@ public class ChatDetailActivity extends BaseActivity {
             }
         }
 
-        // Xử lý sự kiện
         btnSend.setOnClickListener(v -> sendTextMessage());
         btnAttach.setOnClickListener(v -> showAttachmentPicker());
         btnEmoji.setOnClickListener(v -> toggleEmojiPicker());
@@ -215,29 +201,6 @@ public class ChatDetailActivity extends BaseActivity {
         });
     }
 
-    private void handleNewMessage(Message msg) {
-        boolean belongToThisChat = false;
-
-        if (isGroupChat) {
-            // Nếu đang mở chat Nhóm -> Chỉ nhận tin nhắn có groupId trùng khớp
-            belongToThisChat = msg.getGroupId() != null && msg.getGroupId().equals(groupId);
-        } else {
-            // Nếu đang mở chat 1-1 -> Bắt buộc groupId phải bằng NULL
-            // Và người gửi/nhận phải trùng khớp với người đang chat
-            belongToThisChat = msg.getGroupId() == null && 
-                    ((msg.getSenderId() != null && msg.getSenderId().equals(friendId)) ||
-                     (msg.getReceiverId() != null && msg.getReceiverId().equals(friendId)));
-        }
-
-        if (belongToThisChat) {
-            msg.setMe(msg.getSenderId() != null && msg.getSenderId().equals(myUserId));
-            messages.add(msg);
-            adapter.notifyItemInserted(messages.size() - 1);
-            rvMessages.scrollToPosition(messages.size() - 1);
-            saveMessagesToCache();
-        }
-    }
-
     private void sendTextMessage() {
         String text = edtMessage.getText().toString().trim();
         if (!text.isEmpty()) {
@@ -248,7 +211,6 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private void sendSocketMessage(String content, String type) {
-        boolean hasInternet = hasInternetConnection();
         Message newMsg = new Message();
         newMsg.setLocalId(UUID.randomUUID().toString());
         newMsg.setSenderId(myUserId);
@@ -260,7 +222,7 @@ public class ChatDetailActivity extends BaseActivity {
 
         if (isGroupChat) {
             newMsg.setGroupId(groupId);
-            newMsg.setReceiverId(0);
+            newMsg.setReceiverId(null);           // ← ĐÃ FIX: null cho tin nhắn nhóm
         } else {
             newMsg.setReceiverId(friendId);
             newMsg.setGroupId(null);
@@ -271,16 +233,33 @@ public class ChatDetailActivity extends BaseActivity {
         rvMessages.scrollToPosition(messages.size() - 1);
         saveMessagesToCache();
 
-        if (!hasInternet) {
+        if (!hasInternetConnection()) {
             showConnectionBanner("Mất kết nối Internet", true, false);
         }
 
         try {
             socketManager.sendMessage(newMsg);
         } catch (Exception e) {
-            newMsg.setStatus(Message.STATUS_SENDING);
-            updateLocalMessageStatus(newMsg.getLocalId(), Message.STATUS_SENDING);
             Log.e("ChatDetail", "Send message error: " + e.getMessage());
+        }
+    }
+
+    private void handleNewMessage(Message msg) {
+        boolean belongToThisChat = false;
+        if (isGroupChat) {
+            belongToThisChat = msg.getGroupId() != null && msg.getGroupId().equals(groupId);
+        } else {
+            belongToThisChat = msg.getGroupId() == null &&
+                    ((msg.getSenderId() != null && msg.getSenderId().equals(friendId)) ||
+                            (msg.getReceiverId() != null && msg.getReceiverId().equals(friendId)));
+        }
+
+        if (belongToThisChat) {
+            msg.setMe(msg.getSenderId() != null && msg.getSenderId().equals(myUserId));
+            messages.add(msg);
+            adapter.notifyItemInserted(messages.size() - 1);
+            rvMessages.scrollToPosition(messages.size() - 1);
+            saveMessagesToCache();
         }
     }
 
@@ -313,13 +292,9 @@ public class ChatDetailActivity extends BaseActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Chọn loại tệp")
                 .setItems(new CharSequence[]{"Hình ảnh", "Video", "Vị trí"}, (dialog, which) -> {
-                    if (which == 0) {
-                        imagePickerLauncher.launch("image/*");
-                    } else if (which == 1) {
-                        videoPickerLauncher.launch("video/*");
-                    } else {
-                        shareCurrentLocation();
-                    }
+                    if (which == 0) imagePickerLauncher.launch("image/*");
+                    else if (which == 1) videoPickerLauncher.launch("video/*");
+                    else shareCurrentLocation();
                 })
                 .show();
     }
@@ -343,13 +318,10 @@ public class ChatDetailActivity extends BaseActivity {
                             Toast.makeText(this, "Không lấy được vị trí hiện tại, hãy bật GPS rồi thử lại", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        String mapUrl = String.format(Locale.US, "https://maps.google.com/?q=%f,%f",
-                                location.getLatitude(), location.getLongitude());
+                        String mapUrl = String.format(Locale.US, "https://maps.google.com/?q=%f,%f", location.getLatitude(), location.getLongitude());
                         sendSocketMessage(mapUrl, "LOCATION");
                     })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Lỗi lấy vị trí: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
+                    .addOnFailureListener(e -> Toast.makeText(this, "Lỗi lấy vị trí: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } catch (SecurityException e) {
             Toast.makeText(this, "Thiếu quyền vị trí", Toast.LENGTH_SHORT).show();
         }
@@ -361,7 +333,6 @@ public class ChatDetailActivity extends BaseActivity {
             Toast.makeText(this, "Mất kết nối Internet", Toast.LENGTH_SHORT).show();
             return;
         }
-
         File file = uriToFile(uri, messageType);
         if (file == null) {
             Toast.makeText(this, "Lỗi truy cập tệp tin!", Toast.LENGTH_SHORT).show();
@@ -369,12 +340,11 @@ public class ChatDetailActivity extends BaseActivity {
         }
 
         String mediaType = "VIDEO".equals(messageType) ? "video/*" : "image/*";
-        RequestBody requestFile = RequestBody.create(file, MediaType.parse(mediaType)); // Thứ tự tham số đúng cho OkHttp4.x
+        RequestBody requestFile = RequestBody.create(file, MediaType.parse(mediaType));
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
-        Call<ResponseBody> request = "VIDEO".equals(messageType) ?
-                messageApi.uploadVideo(body) : messageApi.uploadFile(body);
+        Call<ResponseBody> request = "VIDEO".equals(messageType) ? messageApi.uploadVideo(body) : messageApi.uploadFile(body);
 
         request.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -399,10 +369,8 @@ public class ChatDetailActivity extends BaseActivity {
     private File uriToFile(Uri uri, String messageType) {
         try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
             if (inputStream == null) return null;
-
             String extension = getFileExtension(uri, messageType);
             File tempFile = new File(getCacheDir(), "upload_" + System.currentTimeMillis() + extension);
-
             try (FileOutputStream out = new FileOutputStream(tempFile)) {
                 byte[] buffer = new byte[8192];
                 int length;
@@ -422,16 +390,13 @@ public class ChatDetailActivity extends BaseActivity {
         String mimeType = getContentResolver().getType(uri);
         if (mimeType != null && mimeType.contains("/")) {
             String ext = mimeType.substring(mimeType.indexOf('/') + 1);
-            if (!ext.isBlank()) {
-                return "." + ext;
-            }
+            if (!ext.isBlank()) return "." + ext;
         }
         return "VIDEO".equals(messageType) ? ".mp4" : ".jpg";
     }
 
     private void loadHistory() {
         if (myUserId == -1 || friendId == -1) return;
-
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
         messageApi.getHistory(myUserId, friendId).enqueue(new Callback<List<Message>>() {
             @Override
@@ -448,7 +413,6 @@ public class ChatDetailActivity extends BaseActivity {
                     saveMessagesToCache();
                 }
             }
-
             @Override
             public void onFailure(Call<List<Message>> call, Throwable t) {
                 Log.e("ChatDetail", "Load history failed: " + t.getMessage());
@@ -459,7 +423,6 @@ public class ChatDetailActivity extends BaseActivity {
 
     private void loadGroupHistory() {
         if (groupId == -1) return;
-
         MessageApi api = ApiClient.getClient().create(MessageApi.class);
         api.getGroupHistory(groupId).enqueue(new Callback<List<Message>>() {
             @Override
@@ -476,7 +439,6 @@ public class ChatDetailActivity extends BaseActivity {
                     saveMessagesToCache();
                 }
             }
-
             @Override
             public void onFailure(Call<List<Message>> call, Throwable t) {
                 Log.e("ChatDetail", "Load group history failed: " + t.getMessage());
@@ -488,23 +450,15 @@ public class ChatDetailActivity extends BaseActivity {
     private void setupNetworkMonitoring() {
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         isInternetAvailable = hasInternetConnection();
-
-        if (connectivityManager == null) {
-            return;
-        }
+        if (connectivityManager == null) return;
 
         networkCallback = new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onAvailable(Network network) {
+            @Override public void onAvailable(Network network) {
                 isInternetAvailable = true;
                 runOnUiThread(() -> showConnectionBanner("Đang kết nối...", false, true));
-                if (socketManager != null) {
-                    socketManager.connect();
-                }
+                if (socketManager != null) socketManager.connect();
             }
-
-            @Override
-            public void onLost(Network network) {
+            @Override public void onLost(Network network) {
                 isInternetAvailable = false;
                 runOnUiThread(() -> showConnectionBanner("Mất kết nối Internet", true, false));
             }
@@ -517,22 +471,15 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private boolean hasInternetConnection() {
-        if (connectivityManager == null) {
-            return false;
-        }
+        if (connectivityManager == null) return false;
         Network activeNetwork = connectivityManager.getActiveNetwork();
-        if (activeNetwork == null) {
-            return false;
-        }
-
+        if (activeNetwork == null) return false;
         NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
         return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 
     private String getCacheKey() {
-        if (isGroupChat) {
-            return "group_" + groupId;
-        }
+        if (isGroupChat) return "group_" + groupId;
         return "dm_" + myUserId + "_" + friendId;
     }
 
@@ -543,22 +490,16 @@ public class ChatDetailActivity extends BaseActivity {
 
     private void loadCachedMessages() {
         String raw = cachePrefs.getString(getCacheKey(), null);
-        if (raw == null || raw.trim().isEmpty()) {
-            return;
-        }
+        if (raw == null || raw.trim().isEmpty()) return;
 
         Type listType = new TypeToken<List<Message>>() {}.getType();
         List<Message> cached = gson.fromJson(raw, listType);
-        if (cached == null || cached.isEmpty()) {
-            return;
-        }
+        if (cached == null || cached.isEmpty()) return;
 
         messages.clear();
         for (Message m : cached) {
             m.setMe(m.getSenderId() != null && m.getSenderId().equals(myUserId));
-            if (m.getLocalId() == null) {
-                m.setStatus(Message.STATUS_SENT);
-            }
+            if (m.getLocalId() == null) m.setStatus(Message.STATUS_SENT);
             messages.add(m);
         }
         adapter.notifyDataSetChanged();
@@ -566,10 +507,7 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private void updateLocalMessageStatus(String localId, String status) {
-        if (localId == null) {
-            return;
-        }
-
+        if (localId == null) return;
         for (int i = messages.size() - 1; i >= 0; i--) {
             Message msg = messages.get(i);
             if (localId.equals(msg.getLocalId())) {
@@ -582,14 +520,10 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private void showConnectionBanner(String text, boolean isError, boolean autoHide) {
-        if (tvConnectionBanner == null) {
-            return;
-        }
-
+        if (tvConnectionBanner == null) return;
         tvConnectionBanner.setText(text);
         tvConnectionBanner.setBackgroundColor(isError ? Color.parseColor("#D32F2F") : Color.parseColor("#2E7D32"));
         tvConnectionBanner.setVisibility(View.VISIBLE);
-
         if (autoHide) {
             tvConnectionBanner.removeCallbacks(hideBannerRunnable);
             tvConnectionBanner.postDelayed(hideBannerRunnable, 1500);
@@ -597,9 +531,7 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private void hideConnectionBanner() {
-        if (tvConnectionBanner != null) {
-            tvConnectionBanner.setVisibility(View.GONE);
-        }
+        if (tvConnectionBanner != null) tvConnectionBanner.setVisibility(View.GONE);
     }
 
     @Override

@@ -38,7 +38,6 @@
             android:layout_height="14dp"
             android:layout_marginStart="6dp"
             android:contentDescription="sending"
-            android:src="@drawable/ic_sending_sync"
             android:visibility="gone" />
 
         <ImageView
@@ -47,7 +46,6 @@
             android:layout_height="14dp"
             android:layout_marginStart="6dp"
             android:contentDescription="sending"
-            android:src="@drawable/ic_sending_sync"
             android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

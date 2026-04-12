@@ -14,4 +14,10 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
 
     // Lấy danh sách đã là bạn bè (ACCEPTED)
     List<Friendship> findByStatusAndUser1IdOrUser2Id(String status, Integer u1, Integer u2);
+
+    // Lấy danh sách lời mời đến (PENDING): user2Id là người nhận lời mời
+    List<Friendship> findByStatusAndUser2Id(String status, Integer user2Id);
+
+    // Lấy danh sách lời mời đã gửi (PENDING): user1Id là người gửi lời mời
+    List<Friendship> findByStatusAndUser1Id(String status, Integer user1Id);
 }

@@ -35,14 +35,21 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private final int currentUserId;
     private final FriendApi friendApi;
     private final Set<Integer> sentRequestUserIds;   // Truyền từ PeopleActivity
+    private final Set<Integer> friendUserIds;
+    private final Set<Integer> incomingRequestUserIds;
 
     public UserAdapter(Context context, List<User> userList, int currentUserId,
-                       FriendApi friendApi, Set<Integer> sentRequestUserIds) {
+                       FriendApi friendApi,
+                       Set<Integer> sentRequestUserIds,
+                       Set<Integer> friendUserIds,
+                       Set<Integer> incomingRequestUserIds) {
         this.context = context;
         this.userList = userList;
         this.currentUserId = currentUserId;
         this.friendApi = friendApi;
         this.sentRequestUserIds = sentRequestUserIds;
+        this.friendUserIds = friendUserIds;
+        this.incomingRequestUserIds = incomingRequestUserIds;
     }
 
     @NonNull
@@ -90,8 +97,28 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 .circleCrop()
                 .into(holder.imgAvatar);
 
-        // Xử lý nút Kết bạn
-        if (sentRequestUserIds.contains(user.getId())) {
+        // Xử lý nút Kết bạn / Chấp nhận / Bạn bè
+        holder.btnConnect.setOnClickListener(null);
+
+        Integer targetIdObj = user.getId();
+        int targetId = targetIdObj == null ? -1 : targetIdObj;
+
+        boolean isFriend = targetId != -1 && friendUserIds.contains(targetId);
+        String status = user.getFriendshipStatus();
+        boolean isAccepted = isFriend || (status != null && "ACCEPTED".equalsIgnoreCase(status.trim()));
+
+        boolean isPending = status != null && "PENDING".equalsIgnoreCase(status.trim());
+        boolean isOutgoingPending = targetId != -1 && sentRequestUserIds.contains(targetId);
+        boolean isIncomingPending = targetId != -1 && incomingRequestUserIds.contains(targetId);
+
+        if (isAccepted) {
+            holder.btnConnect.setText("Bạn bè");
+            holder.btnConnect.setEnabled(false);
+        } else if (isIncomingPending || (isPending && !isOutgoingPending)) {
+            holder.btnConnect.setText("Chấp nhận");
+            holder.btnConnect.setEnabled(true);
+            holder.btnConnect.setOnClickListener(v -> acceptFriendRequest(user, holder.btnConnect));
+        } else if (isOutgoingPending || isPending) {
             holder.btnConnect.setText("Đã gửi lời mời");
             holder.btnConnect.setEnabled(false);
         } else {
@@ -111,12 +138,69 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                             btn.setEnabled(false);
                             Toast.makeText(context, "Đã gửi lời mời đến " + targetUser.getDisplayName(), Toast.LENGTH_SHORT).show();
 
+                            targetUser.setFriendshipStatus("PENDING");
+
                             // Cập nhật trạng thái trong PeopleActivity
                             if (context instanceof PeopleActivity) {
                                 ((PeopleActivity) context).markAsSentRequest(targetUser.getId());
                             }
                         } else {
-                            Toast.makeText(context, "Gửi lời mời thất bại", Toast.LENGTH_SHORT).show();
+                            String msg = null;
+                            try {
+                                if (response.errorBody() != null) {
+                                    msg = response.errorBody().string();
+                                }
+                            } catch (Exception ignored) {}
+
+                            if (msg == null || msg.trim().isEmpty()) {
+                                msg = "Gửi lời mời thất bại";
+                            }
+                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                        Toast.makeText(context, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void acceptFriendRequest(User targetUser, Button btn) {
+        Integer senderId = targetUser.getId();
+        if (senderId == null) {
+            Toast.makeText(context, "Thiếu thông tin người dùng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        friendApi.acceptFriendRequest(senderId, currentUserId)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            targetUser.setFriendshipStatus("ACCEPTED");
+
+                            btn.setText("Bạn bè");
+                            btn.setEnabled(false);
+
+                            if (context instanceof PeopleActivity) {
+                                ((PeopleActivity) context).markAsFriend(senderId);
+                            }
+
+                            // Realtime sẽ do server push cho cả 2 phía sau khi accept.
+                            Toast.makeText(context, "Đã trở thành bạn bè", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String msg = null;
+                            try {
+                                if (response.errorBody() != null) {
+                                    msg = response.errorBody().string();
+                                }
+                            } catch (Exception ignored) {}
+
+                            if (msg == null || msg.trim().isEmpty()) {
+                                msg = "Chấp nhận thất bại";
+                            }
+                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                         }
                     }
 

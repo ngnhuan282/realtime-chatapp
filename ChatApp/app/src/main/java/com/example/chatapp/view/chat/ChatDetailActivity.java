@@ -177,12 +177,6 @@ public class ChatDetailActivity extends BaseActivity {
             }
         }
 
-        if (isGroupChat) {
-            tvFriendName.setText(groupName != null ? groupName : "Nhóm chat");
-        } else if (friendName != null) {
-            tvFriendName.setText(friendName);
-        }
-
         // Xử lý sự kiện
         btnSend.setOnClickListener(v -> sendTextMessage());
         btnAttach.setOnClickListener(v -> showAttachmentPicker());
@@ -375,7 +369,7 @@ public class ChatDetailActivity extends BaseActivity {
         }
 
         String mediaType = "VIDEO".equals(messageType) ? "video/*" : "image/*";
-        RequestBody requestFile = RequestBody.create(MediaType.parse(mediaType), file);
+        RequestBody requestFile = RequestBody.create(file, MediaType.parse(mediaType)); // Thứ tự tham số đúng cho OkHttp4.x
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);

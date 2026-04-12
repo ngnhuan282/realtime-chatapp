@@ -29,6 +29,7 @@ public class SocketManager {
     private BufferedReader in;
 
     private MessageListener listener;
+    private FriendshipListener friendshipListener;
     private ConnectionListener connectionListener;
     private MessageStatusListener messageStatusListener;
 
@@ -48,6 +49,10 @@ public class SocketManager {
 
     public interface MessageListener {
         void onMessageReceived(Message message);
+    }
+
+    public interface FriendshipListener {
+        void onFriendshipAccepted(int userIdA, int userIdB);
     }
 
     public interface ConnectionListener {
@@ -71,6 +76,10 @@ public class SocketManager {
 
     public void setListener(MessageListener listener) {
         this.listener = listener;
+    }
+
+    public void setFriendshipListener(FriendshipListener friendshipListener) {
+        this.friendshipListener = friendshipListener;
     }
 
     public void setConnectionListener(ConnectionListener connectionListener) {
@@ -129,6 +138,18 @@ public class SocketManager {
                     Log.d("SOCKET_RAW", "Dữ liệu nhận: " + line);
                     try {
                         Message msg = gson.fromJson(line, Message.class);
+
+                        if (msg != null && "FRIENDSHIP".equalsIgnoreCase(msg.getMessageType())) {
+                            String content = msg.getContent();
+                            if (content != null && "ACCEPTED".equalsIgnoreCase(content.trim())) {
+                                if (friendshipListener != null
+                                        && msg.getSenderId() != null
+                                        && msg.getReceiverId() != null) {
+                                    friendshipListener.onFriendshipAccepted(msg.getSenderId(), msg.getReceiverId());
+                                }
+                            }
+                        }
+
                         if (listener != null) {
                             listener.onMessageReceived(msg);
                         }
@@ -145,6 +166,14 @@ public class SocketManager {
                 startReconnectLoop();
             }
         }).start();
+    }
+
+    public void sendFriendshipAcceptedEvent(int userIdA, int userIdB) {
+        executor.execute(() -> {
+            Message event = new Message(userIdA, userIdB, "ACCEPTED", System.currentTimeMillis(), true);
+            event.setMessageType("FRIENDSHIP");
+            sendRawMessage(event, false);
+        });
     }
 
     private void sendHandshakeIfPossible() {

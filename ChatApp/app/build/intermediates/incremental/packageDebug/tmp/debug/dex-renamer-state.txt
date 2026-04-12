@@ -1,15 +1,15 @@
-#Sun Apr 12 09:30:47 ICT 2026
-base.0=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-base.1=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
-base.10=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
-base.2=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\10\\classes.dex
-base.3=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\11\\classes.dex
-base.4=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\12\\classes.dex
-base.5=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\13\\classes.dex
-base.6=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\3\\classes.dex
-base.7=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\4\\classes.dex
-base.8=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\5\\classes.dex
-base.9=C\:\\Users\\mhoang\\Desktop\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\7\\classes.dex
+#Sun Apr 12 11:26:31 ICT 2026
+base.0=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.10=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
+base.2=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\10\\classes.dex
+base.3=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\11\\classes.dex
+base.4=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\12\\classes.dex
+base.5=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\13\\classes.dex
+base.6=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\3\\classes.dex
+base.7=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\4\\classes.dex
+base.8=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\5\\classes.dex
+base.9=D\:\\Nam_Ba\\Nam_ba_ki_2\\Mobile_2\\realtime-chatapp\\ChatApp\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\7\\classes.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.10=classes2.dex

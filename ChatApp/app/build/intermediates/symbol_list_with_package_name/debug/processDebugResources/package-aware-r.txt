@@ -3737,12 +3737,10 @@ drawable ic_mtrl_checked_circle
 drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
-drawable ic_pending_clock
 drawable ic_person
 drawable ic_search
 drawable ic_search_black_24
 drawable ic_send
-drawable ic_sending_sync
 drawable ic_settings
 drawable ic_video
 drawable icon_tint_selector
@@ -4406,7 +4404,6 @@ id tvEmptyState
 id tvForgot
 id tvFriendName
 id tvLastMessage
-id tvMembersLabel
 id tvName
 id tvPhoneNumber
 id tvSubtitle

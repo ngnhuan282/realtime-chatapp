@@ -55,11 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Set rỗng vì đây chỉ là test
         Set<Integer> emptySentSet = new HashSet<>();
+        Set<Integer> emptyFriendsSet = new HashSet<>();
+        Set<Integer> emptyIncomingSet = new HashSet<>();
 
-        loadUsers(myCurrentUserId, emptySentSet);
+        loadUsers(myCurrentUserId, emptySentSet, emptyFriendsSet, emptyIncomingSet);
     }
 
-    private void loadUsers(int myId, Set<Integer> sentSet) {
+    private void loadUsers(int myId, Set<Integer> sentSet, Set<Integer> friendSet, Set<Integer> incomingSet) {
         friendApi.getAllUsers(myId).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     userList.addAll(response.body());
 
                     // Sửa ở đây: truyền đủ 5 tham số
-                    userAdapter = new UserAdapter(MainActivity.this, userList, myId, friendApi, sentSet);
+                    userAdapter = new UserAdapter(MainActivity.this, userList, myId, friendApi, sentSet, friendSet, incomingSet);
                     if (recyclerView != null) {
                         recyclerView.setAdapter(userAdapter);
                     }

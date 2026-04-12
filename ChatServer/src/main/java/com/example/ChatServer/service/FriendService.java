@@ -4,7 +4,11 @@ import com.example.ChatServer.dto.response.UserResponse;
 import com.example.ChatServer.entity.Friendship;
 import com.example.ChatServer.repository.FriendshipRepository;
 import com.example.ChatServer.repository.UserRepository;
+import com.example.ChatServer.socket.FriendshipSocketNotifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,19 +16,36 @@ import java.util.List;
 public class FriendService {
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
+    private final FriendshipSocketNotifier friendshipSocketNotifier;
 
-    public FriendService(FriendshipRepository friendshipRepository, UserRepository userRepository) {
+    public FriendService(FriendshipRepository friendshipRepository,
+                         UserRepository userRepository,
+                         FriendshipSocketNotifier friendshipSocketNotifier) {
         this.friendshipRepository = friendshipRepository;
         this.userRepository = userRepository;
+        this.friendshipSocketNotifier = friendshipSocketNotifier;
     }
 
-    public boolean sendFriendRequest(int senderId, int receiverId) {
-        if (senderId == receiverId) return false;
+    public void sendFriendRequest(int senderId, int receiverId) {
+        if (senderId == receiverId) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Khong the ket ban voi chinh minh");
+        }
 
-        // Kiểm tra xem đã có lời mời chưa (1 trong 2 phía gửi)
-        if (friendshipRepository.existsByUser1IdAndUser2Id(senderId, receiverId) ||
-                friendshipRepository.existsByUser1IdAndUser2Id(receiverId, senderId)) {
-            return false;
+        var existing = friendshipRepository.findByUser1IdAndUser2Id(senderId, receiverId)
+                .or(() -> friendshipRepository.findByUser1IdAndUser2Id(receiverId, senderId));
+
+        if (existing.isPresent()) {
+            Friendship f = existing.get();
+            String status = f.getStatus() == null ? "" : f.getStatus().trim().toUpperCase();
+            if ("ACCEPTED".equals(status)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Da la ban be");
+            }
+
+            // PENDING
+            if (f.getUser1Id() != null && f.getUser1Id() == senderId) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Ban da gui loi moi truoc do");
+            }
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ban dang co loi moi tu nguoi nay - hay chap nhan");
         }
 
         Friendship f = Friendship.builder()
@@ -34,17 +55,49 @@ public class FriendService {
                 .createdAt(System.currentTimeMillis())
                 .build();
         friendshipRepository.save(f);
-        return true;
     }
 
-    public boolean acceptFriendRequest(int senderId, int receiverId) {
-        // Tìm lời mời mà senderId gửi cho receiverId (người nhấn nút chấp nhận)
-        return friendshipRepository.findByUser1IdAndUser2Id(senderId, receiverId)
-                .map(f -> {
-                    f.setStatus("ACCEPTED");
-                    friendshipRepository.save(f);
-                    return true;
-                }).orElse(false);
+    public void acceptFriendRequest(int senderId, int receiverId) {
+        Friendship f = friendshipRepository.findByUser1IdAndUser2Id(senderId, receiverId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khong tim thay loi moi"));
+
+        f.setStatus("ACCEPTED");
+        friendshipRepository.save(f);
+
+        // Realtime notify cho cả 2 phía
+        if (friendshipSocketNotifier != null) {
+            friendshipSocketNotifier.notifyFriendshipAccepted(senderId, receiverId);
+        }
+    }
+
+    public List<UserResponse> getPendingRequests(int userId) {
+        // Lời mời đến: user2Id = userId, status = PENDING
+        List<Friendship> pending = friendshipRepository.findByStatusAndUser2Id("PENDING", userId);
+        List<UserResponse> senders = new ArrayList<>();
+
+        for (Friendship f : pending) {
+            Integer senderId = f.getUser1Id();
+            if (senderId == null) continue;
+            userRepository.findById(senderId).ifPresent(u ->
+                    senders.add(new UserResponse(u.getId(), u.getUsername(), u.getDisplayName(), u.getPhoneNumber(), u.getAvatar()))
+            );
+        }
+        return senders;
+    }
+
+    public List<UserResponse> getSentRequests(int userId) {
+        // Lời mời đã gửi: user1Id = userId, status = PENDING
+        List<Friendship> pending = friendshipRepository.findByStatusAndUser1Id("PENDING", userId);
+        List<UserResponse> receivers = new ArrayList<>();
+
+        for (Friendship f : pending) {
+            Integer receiverId = f.getUser2Id();
+            if (receiverId == null) continue;
+            userRepository.findById(receiverId).ifPresent(u ->
+                    receivers.add(new UserResponse(u.getId(), u.getUsername(), u.getDisplayName(), u.getPhoneNumber(), u.getAvatar()))
+            );
+        }
+        return receivers;
     }
 
     public List<UserResponse> getMyFriends(int userId) {

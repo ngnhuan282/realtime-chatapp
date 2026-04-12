@@ -43,6 +43,7 @@ anim m3_side_sheet_exit_to_right
 anim mtrl_bottom_sheet_slide_in
 anim mtrl_bottom_sheet_slide_out
 anim mtrl_card_lowers_interpolator
+anim sending_rotate
 anim slide_down_and_fade_out
 anim slide_up_and_fade_in
 animator chevron_checked_unchecked
@@ -3711,6 +3712,7 @@ drawable ic_call_decline
 drawable ic_call_decline_low
 drawable ic_calls
 drawable ic_chat_bubble
+drawable ic_chatgroup
 drawable ic_clear_black_24
 drawable ic_clock_black_24dp
 drawable ic_emoji
@@ -3735,10 +3737,12 @@ drawable ic_mtrl_checked_circle
 drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
+drawable ic_pending_clock
 drawable ic_person
 drawable ic_search
 drawable ic_search_black_24
 drawable ic_send
+drawable ic_sending_sync
 drawable ic_settings
 drawable ic_video
 drawable icon_tint_selector
@@ -4110,6 +4114,8 @@ id imgAvatar
 id imgProfile
 id img_avatar_received
 id img_message_content
+id img_status_pending
+id img_status_sending
 id immediateStop
 id included
 id indeterminate
@@ -4123,7 +4129,6 @@ id jumpToStart
 id labeled
 id layout
 id layoutActions
-id layoutContent
 id layoutDivider
 id layoutHeader
 id layoutInput
@@ -4395,11 +4400,13 @@ id transition_scene_layoutid_cache
 id transition_transform
 id triangle
 id tvAppName
+id tvConnectionBanner
 id tvDisplayName
 id tvEmptyState
 id tvForgot
 id tvFriendName
 id tvLastMessage
+id tvMembersLabel
 id tvName
 id tvPhoneNumber
 id tvSubtitle
@@ -4408,6 +4415,7 @@ id tvTitle
 id tvUsername
 id txt_message_content
 id txt_message_time
+id txt_sender_name
 id txt_time
 id unchecked
 id uniform

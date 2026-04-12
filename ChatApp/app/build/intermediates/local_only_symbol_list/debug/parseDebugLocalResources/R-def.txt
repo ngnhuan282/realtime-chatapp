@@ -1,5 +1,6 @@
 R_DEF: Internal format may change without notice
 local
+anim sending_rotate
 color background
 color colorLogout
 color colorOnPrimary
@@ -41,6 +42,7 @@ drawable ic_attach
 drawable ic_back
 drawable ic_calls
 drawable ic_chat_bubble
+drawable ic_chatgroup
 drawable ic_emoji
 drawable ic_eye_off
 drawable ic_facebook
@@ -52,9 +54,11 @@ drawable ic_location
 drawable ic_lock
 drawable ic_log_out
 drawable ic_more_vert
+drawable ic_pending_clock
 drawable ic_person
 drawable ic_search
 drawable ic_send
+drawable ic_sending_sync
 drawable ic_settings
 drawable ic_video
 drawable sample_avatar
@@ -89,8 +93,9 @@ id imgAvatar
 id imgProfile
 id img_avatar_received
 id img_message_content
+id img_status_pending
+id img_status_sending
 id layoutActions
-id layoutContent
 id layoutDivider
 id layoutHeader
 id layoutInput
@@ -107,11 +112,13 @@ id rvUsers
 id switchDarkMode
 id toolbar
 id tvAppName
+id tvConnectionBanner
 id tvDisplayName
 id tvEmptyState
 id tvForgot
 id tvFriendName
 id tvLastMessage
+id tvMembersLabel
 id tvName
 id tvPhoneNumber
 id tvSubtitle
@@ -120,6 +127,7 @@ id tvTitle
 id tvUsername
 id txt_message_content
 id txt_message_time
+id txt_sender_name
 id txt_time
 id unreadBadge
 id videoView

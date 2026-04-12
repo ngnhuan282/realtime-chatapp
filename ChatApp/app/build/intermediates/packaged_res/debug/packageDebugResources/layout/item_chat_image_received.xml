@@ -7,6 +7,7 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
+    <!-- Avatar người gửi -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/img_avatar_received"
         android:layout_width="35dp"
@@ -16,35 +17,56 @@
         android:src="@drawable/avatar_placeholder"
         app:shapeAppearanceOverlay="@style/CircleImage" />
 
+    <!-- Cột chứa Tên + Bong bóng ảnh -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:background="@drawable/bg_received_bubble"
-        android:orientation="vertical"
-        android:padding="4dp">
+        android:orientation="vertical">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/img_message_content"
-            android:layout_width="280dp"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/RoundedImage" />
-
+        <!-- Tên người gửi -->
         <TextView
-            android:id="@+id/txt_message_content"
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textColor="@color/messageReceivedText" />
-
-        <TextView
-            android:id="@+id/txt_time"
+            android:id="@+id/txt_sender_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="10:03 AM"
-            android:textColor="#9AA5A9"
-            android:textSize="10sp" />
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="2dp"
+            android:text="Tên người gửi"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" /> <!-- Mặc định ẩn -->
+
+        <!-- Bong bóng chứa ảnh/video -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_received_bubble"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_message_content"
+                android:layout_width="280dp"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedImage" />
+
+            <TextView
+                android:id="@+id/txt_message_content"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textColor="@color/messageReceivedText" />
+
+            <TextView
+                android:id="@+id/txt_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="10:03 AM"
+                android:textColor="#9AA5A9"
+                android:textSize="10sp" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

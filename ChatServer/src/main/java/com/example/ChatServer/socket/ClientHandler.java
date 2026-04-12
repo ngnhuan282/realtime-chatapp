@@ -35,6 +35,11 @@ public class ClientHandler implements Runnable {
             String input;
             while ((input = in.readLine()) != null) {
                 try {
+                    // Some clients may prefix UTF-8 BOM (\uFEFF). Strip it to avoid JSON parse errors.
+                    if (!input.isEmpty() && input.charAt(0) == '\uFEFF') {
+                        input = input.substring(1);
+                    }
+
                     // Parse tin nhắn từ client
                     Message msg = objectMapper.readValue(input, Message.class);
 

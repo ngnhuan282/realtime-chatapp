@@ -3,6 +3,10 @@ package com.example.chatapp.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Message {
+    public static final String STATUS_PENDING = "PENDING";
+    public static final String STATUS_SENDING = "SENDING";
+    public static final String STATUS_SENT = "SENT";
+
     private Integer id;                    // Thêm field này
     private Integer senderId;
     private Integer receiverId;
@@ -13,12 +17,13 @@ public class Message {
     @SerializedName("messageType")
     private String messageType = "TEXT";
 
-    private String status = "SENT";
+    private String status = STATUS_SENT;
 
     private long timestamp;
 
     private transient boolean isMe;        // transient = không serialize
     private transient boolean locationLocked;
+    private transient String localId;
 
     private String senderName;
     private String senderAvatar;
@@ -34,7 +39,7 @@ public class Message {
         this.timestamp = timestamp;
         this.isMe = isMe;
         this.messageType = "TEXT";
-        this.status = "SENT";
+        this.status = STATUS_SENT;
     }
 
     // Getters & Setters
@@ -67,6 +72,9 @@ public class Message {
 
     public boolean isLocationLocked() { return locationLocked; }
     public void setLocationLocked(boolean locationLocked) { this.locationLocked = locationLocked; }
+
+    public String getLocalId() { return localId; }
+    public void setLocalId(String localId) { this.localId = localId; }
 
     public String getSenderName() { return senderName; }
     public void setSenderName(String senderName) { this.senderName = senderName; }

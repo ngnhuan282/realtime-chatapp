@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -102,9 +104,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView txtMessage, txtTime, txtSenderName;
-        ImageView imgContent;
+        ImageView imgContent, imgStatusPending, imgStatusSending;
         Button btnStopLocation;
         ShapeableImageView imgAvatarReceived;
+        Animation sendingRotateAnimation;
 
         MessageViewHolder(View itemView) {
             super(itemView);
@@ -114,9 +117,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 txtTime = itemView.findViewById(R.id.txt_time);
             }
             imgContent = itemView.findViewById(R.id.img_message_content);
+            imgStatusPending = itemView.findViewById(R.id.img_status_pending);
+            imgStatusSending = itemView.findViewById(R.id.img_status_sending);
             btnStopLocation = itemView.findViewById(R.id.btn_stop_location);
             txtSenderName = itemView.findViewById(R.id.txt_sender_name);
             imgAvatarReceived = itemView.findViewById(R.id.img_avatar_received);
+            sendingRotateAnimation = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.sending_rotate);
         }
 
         void bind(Message message) {
@@ -237,6 +243,27 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (txtTime != null && message.getTimestamp() != 0) {
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
                 txtTime.setText(sdf.format(new Date(message.getTimestamp())));
+            }
+
+            if (imgStatusPending != null) {
+                boolean showPending = message.isMe() &&
+                        Message.STATUS_PENDING.equalsIgnoreCase(message.getStatus());
+                imgStatusPending.setVisibility(showPending ? View.VISIBLE : View.GONE);
+            }
+
+            if (imgStatusSending != null) {
+                boolean showSending = message.isMe() &&
+                        Message.STATUS_SENDING.equalsIgnoreCase(message.getStatus());
+                imgStatusSending.setVisibility(showSending ? View.VISIBLE : View.GONE);
+                if (showSending) {
+                    imgStatusSending.startAnimation(sendingRotateAnimation);
+                } else {
+                    imgStatusSending.clearAnimation();
+                }
+            }
+
+            if (imgStatusPending != null && imgStatusPending.getVisibility() != View.VISIBLE) {
+                imgStatusPending.clearAnimation();
             }
         }
     }

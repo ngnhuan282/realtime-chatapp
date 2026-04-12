@@ -21,6 +21,7 @@ import com.example.chatapp.model.User;
 import com.example.chatapp.network.rest.ApiClient;
 import com.example.chatapp.network.rest.FriendApi;
 import com.example.chatapp.network.rest.UserApi;
+import com.example.chatapp.network.socket.SocketManager;
 import com.example.chatapp.view.chat.ChatListActivity;
 import com.example.chatapp.view.darkmode.BaseActivity;
 import com.example.chatapp.view.setting.SettingsActivity;
@@ -52,6 +53,8 @@ public class PeopleActivity extends BaseActivity {
     private FriendApi friendApi;
 
     private Set<Integer> sentRequestUserIds = new HashSet<>();
+    private final Set<Integer> friendUserIds = new HashSet<>();
+    private final Set<Integer> incomingRequestUserIds = new HashSet<>();
     private static final String PREF_SENT_REQUESTS = "sent_friend_requests";
 
     @Override
@@ -70,6 +73,10 @@ public class PeopleActivity extends BaseActivity {
         friendApi = ApiClient.getClient().create(FriendApi.class);
 
         loadSentRequestsFromPrefs();
+
+        fetchMyFriends();
+        fetchIncomingRequests();
+        fetchSentRequests();
 
         initViews();
         setupRecyclerView();
@@ -111,7 +118,7 @@ public class PeopleActivity extends BaseActivity {
     }
 
     private void setupRecyclerView() {
-        userAdapter = new UserAdapter(this, userList, myUserId, friendApi, sentRequestUserIds);
+        userAdapter = new UserAdapter(this, userList, myUserId, friendApi, sentRequestUserIds, friendUserIds, incomingRequestUserIds);
         rvUsers.setLayoutManager(new LinearLayoutManager(this));
         rvUsers.setAdapter(userAdapter);
     }
@@ -140,8 +147,20 @@ public class PeopleActivity extends BaseActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    User found = response.body();
+
+                    // Local override để UI đúng ngay cả khi backend chưa trả friendshipStatus trong user.
+                    if (found.getId() != null) {
+                        int foundId = found.getId();
+                        if (friendUserIds.contains(foundId)) {
+                            found.setFriendshipStatus("ACCEPTED");
+                        } else if (incomingRequestUserIds.contains(foundId) || sentRequestUserIds.contains(foundId)) {
+                            found.setFriendshipStatus("PENDING");
+                        }
+                    }
+
                     userList.clear();
-                    userList.add(response.body());
+                    userList.add(found);
                     userAdapter.notifyDataSetChanged();
                     showResults();
                 } else {
@@ -169,10 +188,96 @@ public class PeopleActivity extends BaseActivity {
 
     public void markAsSentRequest(int userId) {
         sentRequestUserIds.add(userId);
+        incomingRequestUserIds.remove(userId);
         saveSentRequestsToPrefs();           // Lưu bền vững
         if (userAdapter != null) {
             userAdapter.notifyDataSetChanged();
         }
+    }
+
+    public void markAsFriend(int userId) {
+        friendUserIds.add(userId);
+        sentRequestUserIds.remove(userId);
+        incomingRequestUserIds.remove(userId);
+        saveSentRequestsToPrefs();
+
+        for (User u : userList) {
+            if (u != null && u.getId() != null && u.getId() == userId) {
+                u.setFriendshipStatus("ACCEPTED");
+            }
+        }
+
+        if (userAdapter != null) {
+            userAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void fetchMyFriends() {
+        friendApi.getMyFriends(myUserId).enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    friendUserIds.clear();
+                    for (User u : response.body()) {
+                        if (u != null && u.getId() != null) {
+                            friendUserIds.add(u.getId());
+                        }
+                    }
+                    if (userAdapter != null) userAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                // ignore
+            }
+        });
+    }
+
+    private void fetchIncomingRequests() {
+        friendApi.getPendingRequests(myUserId).enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    incomingRequestUserIds.clear();
+                    for (User u : response.body()) {
+                        if (u != null && u.getId() != null) {
+                            incomingRequestUserIds.add(u.getId());
+                        }
+                    }
+                    if (userAdapter != null) userAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                // ignore
+            }
+        });
+    }
+
+    private void fetchSentRequests() {
+        friendApi.getSentRequests(myUserId).enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Merge with local prefs; server is source-of-truth.
+                    sentRequestUserIds.clear();
+                    for (User u : response.body()) {
+                        if (u != null && u.getId() != null) {
+                            sentRequestUserIds.add(u.getId());
+                        }
+                    }
+                    saveSentRequestsToPrefs();
+                    if (userAdapter != null) userAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                // ignore
+            }
+        });
     }
 
     private void bindMyAvatar() {
@@ -212,6 +317,20 @@ public class PeopleActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Socket realtime: cập nhật nút thành "Bạn bè" ngay khi được accept.
+        SocketManager socketManager = SocketManager.getInstance();
+        socketManager.setMyUserId(myUserId);
+        socketManager.connect();
+        socketManager.setFriendshipListener((userIdA, userIdB) -> {
+            if (myUserId == null || myUserId == -1) return;
+            if (myUserId == userIdA) {
+                runOnUiThread(() -> markAsFriend(userIdB));
+            } else if (myUserId == userIdB) {
+                runOnUiThread(() -> markAsFriend(userIdA));
+            }
+        });
+
         if (userAdapter != null) {
             userAdapter.notifyDataSetChanged();
         }

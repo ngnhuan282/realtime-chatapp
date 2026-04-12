@@ -9,191 +9,194 @@
 9        android:targetSdkVersion="36" />
 10
 11    <uses-permission android:name="android.permission.INTERNET" />
-11-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:5:5-67
-11-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:5:22-64
+11-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:5:5-67
+11-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:5:22-64
 12    <uses-permission android:name="android.permission.INTERNET" />
-12-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:5:5-67
-12-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:5:22-64
-13    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-13-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:7:5-80
-13-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:7:22-77
-14    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-14-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:8:5-81
-14-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:8:22-78
-15    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-15-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:9:5-79
-15-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:9:22-76
-16
-17    <permission
-17-->[androidx.core:core:1.16.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:22:5-24:47
-18        android:name="com.example.chatapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-18-->[androidx.core:core:1.16.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:23:9-81
-19        android:protectionLevel="signature" />
-19-->[androidx.core:core:1.16.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:24:9-44
-20
-21    <uses-permission android:name="com.example.chatapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-21-->[androidx.core:core:1.16.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:26:5-97
-21-->[androidx.core:core:1.16.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:26:22-94
-22
-23    <application
-23-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:11:5-47:19
-24        android:allowBackup="true"
-24-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:12:9-35
-25        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-25-->[androidx.core:core:1.16.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:28:18-86
-26        android:dataExtractionRules="@xml/data_extraction_rules"
-26-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:13:9-65
-27        android:debuggable="true"
-28        android:extractNativeLibs="false"
-29        android:fullBackupContent="@xml/backup_rules"
-29-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:14:9-54
-30        android:icon="@mipmap/ic_launcher"
-30-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:15:9-43
-31        android:label="@string/app_name"
-31-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:16:9-41
-32        android:requestLegacyExternalStorage="true"
-32-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:17:9-52
-33        android:roundIcon="@mipmap/ic_launcher_round"
-33-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:18:9-54
-34        android:supportsRtl="true"
-34-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:19:9-35
-35        android:testOnly="true"
-36        android:theme="@style/Theme.ChatApp"
-36-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:20:9-45
-37        android:usesCleartextTraffic="true" >
-37-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:21:9-44
-38        <activity
-38-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:22:9-24:40
-39            android:name="com.example.chatapp.view.chat.CreateGroupActivity"
-39-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:23:13-58
-40            android:exported="false" />
-40-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:24:13-37
-41        <activity
-41-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:25:9-27:40
-42            android:name="com.example.chatapp.view.chat.VideoPlayerActivity"
-42-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:26:13-58
-43            android:exported="false" />
-43-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:27:13-37
-44        <activity
-44-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:28:9-30:40
-45            android:name="com.example.chatapp.view.chat.ChatDetailActivity"
-45-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:29:13-57
-46            android:exported="false" />
-46-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:30:13-37
-47        <activity
-47-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:31:9-33:40
-48            android:name="com.example.chatapp.view.chat.ChatListActivity"
-48-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:32:13-55
-49            android:exported="false" />
-49-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:33:13-37
-50        <activity
-50-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:34:9-36:40
-51            android:name="com.example.chatapp.view.people.PeopleActivity"
-51-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:35:13-55
-52            android:exported="false" />
-52-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:36:13-37
-53        <activity
-53-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:37:9-45:20
-54            android:name="com.example.chatapp.view.login.LoginActivity"
-54-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:38:13-53
-55            android:exported="true" >
-55-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:39:13-36
-56            <intent-filter>
-56-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:40:13-44:29
-57                <action android:name="android.intent.action.MAIN" />
-57-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:41:17-69
-57-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:41:25-66
-58
-59                <category android:name="android.intent.category.LAUNCHER" />
-59-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:43:17-77
-59-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:43:27-74
-60            </intent-filter>
-61        </activity>
-62        <activity android:name="com.example.chatapp.view.setting.SettingsActivity" />
-62-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:46:9-67
-62-->D:\GitHub\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:46:19-64
-63
-64        <provider
-64-->[androidx.emoji2:emoji2:1.6.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:24:9-32:20
-65            android:name="androidx.startup.InitializationProvider"
-65-->[androidx.emoji2:emoji2:1.6.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:25:13-67
-66            android:authorities="com.example.chatapp.androidx-startup"
-66-->[androidx.emoji2:emoji2:1.6.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:26:13-68
-67            android:exported="false" >
-67-->[androidx.emoji2:emoji2:1.6.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:27:13-37
-68            <meta-data
-68-->[androidx.emoji2:emoji2:1.6.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:29:13-31:52
-69                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-69-->[androidx.emoji2:emoji2:1.6.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:30:17-75
-70                android:value="androidx.startup" />
-70-->[androidx.emoji2:emoji2:1.6.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:31:17-49
-71            <meta-data
-71-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\bcdddf252a7412a8daa467c5c49cf042\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
-72                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-72-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\bcdddf252a7412a8daa467c5c49cf042\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
-73                android:value="androidx.startup" />
-73-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\bcdddf252a7412a8daa467c5c49cf042\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
-74            <meta-data
-74-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:29:13-31:52
-75                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-75-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:30:17-85
-76                android:value="androidx.startup" />
-76-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:31:17-49
-77        </provider>
-78
-79        <activity
-79-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\121b82d39730772f4ba4a044e249b2b1\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:9-173
-80            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-80-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\121b82d39730772f4ba4a044e249b2b1\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:19-85
-81            android:exported="false"
-81-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\121b82d39730772f4ba4a044e249b2b1\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:146-170
-82            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-82-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\121b82d39730772f4ba4a044e249b2b1\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:86-145
-83
-84        <meta-data
-84-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\f6298acc2ad93f1d1a73618e406e8662\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:9-122
-85            android:name="com.google.android.gms.version"
-85-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\f6298acc2ad93f1d1a73618e406e8662\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:20-65
-86            android:value="@integer/google_play_services_version" />
-86-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\f6298acc2ad93f1d1a73618e406e8662\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:66-119
-87
-88        <receiver
-88-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
-89            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-89-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:35:13-76
-90            android:directBootAware="false"
-90-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:36:13-44
-91            android:enabled="true"
-91-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:37:13-35
-92            android:exported="true"
-92-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:38:13-36
-93            android:permission="android.permission.DUMP" >
-93-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:39:13-57
-94            <intent-filter>
-94-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:40:13-42:29
-95                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-95-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:17-91
-95-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:25-88
-96            </intent-filter>
-97            <intent-filter>
-97-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:43:13-45:29
-98                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-98-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:17-85
-98-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:25-82
-99            </intent-filter>
-100            <intent-filter>
-100-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:46:13-48:29
-101                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-101-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:17-88
-101-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:25-85
-102            </intent-filter>
-103            <intent-filter>
-103-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:49:13-51:29
-104                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-104-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:17-95
-104-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\VAN NHUAN\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:25-92
-105            </intent-filter>
-106        </receiver>
-107    </application>
-108
-109</manifest>
+12-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:5:5-67
+12-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:5:22-64
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:7:5-79
+13-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:7:22-76
+14    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+14-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:8:5-80
+14-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:8:22-77
+15    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+15-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:9:5-81
+15-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:9:22-78
+16    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+16-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:10:5-79
+16-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:10:22-76
+17
+18    <permission
+18-->[androidx.core:core:1.16.0] C:\Users\trinh\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:22:5-24:47
+19        android:name="com.example.chatapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+19-->[androidx.core:core:1.16.0] C:\Users\trinh\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:23:9-81
+20        android:protectionLevel="signature" />
+20-->[androidx.core:core:1.16.0] C:\Users\trinh\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:24:9-44
+21
+22    <uses-permission android:name="com.example.chatapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+22-->[androidx.core:core:1.16.0] C:\Users\trinh\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:26:5-97
+22-->[androidx.core:core:1.16.0] C:\Users\trinh\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:26:22-94
+23
+24    <application
+24-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:12:5-48:19
+25        android:allowBackup="true"
+25-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:13:9-35
+26        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+26-->[androidx.core:core:1.16.0] C:\Users\trinh\.gradle\caches\8.13\transforms\c8a88db3832076de6f0143c7c0df3cbb\transformed\core-1.16.0\AndroidManifest.xml:28:18-86
+27        android:dataExtractionRules="@xml/data_extraction_rules"
+27-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:14:9-65
+28        android:debuggable="true"
+29        android:extractNativeLibs="false"
+30        android:fullBackupContent="@xml/backup_rules"
+30-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:15:9-54
+31        android:icon="@mipmap/ic_launcher"
+31-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:16:9-43
+32        android:label="@string/app_name"
+32-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:17:9-41
+33        android:requestLegacyExternalStorage="true"
+33-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:18:9-52
+34        android:roundIcon="@mipmap/ic_launcher_round"
+34-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:19:9-54
+35        android:supportsRtl="true"
+35-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:20:9-35
+36        android:testOnly="true"
+37        android:theme="@style/Theme.ChatApp"
+37-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:21:9-45
+38        android:usesCleartextTraffic="true" >
+38-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:22:9-44
+39        <activity
+39-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:23:9-25:40
+40            android:name="com.example.chatapp.view.chat.CreateGroupActivity"
+40-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:24:13-58
+41            android:exported="false" />
+41-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:25:13-37
+42        <activity
+42-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:26:9-28:40
+43            android:name="com.example.chatapp.view.chat.VideoPlayerActivity"
+43-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:27:13-58
+44            android:exported="false" />
+44-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:28:13-37
+45        <activity
+45-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:29:9-31:40
+46            android:name="com.example.chatapp.view.chat.ChatDetailActivity"
+46-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:30:13-57
+47            android:exported="false" />
+47-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:31:13-37
+48        <activity
+48-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:32:9-34:40
+49            android:name="com.example.chatapp.view.chat.ChatListActivity"
+49-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:33:13-55
+50            android:exported="false" />
+50-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:34:13-37
+51        <activity
+51-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:35:9-37:40
+52            android:name="com.example.chatapp.view.people.PeopleActivity"
+52-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:36:13-55
+53            android:exported="false" />
+53-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:37:13-37
+54        <activity
+54-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:38:9-46:20
+55            android:name="com.example.chatapp.view.login.LoginActivity"
+55-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:39:13-53
+56            android:exported="true" >
+56-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:40:13-36
+57            <intent-filter>
+57-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:41:13-45:29
+58                <action android:name="android.intent.action.MAIN" />
+58-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:42:17-69
+58-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:42:25-66
+59
+60                <category android:name="android.intent.category.LAUNCHER" />
+60-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:44:17-77
+60-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:44:27-74
+61            </intent-filter>
+62        </activity>
+63        <activity android:name="com.example.chatapp.view.setting.SettingsActivity" />
+63-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:47:9-67
+63-->D:\Nam_Ba\Nam_ba_ki_2\Mobile_2\realtime-chatapp\ChatApp\app\src\main\AndroidManifest.xml:47:19-64
+64
+65        <provider
+65-->[androidx.emoji2:emoji2:1.6.0] C:\Users\trinh\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:24:9-32:20
+66            android:name="androidx.startup.InitializationProvider"
+66-->[androidx.emoji2:emoji2:1.6.0] C:\Users\trinh\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:25:13-67
+67            android:authorities="com.example.chatapp.androidx-startup"
+67-->[androidx.emoji2:emoji2:1.6.0] C:\Users\trinh\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:26:13-68
+68            android:exported="false" >
+68-->[androidx.emoji2:emoji2:1.6.0] C:\Users\trinh\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:27:13-37
+69            <meta-data
+69-->[androidx.emoji2:emoji2:1.6.0] C:\Users\trinh\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:29:13-31:52
+70                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+70-->[androidx.emoji2:emoji2:1.6.0] C:\Users\trinh\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:30:17-75
+71                android:value="androidx.startup" />
+71-->[androidx.emoji2:emoji2:1.6.0] C:\Users\trinh\.gradle\caches\8.13\transforms\6c6a68e232d04256c52fa269d279716b\transformed\emoji2-1.6.0\AndroidManifest.xml:31:17-49
+72            <meta-data
+72-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\trinh\.gradle\caches\8.13\transforms\bcdddf252a7412a8daa467c5c49cf042\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+73                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+73-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\trinh\.gradle\caches\8.13\transforms\bcdddf252a7412a8daa467c5c49cf042\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+74                android:value="androidx.startup" />
+74-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\trinh\.gradle\caches\8.13\transforms\bcdddf252a7412a8daa467c5c49cf042\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+75            <meta-data
+75-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:29:13-31:52
+76                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+76-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:30:17-85
+77                android:value="androidx.startup" />
+77-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:31:17-49
+78        </provider>
+79
+80        <activity
+80-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\trinh\.gradle\caches\8.13\transforms\121b82d39730772f4ba4a044e249b2b1\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:9-173
+81            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+81-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\trinh\.gradle\caches\8.13\transforms\121b82d39730772f4ba4a044e249b2b1\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:19-85
+82            android:exported="false"
+82-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\trinh\.gradle\caches\8.13\transforms\121b82d39730772f4ba4a044e249b2b1\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:146-170
+83            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+83-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\trinh\.gradle\caches\8.13\transforms\121b82d39730772f4ba4a044e249b2b1\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:86-145
+84
+85        <meta-data
+85-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\f6298acc2ad93f1d1a73618e406e8662\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:9-122
+86            android:name="com.google.android.gms.version"
+86-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\f6298acc2ad93f1d1a73618e406e8662\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:20-65
+87            android:value="@integer/google_play_services_version" />
+87-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\f6298acc2ad93f1d1a73618e406e8662\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:66-119
+88
+89        <receiver
+89-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
+90            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+90-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:35:13-76
+91            android:directBootAware="false"
+91-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:36:13-44
+92            android:enabled="true"
+92-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:37:13-35
+93            android:exported="true"
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:38:13-36
+94            android:permission="android.permission.DUMP" >
+94-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:39:13-57
+95            <intent-filter>
+95-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:40:13-42:29
+96                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+96-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:17-91
+96-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:25-88
+97            </intent-filter>
+98            <intent-filter>
+98-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:43:13-45:29
+99                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+99-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:17-85
+99-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:25-82
+100            </intent-filter>
+101            <intent-filter>
+101-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:46:13-48:29
+102                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+102-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:17-88
+102-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:25-85
+103            </intent-filter>
+104            <intent-filter>
+104-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:49:13-51:29
+105                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+105-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:17-95
+105-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\trinh\.gradle\caches\8.13\transforms\85157796cc3ab7f7743338ae4d7958fd\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:25-92
+106            </intent-filter>
+107        </receiver>
+108    </application>
+109
+110</manifest>

@@ -18,6 +18,17 @@ public interface FriendApi {
                 @Query("senderId") int senderId,
                 @Query("receiverId") int receiverId);
 
+        @POST("api/friends/accept-request")
+        Call<ResponseBody> acceptFriendRequest(
+                @Query("senderId") int senderId,
+                @Query("receiverId") int receiverId);
+
+        @GET("api/friends/pending-requests")
+        Call<List<User>> getPendingRequests(@Query("userId") int userId);
+
+        @GET("api/friends/sent-requests")
+        Call<List<User>> getSentRequests(@Query("userId") int userId);
+
         // Thêm method này
         @GET("api/friends/my-friends")
         Call<List<User>> getMyFriends(@Query("userId") int userId);

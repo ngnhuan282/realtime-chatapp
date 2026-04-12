@@ -4,7 +4,7 @@
             "outputFile": "com.example.chatapp-mergeDebugResources-38:/values-en-rAU/values-en-rAU.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\VAN NHUAN\\.gradle\\caches\\8.13\\transforms\\0c49a8b9d173a03ba9cacff549b1c920\\transformed\\appcompat-1.7.1\\res\\values-en-rAU\\values-en-rAU.xml",
+                    "source": "C:\\Users\\trinh\\.gradle\\caches\\8.13\\transforms\\0c49a8b9d173a03ba9cacff549b1c920\\transformed\\appcompat-1.7.1\\res\\values-en-rAU\\values-en-rAU.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\VAN NHUAN\\.gradle\\caches\\8.13\\transforms\\f1492449bd609207e6b0ad48b39a1658\\transformed\\emoji2-emojipicker-1.6.0\\res\\values-en-rAU\\values-en-rAU.xml",
+                    "source": "C:\\Users\\trinh\\.gradle\\caches\\8.13\\transforms\\f1492449bd609207e6b0ad48b39a1658\\transformed\\emoji2-emojipicker-1.6.0\\res\\values-en-rAU\\values-en-rAU.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -38,7 +38,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\VAN NHUAN\\.gradle\\caches\\8.13\\transforms\\c8a88db3832076de6f0143c7c0df3cbb\\transformed\\core-1.16.0\\res\\values-en-rAU\\values-en-rAU.xml",
+                    "source": "C:\\Users\\trinh\\.gradle\\caches\\8.13\\transforms\\c8a88db3832076de6f0143c7c0df3cbb\\transformed\\core-1.16.0\\res\\values-en-rAU\\values-en-rAU.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

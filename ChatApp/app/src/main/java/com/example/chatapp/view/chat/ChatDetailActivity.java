@@ -4,8 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Bundle;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -35,13 +40,17 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -62,7 +71,7 @@ public class ChatDetailActivity extends BaseActivity {
     private EmojiPickerView emojiPicker;
     private FloatingActionButton btnSend;
     private ImageView btnBack, btnAttach, imgAvatar, btnEmoji;
-    private TextView tvFriendName;
+    private TextView tvFriendName, tvConnectionBanner;
 
     private Integer myUserId;
     private Integer friendId;
@@ -72,6 +81,13 @@ public class ChatDetailActivity extends BaseActivity {
     private Integer groupId = -1;
     private boolean isGroupChat = false;
     private String groupName;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private boolean isInternetAvailable = true;
+
+    private final Gson gson = new Gson();
+    private final Runnable hideBannerRunnable = this::hideConnectionBanner;
+    private SharedPreferences cachePrefs;
 
     // Launchers
     private final ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
@@ -125,6 +141,8 @@ public class ChatDetailActivity extends BaseActivity {
         initViews();
         setupRecyclerView();
         setupEmojiPicker();
+        cachePrefs = getSharedPreferences("ChatCachePrefs", MODE_PRIVATE);
+        setupNetworkMonitoring();
 
         // Kết nối Socket
         socketManager = SocketManager.getInstance();
@@ -132,15 +150,31 @@ public class ChatDetailActivity extends BaseActivity {
         socketManager.setListener(msg -> {
             runOnUiThread(() -> handleNewMessage(msg));
         });
+        socketManager.setConnectionListener(connected -> runOnUiThread(() -> {
+            if (connected) {
+                showConnectionBanner("Đang kết nối...", false, true);
+            } else {
+                showConnectionBanner("Mất kết nối Internet", true, false);
+            }
+        }));
+        socketManager.setMessageStatusListener((localId, status) ->
+                runOnUiThread(() -> updateLocalMessageStatus(localId, status)));
         socketManager.connect();
 
+        loadCachedMessages();
+
         // Load dữ liệu phù hợp
-        if (isGroupChat) {
-            tvFriendName.setText(groupName != null ? groupName : "Nhóm chat");
-            loadGroupHistory();
+        if (!isInternetAvailable) {
+            showConnectionBanner("Mất kết nối Internet", true, false);
         } else {
-            if (friendName != null) tvFriendName.setText(friendName);
-            loadHistory();
+            hideConnectionBanner();
+            if (isGroupChat) {
+                tvFriendName.setText(groupName != null ? groupName : "Nhóm chat");
+                loadGroupHistory();
+            } else {
+                if (friendName != null) tvFriendName.setText(friendName);
+                loadHistory();
+            }
         }
 
         // Xử lý sự kiện
@@ -161,6 +195,7 @@ public class ChatDetailActivity extends BaseActivity {
         btnEmoji = findViewById(R.id.btnEmoji);
         imgAvatar = findViewById(R.id.imgAvatar);
         tvFriendName = findViewById(R.id.tvFriendName);
+        tvConnectionBanner = findViewById(R.id.tvConnectionBanner);
     }
 
     private void setupRecyclerView() {
@@ -184,10 +219,14 @@ public class ChatDetailActivity extends BaseActivity {
         boolean belongToThisChat = false;
 
         if (isGroupChat) {
+            // Nếu đang mở chat Nhóm -> Chỉ nhận tin nhắn có groupId trùng khớp
             belongToThisChat = msg.getGroupId() != null && msg.getGroupId().equals(groupId);
         } else {
-            belongToThisChat = (msg.getSenderId() != null && msg.getSenderId().equals(friendId)) ||
-                    (msg.getReceiverId() != null && msg.getReceiverId().equals(friendId));
+            // Nếu đang mở chat 1-1 -> Bắt buộc groupId phải bằng NULL
+            // Và người gửi/nhận phải trùng khớp với người đang chat
+            belongToThisChat = msg.getGroupId() == null && 
+                    ((msg.getSenderId() != null && msg.getSenderId().equals(friendId)) ||
+                     (msg.getReceiverId() != null && msg.getReceiverId().equals(friendId)));
         }
 
         if (belongToThisChat) {
@@ -195,6 +234,7 @@ public class ChatDetailActivity extends BaseActivity {
             messages.add(msg);
             adapter.notifyItemInserted(messages.size() - 1);
             rvMessages.scrollToPosition(messages.size() - 1);
+            saveMessagesToCache();
         }
     }
 
@@ -208,12 +248,15 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private void sendSocketMessage(String content, String type) {
+        boolean hasInternet = hasInternetConnection();
         Message newMsg = new Message();
+        newMsg.setLocalId(UUID.randomUUID().toString());
         newMsg.setSenderId(myUserId);
         newMsg.setContent(content);
         newMsg.setTimestamp(System.currentTimeMillis());
         newMsg.setMessageType(type);
         newMsg.setMe(true);
+        newMsg.setStatus(Message.STATUS_SENDING);
 
         if (isGroupChat) {
             newMsg.setGroupId(groupId);
@@ -226,8 +269,19 @@ public class ChatDetailActivity extends BaseActivity {
         messages.add(newMsg);
         adapter.notifyItemInserted(messages.size() - 1);
         rvMessages.scrollToPosition(messages.size() - 1);
+        saveMessagesToCache();
 
-        socketManager.sendMessage(newMsg);
+        if (!hasInternet) {
+            showConnectionBanner("Mất kết nối Internet", true, false);
+        }
+
+        try {
+            socketManager.sendMessage(newMsg);
+        } catch (Exception e) {
+            newMsg.setStatus(Message.STATUS_SENDING);
+            updateLocalMessageStatus(newMsg.getLocalId(), Message.STATUS_SENDING);
+            Log.e("ChatDetail", "Send message error: " + e.getMessage());
+        }
     }
 
     private void toggleEmojiPicker() {
@@ -302,6 +356,12 @@ public class ChatDetailActivity extends BaseActivity {
     }
 
     private void uploadFile(Uri uri, String messageType) {
+        if (!hasInternetConnection()) {
+            showConnectionBanner("Mất kết nối Internet", true, false);
+            Toast.makeText(this, "Mất kết nối Internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         File file = uriToFile(uri, messageType);
         if (file == null) {
             Toast.makeText(this, "Lỗi truy cập tệp tin!", Toast.LENGTH_SHORT).show();
@@ -309,7 +369,7 @@ public class ChatDetailActivity extends BaseActivity {
         }
 
         String mediaType = "VIDEO".equals(messageType) ? "video/*" : "image/*";
-        RequestBody requestFile = RequestBody.create(MediaType.parse(mediaType), file);
+        RequestBody requestFile = RequestBody.create(file, MediaType.parse(mediaType)); // Thứ tự tham số đúng cho OkHttp4.x
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
@@ -380,16 +440,19 @@ public class ChatDetailActivity extends BaseActivity {
                     messages.clear();
                     for (Message m : response.body()) {
                         m.setMe(m.getSenderId().equals(myUserId));
+                        m.setStatus(Message.STATUS_SENT);
                         messages.add(m);
                     }
                     adapter.notifyDataSetChanged();
                     if (!messages.isEmpty()) rvMessages.scrollToPosition(messages.size() - 1);
+                    saveMessagesToCache();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Message>> call, Throwable t) {
                 Log.e("ChatDetail", "Load history failed: " + t.getMessage());
+                loadCachedMessages();
             }
         });
     }
@@ -405,17 +468,151 @@ public class ChatDetailActivity extends BaseActivity {
                     messages.clear();
                     for (Message m : response.body()) {
                         m.setMe(m.getSenderId().equals(myUserId));
+                        m.setStatus(Message.STATUS_SENT);
                         messages.add(m);
                     }
                     adapter.notifyDataSetChanged();
                     if (!messages.isEmpty()) rvMessages.scrollToPosition(messages.size() - 1);
+                    saveMessagesToCache();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Message>> call, Throwable t) {
                 Log.e("ChatDetail", "Load group history failed: " + t.getMessage());
+                loadCachedMessages();
             }
         });
+    }
+
+    private void setupNetworkMonitoring() {
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        isInternetAvailable = hasInternetConnection();
+
+        if (connectivityManager == null) {
+            return;
+        }
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(Network network) {
+                isInternetAvailable = true;
+                runOnUiThread(() -> showConnectionBanner("Đang kết nối...", false, true));
+                if (socketManager != null) {
+                    socketManager.connect();
+                }
+            }
+
+            @Override
+            public void onLost(Network network) {
+                isInternetAvailable = false;
+                runOnUiThread(() -> showConnectionBanner("Mất kết nối Internet", true, false));
+            }
+        };
+
+        NetworkRequest request = new NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build();
+        connectivityManager.registerNetworkCallback(request, networkCallback);
+    }
+
+    private boolean hasInternetConnection() {
+        if (connectivityManager == null) {
+            return false;
+        }
+        Network activeNetwork = connectivityManager.getActiveNetwork();
+        if (activeNetwork == null) {
+            return false;
+        }
+
+        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
+        return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+
+    private String getCacheKey() {
+        if (isGroupChat) {
+            return "group_" + groupId;
+        }
+        return "dm_" + myUserId + "_" + friendId;
+    }
+
+    private void saveMessagesToCache() {
+        String json = gson.toJson(messages);
+        cachePrefs.edit().putString(getCacheKey(), json).apply();
+    }
+
+    private void loadCachedMessages() {
+        String raw = cachePrefs.getString(getCacheKey(), null);
+        if (raw == null || raw.trim().isEmpty()) {
+            return;
+        }
+
+        Type listType = new TypeToken<List<Message>>() {}.getType();
+        List<Message> cached = gson.fromJson(raw, listType);
+        if (cached == null || cached.isEmpty()) {
+            return;
+        }
+
+        messages.clear();
+        for (Message m : cached) {
+            m.setMe(m.getSenderId() != null && m.getSenderId().equals(myUserId));
+            if (m.getLocalId() == null) {
+                m.setStatus(Message.STATUS_SENT);
+            }
+            messages.add(m);
+        }
+        adapter.notifyDataSetChanged();
+        rvMessages.scrollToPosition(messages.size() - 1);
+    }
+
+    private void updateLocalMessageStatus(String localId, String status) {
+        if (localId == null) {
+            return;
+        }
+
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            Message msg = messages.get(i);
+            if (localId.equals(msg.getLocalId())) {
+                msg.setStatus(status);
+                adapter.notifyItemChanged(i);
+                saveMessagesToCache();
+                return;
+            }
+        }
+    }
+
+    private void showConnectionBanner(String text, boolean isError, boolean autoHide) {
+        if (tvConnectionBanner == null) {
+            return;
+        }
+
+        tvConnectionBanner.setText(text);
+        tvConnectionBanner.setBackgroundColor(isError ? Color.parseColor("#D32F2F") : Color.parseColor("#2E7D32"));
+        tvConnectionBanner.setVisibility(View.VISIBLE);
+
+        if (autoHide) {
+            tvConnectionBanner.removeCallbacks(hideBannerRunnable);
+            tvConnectionBanner.postDelayed(hideBannerRunnable, 1500);
+        }
+    }
+
+    private void hideConnectionBanner() {
+        if (tvConnectionBanner != null) {
+            tvConnectionBanner.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (connectivityManager != null && networkCallback != null) {
+            try {
+                connectivityManager.unregisterNetworkCallback(networkCallback);
+            } catch (Exception e) {
+                Log.w("ChatDetail", "Cannot unregister network callback: " + e.getMessage());
+            }
+        }
+        socketManager.setConnectionListener(null);
+        socketManager.setMessageStatusListener(null);
     }
 }

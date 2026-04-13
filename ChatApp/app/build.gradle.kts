@@ -1,4 +1,4 @@
-plugins {
+﻿plugins {
     alias(libs.plugins.android.application)
 }
 
@@ -60,3 +60,4 @@ dependencies {
     // Thư viện gửi emoji
 //    implementation("androidx.emoji2:emojipicker:1.4.0")
 }
+

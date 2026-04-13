@@ -1,5 +1,6 @@
 package com.example.chatapp.adapter;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatapp.R;
 import com.example.chatapp.model.Conversation;
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.text.SimpleDateFormat;
@@ -57,7 +59,18 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         if (chat.isGroup()) {
             holder.imgAvatar.setImageResource(R.drawable.ic_chatgroup);
         } else {
-            holder.imgAvatar.setImageResource(R.drawable.sample_avatar);
+            String avatarUrl = chat.getAvatar();
+            if (avatarUrl == null || avatarUrl.trim().isEmpty()) {
+                String name = chat.getDisplayName() == null ? "User" : chat.getDisplayName();
+                avatarUrl = "https://ui-avatars.com/api/?name=" + Uri.encode(name) + "&size=128";
+            }
+
+            Glide.with(holder.itemView.getContext())
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.avatar_placeholder)
+                    .error(R.drawable.avatar_placeholder)
+                    .circleCrop()
+                    .into(holder.imgAvatar);
         }
 
         holder.itemView.setOnClickListener(v -> {

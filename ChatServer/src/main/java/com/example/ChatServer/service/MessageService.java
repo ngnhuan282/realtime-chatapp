@@ -5,6 +5,8 @@ import com.example.ChatServer.dto.MessageDTO;
 import com.example.ChatServer.entity.ChatGroup;
 import com.example.ChatServer.entity.Message;
 import com.example.ChatServer.entity.User;
+import com.example.ChatServer.entity.Friendship;
+import com.example.ChatServer.repository.FriendshipRepository;
 import com.example.ChatServer.repository.MessageRepository;
 import com.example.ChatServer.repository.UserRepository;
 import com.example.ChatServer.repository.GroupRepository;
@@ -20,7 +22,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -35,6 +39,9 @@ public class MessageService {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private FriendshipRepository friendshipRepository;
 
     /**
      * 1. Lưu tin nhắn trực tiếp từ đối tượng Entity (Dùng cho Socket)
@@ -78,6 +85,7 @@ public class MessageService {
         allLatest.sort((m1, m2) -> Long.compare(m2.getTimestamp(), m1.getTimestamp()));
 
         List<ConversationDTO> conversations = new ArrayList<>();
+        Set<Integer> friendIdsInConversation = new HashSet<>();
 
         for (Message msg : allLatest) {
         if (msg.getGroupId() == null) {
@@ -86,8 +94,10 @@ public class MessageService {
                 User friend = userRepository.findById(friendId).orElse(null);
                 if (friend != null) {
                     long unread = messageRepository.countUnreadMessages(friendId, userId);
+                    friendIdsInConversation.add(friendId);
                     conversations.add(new ConversationDTO(
                             friendId, null, false, friend.getDisplayName(),
+                            friend.getAvatar(),
                             msg.getContent(), msg.getTimestamp(), unread
                     ));
                 }
@@ -97,11 +107,44 @@ public class MessageService {
             if (group != null) {
                 conversations.add(new ConversationDTO(
                         null, group.getId(), true, group.getGroupName(),
+                        null,
                         msg.getContent(), msg.getTimestamp(), 0L
                 ));
             }
         }
     }
+
+        // 3. Bổ sung hội thoại từ danh sách bạn bè ACCEPTED nhưng chưa có tin nhắn
+        // -> để người dùng bấm vào nhắn tin ngay trong DS chat
+        if (friendshipRepository != null) {
+            List<Friendship> friendships = friendshipRepository.findFriendshipsByStatusForUser("ACCEPTED", userId);
+            for (Friendship f : friendships) {
+                if (f == null) continue;
+                Integer u1 = f.getUser1Id();
+                Integer u2 = f.getUser2Id();
+                if (u1 == null || u2 == null) continue;
+
+                Integer friendId = u1.equals(userId) ? u2 : u1;
+                if (friendId == null || friendIdsInConversation.contains(friendId)) continue;
+
+                User friend = userRepository.findById(friendId).orElse(null);
+                if (friend == null) continue;
+
+                conversations.add(new ConversationDTO(
+                        friendId, null, false,
+                        friend.getDisplayName(),
+                        friend.getAvatar(),
+                        "Các bạn hiện đã trở thành bạn bè",
+                        f.getCreatedAt(),
+                        0L
+                ));
+                friendIdsInConversation.add(friendId);
+            }
+        }
+
+        // 4. Sắp xếp lại theo thời gian mới nhất
+        conversations.sort((c1, c2) -> Long.compare(c2.getLastTime(), c1.getLastTime()));
+
     return conversations;
 }
 

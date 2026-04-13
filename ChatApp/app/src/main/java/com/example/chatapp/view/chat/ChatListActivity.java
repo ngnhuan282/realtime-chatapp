@@ -61,6 +61,7 @@ public class ChatListActivity extends BaseActivity {
                 } else {
                     intent.putExtra("friendId", conversation.getFriendId());
                     intent.putExtra("friendName", conversation.getDisplayName());
+                    intent.putExtra("friendAvatar", conversation.getAvatar());
                 }
                 startActivity(intent);
             }

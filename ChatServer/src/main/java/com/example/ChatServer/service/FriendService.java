@@ -62,6 +62,8 @@ public class FriendService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khong tim thay loi moi"));
 
         f.setStatus("ACCEPTED");
+        // Dùng createdAt như mốc thời gian để hiển thị trong DS chat sau khi accept
+        f.setCreatedAt(System.currentTimeMillis());
         friendshipRepository.save(f);
 
         // Realtime notify cho cả 2 phía

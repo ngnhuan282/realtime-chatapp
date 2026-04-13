@@ -27,6 +27,7 @@ import androidx.emoji2.emojipicker.EmojiPickerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.chatapp.R;
 import com.example.chatapp.adapter.ChatAdapter;
 import com.example.chatapp.model.Message;
@@ -75,6 +76,7 @@ public class ChatDetailActivity extends BaseActivity {
     private Integer myUserId;
     private Integer friendId;
     private String friendName;
+    private String friendAvatar;
 
     // Biến hỗ trợ Chat Nhóm
     private Integer groupId = -1;
@@ -126,6 +128,7 @@ public class ChatDetailActivity extends BaseActivity {
 
         friendId = getIntent().getIntExtra("friendId", -1);
         friendName = getIntent().getStringExtra("friendName");
+        friendAvatar = getIntent().getStringExtra("friendAvatar");
         groupId = getIntent().getIntExtra("groupId", -1);
         groupName = getIntent().getStringExtra("groupName");
         isGroupChat = groupId != -1;
@@ -157,9 +160,23 @@ public class ChatDetailActivity extends BaseActivity {
             hideConnectionBanner();
             if (isGroupChat) {
                 tvFriendName.setText(groupName != null ? groupName : "Nhóm chat");
+                imgAvatar.setImageResource(R.drawable.ic_chatgroup);
                 loadGroupHistory();
             } else {
                 if (friendName != null) tvFriendName.setText(friendName);
+
+                String avatarUrl = friendAvatar;
+                if (avatarUrl == null || avatarUrl.trim().isEmpty()) {
+                    String name = friendName == null ? "User" : friendName;
+                    avatarUrl = "https://ui-avatars.com/api/?name=" + Uri.encode(name) + "&size=128";
+                }
+                Glide.with(this)
+                        .load(avatarUrl)
+                        .placeholder(R.drawable.avatar_placeholder)
+                        .error(R.drawable.avatar_placeholder)
+                        .circleCrop()
+                        .into(imgAvatar);
+
                 loadHistory();
             }
         }

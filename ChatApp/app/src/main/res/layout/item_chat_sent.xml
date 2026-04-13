@@ -49,7 +49,7 @@
             android:layout_height="14dp"
             android:layout_marginStart="6dp"
             android:contentDescription="sending"
-            android:src="@drawable/ic_send"
+            android:src="@drawable/ic_pending"
             app:tint="#9AA5A9"
             android:visibility="gone" />
     </LinearLayout>

@@ -1,12 +1,12 @@
 -- =============================================
--- 1. KHỞI TẠO DATABASE
+-- 1. KHOI TAO DATABASE
 -- =============================================
 DROP DATABASE IF EXISTS chat_app;
 CREATE DATABASE chat_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE chat_app;
 
 -- =============================================
--- 2. BẢNG USERS
+-- 2. BANG USERS
 -- =============================================
 CREATE TABLE `users` (
                          `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -18,7 +18,7 @@ CREATE TABLE `users` (
                          `createdAt` BIGINT
 );
 
--- Dữ liệu mẫu users
+-- Du lieu mau users
 INSERT INTO `users` (`username`, `password`, `displayName`, `avatar`, `phoneNumber`, `createdAt`) VALUES
                                                                                                       ('loopy', '123456', 'Loopy Cute', NULL, '0912345678', 1775463000000),
                                                                                                       ('alice', '123456', 'Alice Green', NULL, '0987654321', 1775463000000),
@@ -32,7 +32,7 @@ INSERT INTO `users` (`username`, `password`, `displayName`, `avatar`, `phoneNumb
                                                                                                       ('lisa', '123456', 'Lisa Blackpink', NULL, '0966554433', 1775463000000);
 
 -- =============================================
--- 3. BẢNG FRIENDSHIPS
+-- 3. BANG FRIENDSHIPS
 -- =============================================
 CREATE TABLE `friendships` (
                                `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -45,19 +45,18 @@ CREATE TABLE `friendships` (
                                CONSTRAINT `fk_friendship_user2` FOREIGN KEY (`user2Id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
--- Dữ liệu mẫu friendships
+-- Du lieu mau friendships (Da loai bo quan he giua Loopy va Sarah)
 INSERT INTO `friendships` (`user1Id`, `user2Id`, `status`, `createdAt`) VALUES
-                                                                            (1, 2, 'ACCEPTED', 1775463000000),
-                                                                            (1, 3, 'ACCEPTED', 1775463000000),
-                                                                            (4, 1, 'PENDING', 1775463000000),
-                                                                            (5, 1, 'PENDING', 1775463000000),
-                                                                            (1, 6, 'ACCEPTED', 1775463000000),
-                                                                            (2, 5, 'ACCEPTED', 1775463000000),
-                                                                            (8, 2, 'PENDING', 1775463000000),
-                                                                            (3, 7, 'ACCEPTED', 1775463000000);
+                                                                            (1, 2, 'ACCEPTED', 1775463000000),   -- Loopy - Alice
+                                                                            (1, 3, 'ACCEPTED', 1775463000000),   -- Loopy - Mark
+                                                                            (1, 6, 'ACCEPTED', 1775463000000),   -- Loopy - Emily
+                                                                            (2, 5, 'ACCEPTED', 1775463000000),   -- Alice - David
+                                                                            (3, 7, 'ACCEPTED', 1775463000000),   -- Mark - James
+                                                                            (8, 2, 'PENDING', 1775463000000),    -- Anna - Alice
+                                                                            (5, 1, 'PENDING', 1775463000000);    -- David - Loopy
 
 -- =============================================
--- 4. BẢNG CHAT GROUPS
+-- 4. BANG CHAT GROUPS
 -- =============================================
 CREATE TABLE `chatGroups` (
                               `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -67,14 +66,14 @@ CREATE TABLE `chatGroups` (
                               CONSTRAINT `fkGroupCreator` FOREIGN KEY (`createdBy`) REFERENCES `users`(`id`) ON DELETE SET NULL
 );
 
--- Dữ liệu mẫu chatGroups
+-- Du lieu mau chatGroups
 INSERT INTO `chatGroups` (`groupName`, `createdBy`, `createdAt`) VALUES
-                                                                     ('Gia Đình', 1, 1775463100000),
+                                                                     ('Gia Dinh', 1, 1775463100000),
                                                                      ('Team Android', 1, 1775463200000),
-                                                                     ('Lớp Đại Học', 5, 1775463300000);
+                                                                     ('Lop Dai Hoc', 5, 1775463300000);
 
 -- =============================================
--- 5. BẢNG GROUP MEMBERS
+-- 5. BANG GROUP MEMBERS
 -- =============================================
 CREATE TABLE `groupMembers` (
                                 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -85,14 +84,14 @@ CREATE TABLE `groupMembers` (
                                 UNIQUE (`groupId`, `userId`)
 );
 
--- Dữ liệu mẫu groupMembers
+-- Du lieu mau groupMembers
 INSERT INTO `groupMembers` (`groupId`, `userId`) VALUES
-                                                     (1, 1), (1, 2), (1, 3), (1, 8), (1, 10),
-                                                     (2, 1), (2, 4), (2, 5), (2, 6), (2, 7),
-                                                     (3, 5), (3, 6), (3, 7), (3, 9);
+                                                     (1, 1), (1, 2), (1, 3), (1, 8), (1, 10),   -- Gia Dinh
+                                                     (2, 1), (2, 4), (2, 5), (2, 6), (2, 7),   -- Team Android
+                                                     (3, 5), (3, 6), (3, 7), (3, 9);           -- Lop Dai Hoc
 
 -- =============================================
--- 6. BẢNG MESSAGES
+-- 6. BANG MESSAGES
 -- =============================================
 CREATE TABLE `messages` (
                             `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -108,23 +107,24 @@ CREATE TABLE `messages` (
                             CONSTRAINT `fkMessageGroup` FOREIGN KEY (`groupId`) REFERENCES `chatGroups`(`id`) ON DELETE CASCADE
 );
 
--- Dữ liệu mẫu messages (có cả chat 1-1 và group)
+-- Du lieu mau messages (khong dau)
 INSERT INTO `messages` (`senderId`, `receiverId`, `groupId`, `content`, `messageType`, `status`, `createdAt`) VALUES
--- Chat 1-1 với Alice
-(1, 2, NULL, 'Chào Alice, hôm nay em khỏe không?', 'TEXT', 'READ', 1775463600000),
-(2, 1, NULL, 'Chào anh Loopy, em khỏe lắm ạ!', 'TEXT', 'READ', 1775463660000),
-(1, 2, NULL, 'hjhj', 'TEXT', 'READ', 1775465220000),
+-- Chat 1-1 voi Alice
+(1, 2, NULL, 'Chao Alice, hom nay em khoe khong?', 'TEXT', 'READ', 1775463600000),
+(2, 1, NULL, 'Chao anh Loopy, em khoe lam a!', 'TEXT', 'READ', 1775463660000),
+(1, 2, NULL, 'Haha vui qua!', 'TEXT', 'READ', 1775465220000),
 
--- Chat 1-1 với Mark
-(1, 3, NULL, 'Tối nay đi làm tí cafe không?', 'TEXT', 'READ', 1775464140000),
-(3, 1, NULL, 'Ok luôn, quán cũ nhé.', 'TEXT', 'SENT', 1775464200000),
+-- Chat 1-1 voi Mark
+(1, 3, NULL, 'Toi nay di lam ti ca phe khong?', 'TEXT', 'READ', 1775464140000),
+(3, 1, NULL, 'Ok luon, quan cu nhe.', 'TEXT', 'SENT', 1775464200000),
 
--- Chat nhóm Gia Đình (groupId = 1)
-(1, NULL, 1, 'Cả nhà ăn cơm chưa?', 'TEXT', 'READ', 1775465400000),
-(2, NULL, 1, 'Con ăn rồi ạ!', 'TEXT', 'READ', 1775465460000);
+-- Chat nhom Gia Dinh (groupId = 1)
+(1, NULL, 1, 'Ca nha an com chua?', 'TEXT', 'READ', 1775465400000),
+(2, NULL, 1, 'Con an roi a!', 'TEXT', 'READ', 1775465460000),
+(1, NULL, 1, 'Moi nguoi an gi ngon the?', 'TEXT', 'READ', 1775465520000);
 
 -- =============================================
--- 7. INDEX TỐI ƯU
+-- 7. INDEX TOI UU
 -- =============================================
 CREATE INDEX idxMessageSender ON messages(senderId);
 CREATE INDEX idxMessageReceiver ON messages(receiverId);

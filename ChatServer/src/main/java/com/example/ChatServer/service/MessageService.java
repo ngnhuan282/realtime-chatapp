@@ -88,47 +88,49 @@ public class MessageService {
         Set<Integer> friendIdsInConversation = new HashSet<>();
 
         for (Message msg : allLatest) {
-        if (msg.getGroupId() == null) {
-            Integer friendId = msg.getSenderId().equals(userId) ? msg.getReceiverId() : msg.getSenderId();
-            if (friendId != null) {
-                User friend = userRepository.findById(friendId).orElse(null);
-                if (friend != null) {
-                    long unread = messageRepository.countUnreadMessages(friendId, userId);
-                    friendIdsInConversation.add(friendId);
+            if (msg.getGroupId() == null) {
+                Integer friendId = msg.getSenderId().equals(userId) ? msg.getReceiverId() : msg.getSenderId();
+                if (friendId != null) {
+                    User friend = userRepository.findById(friendId).orElse(null);
+                    if (friend != null) {
+                        long unread = messageRepository.countUnreadMessages(friendId, userId);
+                        friendIdsInConversation.add(friendId);
+                        conversations.add(new ConversationDTO(
+                                friendId, null, false, friend.getDisplayName(),
+                                friend.getAvatar(),
+                                msg.getContent(), msg.getTimestamp(), unread));
+                    }
+                }
+            } else {
+                ChatGroup group = groupRepository.findById(msg.getGroupId()).orElse(null);
+                if (group != null) {
                     conversations.add(new ConversationDTO(
-                            friendId, null, false, friend.getDisplayName(),
-                            friend.getAvatar(),
-                            msg.getContent(), msg.getTimestamp(), unread
-                    ));
+                            null, group.getId(), true, group.getGroupName(),
+                            null,
+                            msg.getContent(), msg.getTimestamp(), 0L));
                 }
             }
-        } else {
-            ChatGroup group = groupRepository.findById(msg.getGroupId()).orElse(null);
-            if (group != null) {
-                conversations.add(new ConversationDTO(
-                        null, group.getId(), true, group.getGroupName(),
-                        null,
-                        msg.getContent(), msg.getTimestamp(), 0L
-                ));
-            }
         }
-    }
 
         // 3. Bổ sung hội thoại từ danh sách bạn bè ACCEPTED nhưng chưa có tin nhắn
         // -> để người dùng bấm vào nhắn tin ngay trong DS chat
         if (friendshipRepository != null) {
             List<Friendship> friendships = friendshipRepository.findFriendshipsByStatusForUser("ACCEPTED", userId);
             for (Friendship f : friendships) {
-                if (f == null) continue;
+                if (f == null)
+                    continue;
                 Integer u1 = f.getUser1Id();
                 Integer u2 = f.getUser2Id();
-                if (u1 == null || u2 == null) continue;
+                if (u1 == null || u2 == null)
+                    continue;
 
                 Integer friendId = u1.equals(userId) ? u2 : u1;
-                if (friendId == null || friendIdsInConversation.contains(friendId)) continue;
+                if (friendId == null || friendIdsInConversation.contains(friendId))
+                    continue;
 
                 User friend = userRepository.findById(friendId).orElse(null);
-                if (friend == null) continue;
+                if (friend == null)
+                    continue;
 
                 conversations.add(new ConversationDTO(
                         friendId, null, false,
@@ -136,8 +138,7 @@ public class MessageService {
                         friend.getAvatar(),
                         "Các bạn hiện đã trở thành bạn bè",
                         f.getCreatedAt(),
-                        0L
-                ));
+                        0L));
                 friendIdsInConversation.add(friendId);
             }
         }
@@ -145,8 +146,8 @@ public class MessageService {
         // 4. Sắp xếp lại theo thời gian mới nhất
         conversations.sort((c1, c2) -> Long.compare(c2.getLastTime(), c1.getLastTime()));
 
-    return conversations;
-}
+        return conversations;
+    }
 
     public ResponseEntity<String> storeFile(MultipartFile file) {
         return storeFileInternal(file, null);
@@ -171,10 +172,12 @@ public class MessageService {
             if (subFolder != null && !subFolder.isBlank()) {
                 uploadPath = uploadPath.resolve(subFolder);
             }
-            if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+            if (!Files.exists(uploadPath))
+                Files.createDirectories(uploadPath);
 
             // 2. Tạo tên file duy nhất tránh trùng lặp
-            String originalFileName = file.getOriginalFilename() == null ? "file" : Paths.get(file.getOriginalFilename()).getFileName().toString();
+            String originalFileName = file.getOriginalFilename() == null ? "file"
+                    : Paths.get(file.getOriginalFilename()).getFileName().toString();
             String fileName = UUID.randomUUID() + "_" + originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
             Path filePath = uploadPath.resolve(fileName);
 
@@ -214,7 +217,7 @@ public class MessageService {
 
     public List<Message> getGroupHistory(Integer groupId) {
         List<Message> messages = messageRepository.findByGroupIdOrderByTimestampAsc(groupId);
-    
+
         // Quét qua từng tin nhắn, tra ID người gửi để lấy Tên và Avatar
         for (Message m : messages) {
             userRepository.findById(m.getSenderId()).ifPresent(user -> {
@@ -226,7 +229,8 @@ public class MessageService {
     }
 
     public User getUserById(Integer userId) {
-        if (userId == null)  return null;
+        if (userId == null)
+            return null;
         return userRepository.findById(userId).orElse(null);
     }
 }

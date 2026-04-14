@@ -86,7 +86,7 @@ public class ChatListActivity extends BaseActivity {
             } else if (id == R.id.nav_people) {
                 Intent intent = new Intent(ChatListActivity.this, PeopleActivity.class);
                 startActivity(intent);
-                finish();           // Optional: finish để refresh khi quay lại
+                finish(); // Optional: finish để refresh khi quay lại
                 return true;
             } else if (id == R.id.nav_settings) {
                 Intent intent = new Intent(ChatListActivity.this, SettingsActivity.class);
@@ -107,9 +107,10 @@ public class ChatListActivity extends BaseActivity {
 
         String url = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            url = (avatar == null || avatar.trim().isEmpty()) ?
-                    "https://ui-avatars.com/api/?name=" + URLEncoder.encode(myName, StandardCharsets.UTF_8) + "&size=128" :
-                    avatar;
+            url = (avatar == null || avatar.trim().isEmpty())
+                    ? "https://ui-avatars.com/api/?name=" + URLEncoder.encode(myName, StandardCharsets.UTF_8)
+                            + "&size=128"
+                    : avatar;
         }
 
         Glide.with(this)
@@ -123,7 +124,7 @@ public class ChatListActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-    
+
         // 1. Lấy API để load danh sách chat từ DB (load lần đầu)
         fetchConversations();
 
@@ -133,9 +134,10 @@ public class ChatListActivity extends BaseActivity {
             SocketManager socketManager = SocketManager.getInstance();
             socketManager.setMyUserId(myId);
             socketManager.connect(); // Nếu đã connect, nó sẽ chỉ gửi lại handshake
-        
+
             socketManager.setListener(msg -> {
-                // Bất cứ khi nào có tin nhắn mới (kể cả SYSTEM tạo nhóm hay người khác nhắn tin tới)
+                // Bất cứ khi nào có tin nhắn mới (kể cả SYSTEM tạo nhóm hay người khác nhắn tin
+                // tới)
                 // Ta chỉ cần gọi lại fetchConversations() để update danh sách mới nhất
                 runOnUiThread(() -> fetchConversations());
             });
@@ -144,7 +146,8 @@ public class ChatListActivity extends BaseActivity {
 
     private void fetchConversations() {
         Integer myId = getSharedPreferences("ChatAppPrefs", MODE_PRIVATE).getInt("myUserId", -1);
-        if (myId == -1) return;
+        if (myId == -1)
+            return;
 
         MessageApi messageApi = ApiClient.getClient().create(MessageApi.class);
         messageApi.getConversations(myId).enqueue(new Callback<List<Conversation>>() {

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConversationDTO {
     private Integer friendId; // Sẽ là null nếu đây là nhóm
-    private Integer groupId;  // Sẽ là null nếu đây là chat 1-1
+    private Integer groupId; // Sẽ là null nếu đây là chat 1-1
     private boolean isGroup;
     private String displayName;
     private String avatar; // Avatar của friend (null nếu là nhóm)

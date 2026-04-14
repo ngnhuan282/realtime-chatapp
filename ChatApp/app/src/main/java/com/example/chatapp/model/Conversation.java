@@ -1,43 +1,85 @@
 package com.example.chatapp.model;
 
 import com.google.gson.annotations.SerializedName;
+
 public class Conversation {
     private Integer friendId;
     private Integer groupId;
-    
-    @SerializedName(value = "group", alternate = {"isGroup"})
+
+    @SerializedName(value = "group", alternate = { "isGroup" })
     private boolean isGroup;
-    
+
     private String displayName;
     private String avatar;
     private String lastMessage;
-    private long lastTime; 
+    private long lastTime;
     private int unreadCount;
 
-    public Conversation() {}
+    public Conversation() {
+    }
 
     // Các Getters / Setters
-    public Integer getFriendId() { return friendId; }
-    public void setFriendId(Integer friendId) { this.friendId = friendId; }
+    public Integer getFriendId() {
+        return friendId;
+    }
 
-    public Integer getGroupId() { return groupId; }
-    public void setGroupId(Integer groupId) { this.groupId = groupId; }
+    public void setFriendId(Integer friendId) {
+        this.friendId = friendId;
+    }
 
-    public boolean isGroup() { return isGroup; }
-    public void setGroup(boolean group) { isGroup = group; }
+    public Integer getGroupId() {
+        return groupId;
+    }
 
-    public String getDisplayName() { return displayName; }
-    public void setDisplayName(String displayName) { this.displayName = displayName; }
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
 
-    public String getAvatar() { return avatar; }
-    public void setAvatar(String avatar) { this.avatar = avatar; }
+    public boolean isGroup() {
+        return isGroup;
+    }
 
-    public String getLastMessage() { return lastMessage; }
-    public void setLastMessage(String lastMessage) { this.lastMessage = lastMessage; }
+    public void setGroup(boolean group) {
+        isGroup = group;
+    }
 
-    public long getLastTime() { return lastTime; }
-    public void setLastTime(long lastTime) { this.lastTime = lastTime; }
+    public String getDisplayName() {
+        return displayName;
+    }
 
-    public int getUnreadCount() { return unreadCount; }
-    public void setUnreadCount(int unreadCount) { this.unreadCount = unreadCount; }
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public long getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(long lastTime) {
+        this.lastTime = lastTime;
+    }
+
+    public int getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount = unreadCount;
+    }
 }

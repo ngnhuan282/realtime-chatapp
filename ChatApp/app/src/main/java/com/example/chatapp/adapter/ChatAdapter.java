@@ -41,7 +41,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Message> messageList;
 
-    public ChatAdapter(List<Message> messageList) { this.messageList = messageList; }
+    // Dùng cho chat 1-1: avatar/người đối diện (tin nhắn received)
+    private final String peerName;
+    private final String peerAvatarUrl;
+
+    public ChatAdapter(List<Message> messageList, String peerName, String peerAvatarUrl) {
+        this.messageList = messageList;
+        this.peerName = peerName;
+        this.peerAvatarUrl = peerAvatarUrl;
+    }
 
     private String buildLocationLockKey(Message message) {
         String sender = message.getSenderId() == null ? "null" : String.valueOf(message.getSenderId());
@@ -126,27 +134,47 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(Message message) {
-            if (message.getGroupId() != null && message.getGroupId() > 0 && !message.isMe()) {
-                if (txtSenderName != null) {
+            boolean isGroupMessage = message.getGroupId() != null && message.getGroupId() > 0;
+            boolean isReceived = !message.isMe();
+
+            if (txtSenderName != null) {
+                if (isGroupMessage && isReceived) {
                     txtSenderName.setVisibility(View.VISIBLE);
                     txtSenderName.setText(message.getSenderName() != null ? message.getSenderName() : "Người dùng");
+                } else {
+                    txtSenderName.setVisibility(View.GONE);
                 }
-                
-                if (imgAvatarReceived != null) {
-                    String avatarUrl = message.getSenderAvatar();
-                    if (avatarUrl == null || avatarUrl.trim().isEmpty()) {
-                        avatarUrl = "https://ui-avatars.com/api/?name=" + 
-                            (message.getSenderName() != null ? message.getSenderName() : "U") + "&size=128";
+            }
+
+            if (imgAvatarReceived != null) {
+                if (!isReceived) {
+                    imgAvatarReceived.setVisibility(View.GONE);
+                } else {
+                    imgAvatarReceived.setVisibility(View.VISIBLE);
+
+                    String avatarUrl;
+                    if (isGroupMessage) {
+                        avatarUrl = message.getSenderAvatar();
+                    } else {
+                        // Chat 1-1: ưu tiên avatar của người đối diện truyền từ Intent
+                        avatarUrl = (peerAvatarUrl != null && !peerAvatarUrl.trim().isEmpty())
+                                ? peerAvatarUrl
+                                : message.getSenderAvatar();
                     }
+
+                    if (avatarUrl == null || avatarUrl.trim().isEmpty()) {
+                        String nameForAvatar = isGroupMessage
+                                ? (message.getSenderName() != null ? message.getSenderName() : "User")
+                                : (peerName != null ? peerName : (message.getSenderName() != null ? message.getSenderName() : "User"));
+                        avatarUrl = "https://ui-avatars.com/api/?name=" + Uri.encode(nameForAvatar) + "&size=128";
+                    }
+
                     Glide.with(itemView.getContext())
                             .load(avatarUrl)
-                            .placeholder(R.drawable.sample_avatar) // Cập nhật hình mặc định nếu cần
+                            .placeholder(R.drawable.avatar_placeholder)
+                            .error(R.drawable.avatar_placeholder)
                             .circleCrop()
                             .into(imgAvatarReceived);
-                }
-            } else {
-                if (txtSenderName != null) {
-                    txtSenderName.setVisibility(View.GONE);
                 }
             }
             if ("IMAGE".equals(message.getMessageType())) {
